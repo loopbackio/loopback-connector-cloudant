@@ -1,0 +1,39 @@
+{
+  "name": "loopback-connector-cloudant",
+  "version": "1.0.0",
+  "description": "LoopBack Connector for IBM Cloundant DB",
+  "keywords": [
+    "IBM",
+    "StrongLoop",
+    "LoopBack",
+    "Cloudant",
+    "DataSource",
+    "Connector"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "test": "make test"
+  },
+  "dependencies": {
+    "async": "^1.5.0",
+    "cloudant": "^1.4.0",
+    "debug": "^2.2.0",
+    "loopback-connector": "^2.3.0"
+  },
+  "devDependencies": {
+    "loopback-datasource-juggler": "^2.43.0",
+    "mocha": "^2.3.4",
+    "rc": "^1.1.5",
+    "should": "^7.1.1",
+    "sinon": "^1.17.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/strongloop/loopback-connector-cloudant.git"
+  },
+  "homepage": "https://github.com/strongloop/loopback-connector-cloudant",
+  "bugs": {
+    "url": "https://github.com/strongloop/loopback-connector-cloudant/issues"
+  },
+  "license": "SEE LICENSE IN LICENSE"
+}
