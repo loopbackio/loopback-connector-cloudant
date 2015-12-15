@@ -19,7 +19,7 @@ These connectors implement CRUD operations as a common set of methods
 across different databases and allow quick and easy API creation for new
 or existing datasources.
 
-[More Info>>](https://www.ng.bluemix.net/docs/starters/LoopBack/index.htm)
+[More Info>>](https://www.ng.bluemix.net/docs/starters/LoopBack/index.html)
 
 ### IBM Cloudant
 
@@ -95,3 +95,43 @@ Property  | Type | Description
 ----------| -----| --------
 database  | String | Database name
 modelIndex | String | Specify the model name to document mapping, defaults to 'loopback\_\_model\_\_name'
+
+### Examples Usage
+
+```
+var DataSource = require ('loopback-datasource-juggler').DataSource,
+    Cloudant   = require ('loopback-connector-cloudant');
+
+var config = {
+    username: 'XXXXX-bluemix',
+    password: 'YYYYYYYYYYYYY',
+    database: 'test'
+};
+
+var db = new DataSource (Cloudant, config);
+
+User = db.define ('User', {
+  name: { type: String },
+  email: { type: String }
+});
+
+User.create ({
+  name: "Tony",
+  email: "tony@t.com"
+}, function (err, user) {
+  console.log (user);
+});
+
+User.find ({ where: { name: "Tony" }}, function (err, users) {
+  console.log (users);
+});
+
+User.destroyAll (function () {
+  console.log ('test complete');
+})
+```
+
+### Feature Backlog
+
+* Index only Model properties marked with index=true
+* Configurable "view based" or JSON indexes. [More Info>>](https://cloudant.com/blog/mango-json-vs-text-indexes)
