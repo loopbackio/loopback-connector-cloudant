@@ -96,7 +96,7 @@ Property  | Type | Description
 database  | String | Database name
 modelIndex | String | Specify the model name to document mapping, defaults to 'loopback\_\_model\_\_name'
 
-### Examples Usage
+### Example Usage
 
 ```
 var DataSource = require ('loopback-datasource-juggler').DataSource,
