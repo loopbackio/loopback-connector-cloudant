@@ -1,6 +1,6 @@
 {
   "name": "loopback-connector-cloudant",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "LoopBack Connector for IBM Cloundant DB",
   "keywords": [
     "IBM",
@@ -12,6 +12,8 @@
   ],
   "main": "index.js",
   "scripts": {
+    "pretest": "eslint ./ && jscs ./",
+    "lint": "eslint ./ && jscs ./",    
     "test": "make test"
   },
   "dependencies": {
@@ -22,6 +24,9 @@
     "loopback-connector": "^2.3.0"
   },
   "devDependencies": {
+    "jscs": "^2.8.0",
+    "eslint": "^1.10.3",
+    "eslint-config-strongloop": "^1.0.2",
     "loopback-datasource-juggler": "^2.43.0",
     "mocha": "^2.3.4",
     "rc": "^1.1.5",

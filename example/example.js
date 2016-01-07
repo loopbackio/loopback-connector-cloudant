@@ -1,31 +1,34 @@
-var DataSource = require ('loopback-datasource-juggler').DataSource,
-    Cloudant   = require ('../'); //loopback-connector-cloudant
+var DataSource = require('loopback-datasource-juggler').DataSource;
+var Cloudant = require('../'); // loopback-connector-cloudant
 
 var config = {
-    username: 'XXXXX-bluemix',
-    password: 'YYYYYYYYYYYYY',
-    database: 'test'
+  username: process.env.CLOUDANT_USERNAME,
+  password: process.env.CLOUDANT_PASSWORD,
+  database: process.env.CLOUDANT_DATABASE,
 };
 
-var db = new DataSource (Cloudant, config);
+var db = new DataSource(Cloudant, config);
 
-User = db.define ('User', {
-  name: { type: String },
-  email: { type: String }
+var User = db.define('User', {
+  name: {type: String},
+  email: {type: String},
 });
 
-User.create ({
-  name: "Tony",
-  email: "tony@t.com"
-}, function (err, user) {
-  console.log (user);
-});
+db.autoupdate('User', function(err) {
+  if (err) return console.log(err);
+  User.create({
+    name: 'Tony',
+    email: 'tony@t.com',
+  }, function(err, user) {
+    console.log(err, user);
+  });
 
-User.find ({ where: { name: "Tony" }}, function (err, users) {
-  console.log (users);
-});
+  User.find({where: {name: 'Tony'}}, function(err, users) {
+    console.log(err, users);
+  });
 
-User.destroyAll (function () {
-  console.log ('test complete');
-})
+  User.destroyAll(function() {
+    console.log('example complete');
+  });
+});
 
