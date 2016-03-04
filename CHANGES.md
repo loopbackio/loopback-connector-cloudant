@@ -1,6 +1,52 @@
+2016-03-04, Version 1.0.6
+=========================
+
+ * rename CHANGES to work with slt-release (Anthony Ffrench)
+
+ * Include related docs in chunks to avoid too many boolean clauses, closes #6 (Anthony Ffrench)
+
+
+2016-03-03, Version 1.0.5
+=========================
+
+ * Use the bookmark field to grab beyond 200 documents, closes #3 (Anthony Ffrench)
+
+ * Throw a better exception when url or username and password are undefined (Anthony Ffrench)
+
+
+2016-01-22, Version 1.0.4
+=========================
+
+ * default to sorting by id, fix custom id naming, implement filter.include (Anthony Ffrench)
+
+
+2016-01-06, Version 1.0.3
+=========================
+
+ * Updates to conform with StrongLoop eslint config (Anthony Ffrench)
+
+ * Synchronize the configuration settings with the documentation. remove any hardcoded modelIndex (loopback__model__name) cases (Anthony Ffrench)
+
+ * Add example usage (example/example.js) ... minor fixes (Anthony Ffrench)
+
+ * README documentation and intro (Anthony Ffrench)
+
+ * Implement save(), findByID(), find(), updateOrCreate(). Enhance the indexing (Lucene) and searching to be loopback model aware. Refactor document prep/unprep into toDB and fromDB methods, add support for Date type. Bug fixes, additional test cases. (Anthony Ffrench)
+
+ * Always sort by _id. Execute deletes in parallel. (Anthony Ffrench)
+
+ * Basic discovery for Models and Schemas (Anthony Ffrench)
+
+
+2015-12-10, Version 1.0.1
+=========================
+
+ * Implement updataAll and updateAttributes. Auto formating. (Anthony Ffrench)
+
+ * Support for per model db names. Support for order filters (using Cloudant Query). Additional test cases. (Anthony Ffrench)
+
+
 2015-12-07, Version 1.0.0
 =========================
 
  * First release!
- * Complete set of CRUD operations
- * Model discovery
