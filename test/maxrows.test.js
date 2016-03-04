@@ -5,7 +5,14 @@ describe('cloudant max rows', function() {
   before(function(done) {
     require('./init.js');
     db = getSchema();
-    Foo = db.define('Foo', {bar: {type: Number, index: true}});
+    Foo = db.define('Foo', {
+      bar: {type: Number, index: true}
+    });
+    Thing = db.define('Thing', {
+      title: Number
+    });
+    Thing.belongsTo('foo', {model: Foo});
+    Foo.hasMany('things', {foreignKey: 'fooId'});
     db.automigrate(done);
   });
   it('create two hundred and one', function(done) {
@@ -21,7 +28,13 @@ describe('cloudant max rows', function() {
   it('find all two hundred and one', function(done) {
     Foo.all(function(err, entries) {
       entries.should.have.lengthOf(N);
-      done();
+      var things = Array.apply(null, {length: N}).map(function(n, i) {
+        return {title:i, fooId:entries[i].id};
+      });
+      Thing.create(things, function(err, things) {
+        things.should.have.lengthOf(N);
+        done();
+      });
     });
   });
   it('find all limt ten', function(done) {
@@ -45,9 +58,21 @@ describe('cloudant max rows', function() {
       done();
     });
   });
+  it('find all things include foo', function(done) {
+    Thing.all({include: 'foo'}, function(err, entries) {
+      entries.forEach(function(t) {
+        t.__cachedRelations.should.have.property('foo');
+        var foo = t.__cachedRelations.foo;
+        foo.should.have.property('id');
+      });
+      done();
+    });
+  });
   after (function(done) {
     Foo.destroyAll(function() {
-      done();
+      Thing.destroyAll(function() {
+        done();
+      });
     });
   });
 });
