@@ -1,3 +1,9 @@
+2016-03-08, Version 1.0.7
+=========================
+
+ * coerce id names before attempting to resolve includes (Anthony Ffrench)
+
+
 2016-03-04, Version 1.0.6
 =========================
 
