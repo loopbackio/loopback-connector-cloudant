@@ -1,4 +1,10 @@
-2016-04-27, Version 1.0.8
+2016-04-27, Version 1.0.9
+=========================
+
+ * Fix ,  and  operators to align with the CQ syntax. closes #12 (Anthony Ffrench)
+
+
+2016-04-26, Version 1.0.8
 =========================
 
  * Use the Cloudant Query selector syntax to associate models to existing data (Anthony Ffrench)
