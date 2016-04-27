@@ -81,11 +81,10 @@ common/models/<model_name>.json
   "base": "PersistedModel",
   "idInjection": true,
   ...
-  "settings": {
-    "cloudant": {
-        "modelIndex": "myPropertyName",
-        "database": "test2"
-    }
+  "cloudant": {
+    "modelIndex": "custom_doc_type_property_name",
+    "modelSelector": { "doc_type": "user" },
+    "database": "test2"
   },
   ...
 ```
@@ -94,7 +93,8 @@ Model specific configuration settings:
 Property  | Type | Description
 ----------| -----| --------
 database  | String | Database name
-modelIndex | String | Specify the model name to document mapping, defaults to 'loopback\_\_model\_\_name'
+modelIndex | String | Specify the model name to document mapping, defaults to 'loopback\_\_model\_\_name'. 
+modelSelector | JSON | Use the Cloudant Query selector syntax to associate models to existing data. modelSelector and modelIndex are mutually exclusive. https://docs.cloudant.com/cloudant_query.html#selector-syntax
 
 ### Example Usage
 
