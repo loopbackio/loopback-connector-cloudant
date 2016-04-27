@@ -1,3 +1,11 @@
+2016-04-27, Version 1.0.8
+=========================
+
+ * Use the Cloudant Query selector syntax to associate models to existing data (Anthony Ffrench)
+
+ * Sort by date field did not work. Error: Unspecified or ambiguous sort type. Try appending :number or :string to the sort field. checkdate Solution: add :string to sort expression (Helmut Tammen)
+
+
 2016-03-08, Version 1.0.7
 =========================
 
