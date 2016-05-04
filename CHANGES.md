@@ -1,3 +1,9 @@
+2016-05-04, Version 1.0.10
+==========================
+
+ * Lazy connect when booting from swagger generator (juehou)
+
+
 2016-04-27, Version 1.0.9
 =========================
 
