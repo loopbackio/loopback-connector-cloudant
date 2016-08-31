@@ -25,7 +25,7 @@ describe('cloudant regexp', function() {
       done();
     });
   });
-  it('find all foos begining with b', function(done) {
+  it('find all foos beginning with b', function(done) {
     Foo.find({where: {bar: {regexp: '^b'}}}, function(err, entries) {
       console.log (entries);
       entries.should.have.lengthOf(1);
