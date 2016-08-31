@@ -33,6 +33,14 @@ describe('cloudant regexp', function() {
       done();
     });
   });
+  it('find all foos that are case-insensitive B', function(done) {
+    Foo.find({where: {bar: {regexp: '/B/i'}}}, function(err, entries) {
+      console.log (entries);
+      entries.should.have.lengthOf(1);
+      entries[0].bar.should.equal('b');
+      done();
+    });
+  });
   it('find all foos like b', function(done) {
     Foo.find({where: {bar: {like: 'b'}}}, function(err, entries) {
       console.log (entries);
