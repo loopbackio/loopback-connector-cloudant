@@ -3,6 +3,8 @@
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
+'use strict';
+
 var should = require('should');
 describe('cloudant max rows', function() {
   var Foo;
@@ -11,10 +13,10 @@ describe('cloudant max rows', function() {
     require('./init.js');
     db = getSchema();
     Foo = db.define('Foo', {
-      bar: {type: Number, index: true}
+      bar: {type: Number, index: true},
     });
     Thing = db.define('Thing', {
-      title: Number
+      title: Number,
     });
     Thing.belongsTo('foo', {model: Foo});
     Foo.hasMany('things', {foreignKey: 'fooId'});
@@ -22,7 +24,7 @@ describe('cloudant max rows', function() {
   });
   it('create two hundred and one', function(done) {
     var foos = Array.apply(null, {length: N}).map(function(n, i) {
-      return {bar:i};
+      return {bar: i};
     });
     Foo.create(foos, function(err, entries) {
       should.not.exist(err);
@@ -34,7 +36,7 @@ describe('cloudant max rows', function() {
     Foo.all(function(err, entries) {
       entries.should.have.lengthOf(N);
       var things = Array.apply(null, {length: N}).map(function(n, i) {
-        return {title:i, fooId:entries[i].id};
+        return {title: i, fooId: entries[i].id};
       });
       Thing.create(things, function(err, things) {
         things.should.have.lengthOf(N);

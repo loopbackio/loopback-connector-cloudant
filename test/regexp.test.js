@@ -3,6 +3,8 @@
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
+'use strict';
+
 var should = require('should');
 describe('cloudant regexp', function() {
   var Foo;
@@ -11,13 +13,13 @@ describe('cloudant regexp', function() {
     require('./init.js');
     db = getSchema();
     Foo = db.define('Foo', {
-      bar: {type: String, index: true}
+      bar: {type: String, index: true},
     });
     db.automigrate(done);
   });
   it('create some foo', function(done) {
     var foos = Array.apply(null, {length: N}).map(function(n, i) {
-      return {bar: String.fromCharCode(97+i)};
+      return {bar: String.fromCharCode(97 + i)};
     });
     Foo.create(foos, function(err, entries) {
       should.not.exist(err);
@@ -52,7 +54,7 @@ describe('cloudant regexp', function() {
   it('find all foos not like b', function(done) {
     Foo.find({where: {bar: {nlike: 'b'}}}, function(err, entries) {
       console.log (entries);
-      entries.should.have.lengthOf(N-1);
+      entries.should.have.lengthOf(N - 1);
       done();
     });
   });
