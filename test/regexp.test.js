@@ -25,8 +25,16 @@ describe('cloudant regexp', function() {
       done();
     });
   });
-  it('find all foos begining with b', function(done) {
+  it('find all foos beginning with b', function(done) {
     Foo.find({where: {bar: {regexp: '^b'}}}, function(err, entries) {
+      console.log (entries);
+      entries.should.have.lengthOf(1);
+      entries[0].bar.should.equal('b');
+      done();
+    });
+  });
+  it('find all foos that are case-insensitive B', function(done) {
+    Foo.find({where: {bar: {regexp: '/B/i'}}}, function(err, entries) {
       console.log (entries);
       entries.should.have.lengthOf(1);
       entries[0].bar.should.equal('b');
