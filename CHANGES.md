@@ -1,3 +1,35 @@
+2016-10-12, Version 1.1.0
+=========================
+
+ * Add connectorCapabilities global object (#39) (Nicholas Duffy)
+
+ * Update translation files - round#2 (#36) (Candy)
+
+ * Add translated files (gunjpan)
+
+ * Update deps to loopback 3.0.0 RC (Miroslav Bajtoš)
+
+ * Update new version (jannyHou)
+
+ * Comment test cases (jannyHou)
+
+ * fix conflict (jannyHou)
+
+ * Remove makefile & update eslint infrastructure (#27) (Gunjan Pandya)
+
+ * Fixed minor spelling error. (James Tanner)
+
+ * Added case-insensitivity regexp test. (James Tanner)
+
+ * Added check for ignoreCase flag on RegExp queries. (James Tanner)
+
+ * Add globalization (Simon Ho)
+
+ * Update URLs in CONTRIBUTING.md (#22) (Ryan Graham)
+
+ * fix whitespace (Ryan Graham)
+
+
 2016-05-07, Version 1.0.11
 ==========================
 
