@@ -6,14 +6,15 @@
 // Comment test cases to get CI pass,
 // will recover them when CI config done
 
-// 'use strict';
+'use strict';
+var describe = require('./describe');
 
-// describe('cloudant imported features', function() {
-//   before(function() {
-//     require('./init.js');
-//   });
+describe('cloudant imported features', function() {
+  before(function() {
+    require('./init.js');
+  });
 
-//   require ('loopback-datasource-juggler/test/include.test.js');
-//   require ('loopback-datasource-juggler/test/crud-with-options.test.js');
-//   require ('loopback-datasource-juggler/test/common.batch.js');
-// });
+  require ('loopback-datasource-juggler/test/include.test.js');
+  require ('loopback-datasource-juggler/test/crud-with-options.test.js');
+  require ('loopback-datasource-juggler/test/common.batch.js');
+});
