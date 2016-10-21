@@ -135,3 +135,50 @@ User.destroyAll (function () {
 
 * Index only Model properties marked with index=true
 * Configurable "view based" or JSON indexes. [More Info>>](https://cloudant.com/blog/mango-json-vs-text-indexes)
+
+### Setup Cloudant Instance
+
+There is no free version of local Cloudant to download, so to develop or test with cloudant connector, users can setup their instance in two ways:
+
+#### Create Cloudant DBaaS account
+
+  - 30 days free trial
+  - Sign up with https://cloudant.com/sign-up/ then you will see your Cloudant dashboard
+
+#### Setup Cloudant on Bluemix
+
+  - Choose bluemix Cloudant if you already have a bluemix account with a better situation than 30-days' free trial.
+
+  - Setup steps:
+
+    - Open bluemix website: https://console.ng.bluemix.net
+    - Login with your account
+    - Click on "CATALOG" in navigation bar 
+    - Search with keyword "cloudant" and choose the "Cloudant NOSQLDB" under "Data and Analytics"
+    - Click on the green button "create" in the popup page to create your Cloudant database
+    - Go to "DASHBOARD", you will see your new cloudant DB Icon under "Services"
+    - Click on the Icon, it will direct you to the database page. Check "Service Credentials" on the left to see your credentials.
+    - Check "Manage" then click on button "LAUNCH" to see your Cloudant dashboard
+
+
+### Testing
+
+After having Cloudant instance, you will need three config properties to run the tests: `username`, `password`, `database` 
+
+#### Cloudant DBaaS account
+  
+  - username: your sign up username
+  - password: your sign up password
+  - database: create your own database for testing
+
+#### Cloudant on Bluemix
+
+  - username: see services credentials
+  - password: see services credentials
+  - database: create your own database for testing
+
+To run the tests:
+
+```
+CLOUDANT_USERNAME=username CLOUDANT_PASSWORD=password CLOUDANT_DATABASE=database npm test
+```
