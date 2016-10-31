@@ -2,12 +2,14 @@
 
 Cloudant DB connector for the StrongLoop Loopback framework.
 
-Please see the full documentation at [docs.strongloop.com](https://docs.strongloop.com/display/public/LB/Cloudant+connector)
+<div class="gh-only">
+For more information, see the [LoopBack documentation](http://loopback.io/doc/en/lb2/Connecting-models-to-data-sources.html).
+</div>
 
 ### Key Features
 
 * Uses Cloudant Query (Lucene) to support ad-hoc searching
-* [Loopback Query](https://docs.strongloop.com/display/public/LB/Querying+data) support for: fields, limit, order, skip and where filters
+* [Loopback query](http://loopback.io/doc/en/lb2/Querying-data) support for: fields, limit, order, skip and where filters
 * Query and filtering is performed on the database for optimal efficiency
 * Use different DB instances per Model definition
 * Support basic Model discovery
@@ -19,7 +21,7 @@ These connectors implement CRUD operations as a common set of methods
 across different databases and allow quick and easy API creation for new
 or existing datasources.
 
-[More Info>>](https://www.ng.bluemix.net/docs/starters/LoopBack/index.html)
+For more information, see [Database connectors](http://loopback.io/doc/en/lb2/Database-connectors.html).
 
 ### IBM Cloudant
 
@@ -44,7 +46,7 @@ file
 
 ### Configuring the Cloudant datasource
 
-Use the [Data source generator](https://docs.strongloop.com/display/public/LB/Data+source+generator) to add the Cloudant data source to your
+Use the [Data source generator](http://loopback.io/doc/en/lb2/Data-source-generator.html) to add the Cloudant data source to your
 application. The entry in the applications /server/datasources.json will
 look something like this:
 
@@ -94,7 +96,7 @@ Property  | Type | Description
 ----------| -----| --------
 database  | String | Database name
 modelIndex | String | Specify the model name to document mapping, defaults to 'loopback\_\_model\_\_name'. 
-modelSelector | JSON | Use the Cloudant Query selector syntax to associate models to existing data. modelSelector and modelIndex are mutually exclusive. https://docs.cloudant.com/cloudant_query.html#selector-syntax
+modelSelector | JSON | Use the Cloudant Query selector syntax to associate models to existing data. modelSelector and modelIndex are mutually exclusive. For more information, see [Cloudant documentation - selector syntax](https://docs.cloudant.com/cloudant_query.html#selector-syntax).
 
 ### Example Usage
 
