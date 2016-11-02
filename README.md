@@ -2,12 +2,12 @@
 
 Cloudant DB connector for the StrongLoop Loopback framework.
 
-Please see the full documentation at [docs.strongloop.com](https://docs.strongloop.com/display/public/LB/Cloudant+connector)
+Please see the full documentation at [loopback.io](http://loopback.io/doc/en/lb2/Cloudant-connector.html)
 
 ### Key Features
 
 * Uses Cloudant Query (Lucene) to support ad-hoc searching
-* [Loopback Query](https://docs.strongloop.com/display/public/LB/Querying+data) support for: fields, limit, order, skip and where filters
+* [Loopback Query](http://loopback.io/doc/en/lb2/Querying-data.html) support for: fields, limit, order, skip and where filters
 * Query and filtering is performed on the database for optimal efficiency
 * Use different DB instances per Model definition
 * Support basic Model discovery
@@ -44,7 +44,7 @@ file
 
 ### Configuring the Cloudant datasource
 
-Use the [Data source generator](https://docs.strongloop.com/display/public/LB/Data+source+generator) to add the Cloudant data source to your
+Use the [Data source generator](http://loopback.io/doc/en/lb2/Data-source-generator.html) to add the Cloudant data source to your
 application. The entry in the applications /server/datasources.json will
 look something like this:
 
