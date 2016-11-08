@@ -68,6 +68,36 @@ describe('cloudant connector', function() {
           });
         };
       });
+    it('should create new instance if id provided', function(done) {
+      Product.replaceOrCreate({
+        id: 2,
+        name: 'newInstance',
+        price: 100,
+      }, function(err, product) {
+        if (err) return done(err);
+        verifyCreatedData(product);
+      });
+
+      function verifyCreatedData(data) {
+        // Verify callback data
+        data.id.should.be.equal('2');
+        data.name.should.be.equal('newInstance');
+        data.price.should.be.equal(100);
+
+        // Verify DB data
+        verifyDBData(data.id);
+      };
+
+      function verifyDBData(id) {
+        Product.findById(id, function(err, data) {
+          if (err) return done(err);
+          data.id.should.be.equal('2');
+          data.name.should.be.equal('newInstance');
+          data.price.should.be.equal(100);
+          done();
+        });
+      };
+    });
   });
 
   describe('replaceById', function() {
