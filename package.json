@@ -1,6 +1,9 @@
 {
   "name": "loopback-connector-cloudant",
   "version": "1.1.0",
+  "publishConfig": {
+    "tag": "lts"
+  },
   "description": "LoopBack Connector for IBM Cloundant DB",
   "keywords": [
     "IBM",
