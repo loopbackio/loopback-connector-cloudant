@@ -2,6 +2,9 @@
   "name": "loopback-connector-cloudant",
   "version": "3.0.0-alpha.1",
   "description": "LoopBack Connector for IBM Cloundant DB",
+  "engines": {
+    "node": ">=4"
+  },
   "keywords": [
     "IBM",
     "StrongLoop",
