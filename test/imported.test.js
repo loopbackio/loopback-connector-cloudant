@@ -2,7 +2,7 @@
 // Node module: loopback-connector-cloudant
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
-
+'use strict';
 describe('cloudant imported features', function() {
   before(function() {
     require('./init.js');
