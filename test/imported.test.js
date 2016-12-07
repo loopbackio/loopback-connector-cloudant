@@ -4,7 +4,6 @@
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
 describe('cloudant imported features', function() {
-
   before(function() {
     require('./init.js');
   });
@@ -12,5 +11,4 @@ describe('cloudant imported features', function() {
   require('loopback-datasource-juggler/test/include.test.js');
   require('loopback-datasource-juggler/test/crud-with-options.test.js');
   require('loopback-datasource-juggler/test/common.batch.js');
-
 });
