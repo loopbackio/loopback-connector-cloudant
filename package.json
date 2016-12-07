@@ -12,9 +12,9 @@
   ],
   "main": "index.js",
   "scripts": {
-    "pretest": "eslint ./ && jscs ./",
-    "lint": "eslint ./ && jscs ./",
-    "test": "make test"
+    "lint": "eslint .",
+    "test": "mocha -G --timeout 10000",
+    "posttest": "npm run lint"
   },
   "dependencies": {
     "async": "^1.5.0",
@@ -25,9 +25,8 @@
     "strong-globalize": "^2.6.6"
   },
   "devDependencies": {
-    "jscs": "^2.8.0",
-    "eslint": "^1.10.3",
-    "eslint-config-strongloop": "^1.0.2",
+    "eslint": "^2.13.1",
+    "eslint-config-loopback": "^4.0.0",
     "loopback-datasource-juggler": "^2.43.0",
     "mocha": "^2.3.4",
     "rc": "^1.1.5",
