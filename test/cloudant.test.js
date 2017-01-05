@@ -8,6 +8,8 @@
 
 'use strict';
 
+var Cloudant = require('../lib/cloudant');
+var _ = require('lodash');
 var should = require('should');
 var describe = require('./describe');
 var db, Product;
@@ -109,5 +111,42 @@ describe('cloudant connector', function() {
           });
         };
       });
+  });
+});
+
+describe('cloudant constructor', function() {
+  it('should allow passthrough of properties in the settings object',
+    function() {
+      var ds = getDataSource();
+      ds.settings = ds.settings || {};
+      var result = {};
+      ds.settings.Driver = function(options) {
+        result = options;
+      };
+      ds.settings.foobar = {
+        foo: 'bar',
+      };
+      ds.settings.plugin = 'whack-a-mole';
+      var connector = Cloudant.initialize(ds, function(err) {
+        should.not.exist(err);
+        should.exist(result.foobar);
+        result.foobar.foo.should.be.equal('bar');
+        result.plugin.should.be.equal(ds.settings.plugin);
+      });
+    });
+
+  it('should pass the url as an object property', function() {
+    var ds = getDataSource();
+    ds.settings = ds.settings || {};
+    var result = {};
+    ds.settings.Driver = function(options) {
+      result = options;
+    };
+    ds.settings.url = 'https://totallyfakeuser:fakepass@definitelynotreal.cloudant.com';
+    var connector = Cloudant.initialize(ds, function() {
+      // The url will definitely cause a connection error, so ignore.
+      should.exist(result.url);
+      result.url.should.equal(ds.settings.url);
+    });
   });
 });
