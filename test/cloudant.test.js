@@ -113,13 +113,13 @@ describe('cloudant connector', function() {
       });
   });
 
-  describe('updateAll', function() {
+  describe('updateAll and updateAttributes', function() {
     var productInstance;
-    beforeEach('create Product', function(done){
+    beforeEach('create Product', function(done) {
       Product.create({
         id: 1,
         name: 'bread',
-        price: 100
+        price: 100,
       }, function(err, product) {
         if (err) return done(err);
         productInstance = product;
@@ -127,10 +127,17 @@ describe('cloudant connector', function() {
       });
     });
 
+    afterEach(function(done) {
+      Product.destroy({id: 1}, function(err) {
+        if (err) return done(err);
+        done();
+      });
+    });
+
     it('accepts loopback model instance as input data for update',
       function(done) {
         productInstance.setAttribute('name', 'butter');
-        Product.updateAll({ id: '1' }, productInstance, function(err, res) {
+        Product.updateAll({id: '1'}, productInstance, function(err, res) {
           if (err) return done(err);
 
           Product.findById('1', function(err, prod) {
@@ -138,7 +145,7 @@ describe('cloudant connector', function() {
             done();
           });
         });
-    });
+      });
   });
 });
 
