@@ -44,7 +44,7 @@ file
 
 ### Configuring the Cloudant datasource
 
-Use the [Data source generator](http://loopback.io/doc/en/lb2/Data-source-generator.html) to add the Cloudant data source to your
+Use the [Data source generator](http://loopback.io/doc/en/lb3/Data-source-generator.html) to add the Cloudant data source to your
 application. The entry in the applications /server/datasources.json will
 look something like this:
 
