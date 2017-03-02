@@ -1,3 +1,23 @@
+2017-03-02, Version 1.2.0
+=========================
+
+ * Revert loopback 2.x (siddhipai)
+
+ * Revert dev-dependency on loopback to 2.x (Siddhi Pai)
+
+ * Set publish tag to "lts" (Siddhi Pai)
+
+ * Update README doc links (Candy)
+
+ * Add test for connection (jannyHou)
+
+ * How to sign in (jannyHou)
+
+ * How to setup cloudant and run testing (jannyHou)
+
+ * Add replaceOrCreate (jannyHou)
+
+
 2016-10-12, Version 1.1.0
 =========================
 
