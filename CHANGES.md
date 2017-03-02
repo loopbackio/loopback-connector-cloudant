@@ -1,3 +1,53 @@
+2017-03-02, Version 2.0.0
+=========================
+
+ * package: repair erroneous version change (Kevin Delisle)
+
+ * Catch undefined docs (jannyHou)
+
+ * Add More Info link (Kevin Delisle)
+
+ * Add advanced queries document (Kevin Delisle)
+
+ * Build selector with array type data (jannyHou)
+
+ * Make equality operator as query basis (jannyHou)
+
+ * Add nestedProperty to connectorCapabilities (jannyHou)
+
+ * Set nested field default type as string (jannyHou)
+
+ * Fix formatting in docs (crandmck)
+
+ * update to lb3  datasource generator page (ivy ho)
+
+ * Fix linting errors (gunjpan)
+
+ * Fix updateAll for model instance as input (gunjpan)
+
+ * cloudant: allow passthrough of settings (Kevin Delisle)
+
+ * Update paid support URL (Siddhi Pai)
+
+ * Explain uncaught url error in doc (jannyHou)
+
+ * Start 3.x + drop support for Node v0.10/v0.12 (siddhipai)
+
+ * Drop support for Node v0.10 and v0.12 (Siddhi Pai)
+
+ * Start the development of the next major version (Siddhi Pai)
+
+ * Update README doc links (Candy)
+
+ * Add test for connection (jannyHou)
+
+ * How to sign in (jannyHou)
+
+ * How to setup cloudant and run testing (jannyHou)
+
+ * Add replaceOrCreate (jannyHou)
+
+
 2016-10-12, Version 1.1.0
 =========================
 
