@@ -8,11 +8,11 @@
 
 'use strict';
 
+require('./init.js');
 var Cloudant = require('../lib/cloudant');
 var _ = require('lodash');
 var should = require('should');
-var describe = require('./describe');
-var db, Product;
+var db, Product, CustomerSimple;
 
 describe('cloudant connector', function() {
   before(function(done) {
@@ -24,12 +24,42 @@ describe('cloudant connector', function() {
       price: {type: Number},
     }, {forceId: false});
 
+    // CustomerSimple means some nested property defs are missing in modelDef,
+    // tests for CustomerSimple are created to make sure the typeSearch algorithm
+    // won't crash when iterating
+    CustomerSimple = db.define('CustomerSimple', {
+      name: {
+        type: String,
+      },
+      seq: {
+        type: Number,
+      },
+      address: {
+        street: String,
+        state: String,
+        zipCode: String,
+        tags: [],
+      },
+      friends: [],
+      favorate: {
+        labels: [
+          {label: String},
+        ],
+      },
+    });
     Product.destroyAll(function(err) {
-      done();
+      CustomerSimple.destroyAll(function(err) {
+        done();
+      });
     });
   });
 
   describe('replaceOrCreate', function() {
+    after(function cleanUpData(done) {
+      Product.destroyAll(function(err) {
+        done();
+      });
+    });
     it('should replace a model instance if the passing key already exists',
       function(done) {
         Product.create({
@@ -73,6 +103,11 @@ describe('cloudant connector', function() {
   });
 
   describe('replaceById', function() {
+    after(function cleanUpData(done) {
+      Product.destroyAll(function(err) {
+        done();
+      });
+    });
     it('should replace the model instance if the provided key already exists',
       function(done) {
         Product.create({
@@ -128,7 +163,7 @@ describe('cloudant connector', function() {
     });
 
     afterEach(function(done) {
-      Product.destroy({id: 1}, function(err) {
+      Product.destroyById(1, function(err) {
         if (err) return done(err);
         done();
       });
@@ -147,13 +182,111 @@ describe('cloudant connector', function() {
         });
       });
   });
+
+  // the test suite is to make sure when
+  // user queries against a non existing property
+  // the app won't crash
+  describe('nested property', function() {
+    before(function(done) {
+      CustomerSimple.create(seed(), done);
+    });
+    describe('missing in modelDef', function() {
+      it('returns result when nested property is not' +
+      'an array type', function(done) {
+        CustomerSimple.find({where: {'address.city': 'San Jose'}},
+        function(err, customers) {
+          if (err) return done(err);
+          customers.length.should.be.equal(1);
+          customers[0].address.city.should.be.eql('San Jose');
+          done();
+        });
+      });
+      it('returns null when first level property is array', function(done) {
+        CustomerSimple.find({where: {'friends.name': {regexp: /^Ringo/}}},
+        function(err, customers) {
+          if (err) return done(err);
+          customers.should.be.empty();
+          done();
+        });
+      });
+      it('returns result when first level property is array type' +
+      ' and $elemMatch provided', function(done) {
+        CustomerSimple.find({where: {
+          'friends.$elemMatch.name': {regexp: /^Ringo/}}},
+        function(err, customers) {
+          if (err) return done(err);
+          customers.length.should.be.equal(2);
+          var expected1 = ['John Lennon', 'Paul McCartney'];
+          var expected2 = ['Paul McCartney', 'John Lennon'];
+          var actual = customers.map(function(c) { return c.name; });
+          should(actual).be.oneOf(expected1, expected2);
+          done();
+        });
+      });
+      it('returns null when multi-level nested property' +
+      ' contains array type', function(done) {
+        CustomerSimple.find({where: {'address.tags.tag': 'business'}},
+        function(err, customers) {
+          if (err) return done(err);
+          customers.should.be.empty();
+          done();
+        });
+      });
+      it('returns result when multi-level nested property contains array type' +
+      ' and $elemMatch provided', function(done) {
+        CustomerSimple.find({
+          where: {'address.tags.$elemMatch.tag': 'business'}},
+        function(err, customers) {
+          if (err) return done(err);
+          customers.length.should.be.equal(1);
+          customers[0].address.tags[0].tag.should.be.equal('business');
+          customers[0].address.tags[1].tag.should.be.equal('rent');
+          done();
+        });
+      });
+      it('returns error missing data type when sorting', function(done) {
+        CustomerSimple.find({where: {'address.state': 'CA'},
+        order: 'address.city DESC'},
+          function(err, customers) {
+            should.exist(err);
+            err.message.should.match(/Unspecified or ambiguous sort type/);
+            done();
+          });
+      });
+      it('returns result when sorting type provided', function(done) {
+        CustomerSimple.find({where: {'address.state': 'CA'},
+        order: 'address.city:string DESC'},
+          function(err, customers) {
+            if (err) return done(err);
+            customers.length.should.be.equal(2);
+            customers[0].address.city.should.be.eql('San Mateo');
+            customers[1].address.city.should.be.eql('San Jose');
+            done();
+          });
+      });
+    });
+    describe('defined in modelDef', function() {
+      it('returns result when complete query of' +
+      ' multi-level nested property provided', function(done) {
+        CustomerSimple.find({
+          where: {'favorate.labels.$elemMatch.label': 'food'}},
+        function(err, customers) {
+          if (err) return done(err);
+          customers.length.should.be.equal(1);
+          customers[0].favorate.labels[0].label.should.be.equal('food');
+          customers[0].favorate.labels[1].label.should.be.equal('drink');
+          done();
+        });
+      });
+    });
+  });
 });
 
 describe('cloudant constructor', function() {
   it('should allow passthrough of properties in the settings object',
     function() {
       var ds = getDataSource();
-      ds.settings = ds.settings || {};
+      ds.settings = _.clone(ds.settings) || {};
       var result = {};
       ds.settings.Driver = function(options) {
         result = options;
@@ -172,7 +305,7 @@ describe('cloudant constructor', function() {
 
   it('should pass the url as an object property', function() {
     var ds = getDataSource();
-    ds.settings = ds.settings || {};
+    ds.settings = _.clone(ds.settings) || {};
     var result = {};
     ds.settings.Driver = function(options) {
       result = options;
@@ -185,3 +318,68 @@ describe('cloudant constructor', function() {
     });
   });
 });
+
+function seed() {
+  var beatles = [
+    {
+      seq: 0,
+      name: 'John Lennon',
+      email: 'john@b3atl3s.co.uk',
+      role: 'lead',
+      birthday: new Date('1980-12-08'),
+      order: 2,
+      vip: true,
+      address: {
+        street: '123 A St',
+        city: 'San Jose',
+        state: 'CA',
+        zipCode: '95131',
+        tags: [
+          {tag: 'business'},
+          {tag: 'rent'},
+        ],
+      },
+      friends: [
+        {name: 'Paul McCartney'},
+        {name: 'George Harrison'},
+        {name: 'Ringo Starr'},
+      ],
+    },
+    {
+      seq: 1,
+      name: 'Paul McCartney',
+      email: 'paul@b3atl3s.co.uk',
+      role: 'lead',
+      birthday: new Date('1942-06-18'),
+      order: 1,
+      vip: true,
+      address: {
+        street: '456 B St',
+        city: 'San Mateo',
+        state: 'CA',
+        zipCode: '94065',
+      },
+      friends: [
+        {name: 'John Lennon'},
+        {name: 'George Harrison'},
+        {name: 'Ringo Starr'},
+      ],
+    },
+    {
+      seq: 2,
+      name: 'George Harrison',
+      order: 5,
+      vip: false,
+      favorate: {
+        labels: [
+          {label: 'food'},
+          {label: 'drink'},
+        ],
+      },
+    },
+    {seq: 3, name: 'Ringo Starr', order: 6, vip: false},
+    {seq: 4, name: 'Pete Best', order: 4},
+    {seq: 5, name: 'Stuart Sutcliffe', order: 3, vip: true},
+  ];
+  return beatles;
+}
