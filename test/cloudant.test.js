@@ -70,7 +70,7 @@ describe('cloudant connector', function() {
       console.log('after hook ' + ats1);
       Product.destroyAll(function(err) {
         var ats2 = new Date().getTime();
-        console.log('after destroy done' + getTimeDiff(ats1, ats2));
+        console.log('after destroy done ' + getTimeDiff(ats1, ats2));
         done();
       });
     });
