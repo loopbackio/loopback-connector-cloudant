@@ -25,13 +25,15 @@ describe('cloudant max rows', function() {
     });
     Thing.belongsTo('foo', {model: Foo});
     Foo.hasMany('things', {foreignKey: 'fooId'});
-    db.automigrate(function cleanUpData(err) {
-      if (err) return done(err);
-      Thing.destroyAll(function removeModelInstances(err) {
+    db.once('connected', function() {
+      db.automigrate(function cleanUpData(err) {
         if (err) return done(err);
-        Foo.destroyAll(function removeModelInstances(err) {
+        Thing.destroyAll(function removeModelInstances(err) {
           if (err) return done(err);
-          done();
+          Foo.destroyAll(function removeModelInstances(err) {
+            if (err) return done(err);
+            done();
+          });
         });
       });
     });

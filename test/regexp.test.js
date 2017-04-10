@@ -20,7 +20,9 @@ describe('cloudant regexp', function() {
     Foo = db.define('Foo', {
       bar: {type: String, index: true},
     });
-    db.automigrate(done);
+    db.once('connected', function() {
+      db.automigrate(done);
+    });
   });
   it('create some foo', function(done) {
     var foos = Array.apply(null, {length: N}).map(function(n, i) {

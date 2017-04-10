@@ -18,15 +18,17 @@ describe('cloudant automigrate', function() {
     Bar = db.define('Bar', {
       id: {type: Number, index: true},
     });
-    db.automigrate(function verifyMigratedModel(err) {
-      if (err) return done(err);
-      Foo.create({name: 'foo'}, function(err, r) {
+    db.once('connected', function() {
+      db.automigrate(function verifyMigratedModel(err) {
         if (err) return done(err);
-        r.should.not.be.empty();
-        r.name.should.equal('foo');
-        Foo.destroyAll(function(err) {
+        Foo.create({name: 'foo'}, function(err, r) {
           if (err) return done(err);
-          done();
+          r.should.not.be.empty();
+          r.name.should.equal('foo');
+          Foo.destroyAll(function(err) {
+            if (err) return done(err);
+            done();
+          });
         });
       });
     });

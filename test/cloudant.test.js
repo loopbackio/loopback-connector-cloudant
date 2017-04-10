@@ -45,15 +45,17 @@ describe('cloudant connector', function() {
       },
     });
 
-    db.automigrate(function cleanUpData(err) {
+    db.once('connected', function() {
+      db.automigrate(function cleanUpData(err) {
       // automigrate only removes the design doc, but not instances' doc,
       // so clean up data here just in case previous tests use same models.
-      if (err) return done(err);
-      Product.destroyAll(function removeModelInstances(err) {
         if (err) return done(err);
-        CustomerSimple.destroyAll(function removeModelInstances(err) {
+        Product.destroyAll(function removeModelInstances(err) {
           if (err) return done(err);
-          done();
+          CustomerSimple.destroyAll(function removeModelInstances(err) {
+            if (err) return done(err);
+            done();
+          });
         });
       });
     });
@@ -338,6 +340,27 @@ describe('cloudant constructor', function() {
       // The url will definitely cause a connection error, so ignore.
       should.exist(result.url);
       result.url.should.equal(ds.settings.url);
+    });
+  });
+  it('should convert first part of url path to database name', function() {
+    var ds = getDataSource();
+    ds.settings = _.clone(ds.settings) || {};
+    var result = {};
+    ds.settings.Driver = function(options) {
+      result = options;
+    };
+    ds.settings.database = 'testdb';
+    ds.settings.url = 'https://fakeuser:fakepass@definitelynotreal.cloudant.com:8080/some/random/path';
+    var connector = Cloudant.initialize(ds, function(err) {
+      should.exist(err);
+      should.exist(result.url);
+      result.url.should.equal('https://fakeuser:fakepass@definitelynotreal.cloudant.com:8080');
+      result.database.should.equal('testdb');
+      ds.settings.database = undefined;
+      connector = Cloudant.initialize(ds, function(err) {
+        should.exist(err);
+        result.database.should.equal('some');
+      });
     });
   });
 });
