@@ -16,14 +16,20 @@ var db, Product, CustomerSimple;
 
 describe('cloudant connector', function() {
   before(function(done) {
+    function getTimeDiff(t1, t2) {
+      return t2 - t1;
+    }
+
     db = getDataSource();
 
+    var ts1 = new Date().getTime();
     Product = db.define('Product', {
       name: {type: String},
       description: {type: String},
       price: {type: Number},
     }, {forceId: false});
-
+    var ts2 = new Date().getTime();
+    console.log('define Product ' + getTimeDiff(ts1, ts2));
     // CustomerSimple means some nested property defs are missing in modelDef,
     // tests for CustomerSimple are created to make sure the typeSearch algorithm
     // won't crash when iterating
@@ -47,8 +53,12 @@ describe('cloudant connector', function() {
         ],
       },
     });
+    var ts3 = new Date().getTime();
+    console.log('define CustomerSimple ' + getTimeDiff(ts2, ts3));
     Product.destroyAll(function(err) {
       CustomerSimple.destroyAll(function(err) {
+        var ts4 = new Date().getTime();
+        console.log('destroy ' + getTimeDiff(ts3, ts4));
         done();
       });
     });
