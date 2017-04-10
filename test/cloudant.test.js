@@ -14,12 +14,12 @@ var _ = require('lodash');
 var should = require('should');
 var db, Product, CustomerSimple;
 
+function getTimeDiff(t1, t2) {
+  return t2 - t1;
+}
+
 describe('cloudant connector', function() {
   before(function(done) {
-    function getTimeDiff(t1, t2) {
-      return t2 - t1;
-    }
-
     db = getDataSource();
 
     var ts1 = new Date().getTime();
@@ -72,17 +72,22 @@ describe('cloudant connector', function() {
     });
     it('should replace a model instance if the passing key already exists',
       function(done) {
+        var rts1 = new Date().getTime();
         Product.create({
           id: 1,
           name: 'bread',
           price: 100,
           undefinedProperty: 'ShouldBeRemoved',
         }, function(err, product) {
+          var rts2 = new Date().getTime();
+          console.log('create product ' + getTimeDiff(rts1, rts2));
           if (err) return done(err);
           Product.replaceOrCreate({
             id: product.id,
             name: 'milk',
           }, function(err, updatedProduct) {
+            var rts3 = new Date().getTime();
+            console.log('create product ' + getTimeDiff(rts2, rts3));
             if (err) return done(err);
             verifyUpdatedData(updatedProduct);
           });
