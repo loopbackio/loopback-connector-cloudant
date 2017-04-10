@@ -66,13 +66,18 @@ describe('cloudant connector', function() {
 
   describe('replaceOrCreate', function() {
     after(function cleanUpData(done) {
+      var ats1 = new Date().getTime();
+      console.log('after hook ' + ats1);
       Product.destroyAll(function(err) {
+        var ats2 = new Date().getTime();
+        console.log('after destroy done' + getTimeDiff(ats1, ats2));
         done();
       });
     });
     it('should replace a model instance if the passing key already exists',
       function(done) {
         var rts1 = new Date().getTime();
+        console.log('start replace test ' + rts1);
         Product.create({
           id: 1,
           name: 'bread',
@@ -87,7 +92,7 @@ describe('cloudant connector', function() {
             name: 'milk',
           }, function(err, updatedProduct) {
             var rts3 = new Date().getTime();
-            console.log('create product ' + getTimeDiff(rts2, rts3));
+            console.log('replaceOrCreate ' + getTimeDiff(rts2, rts3));
             if (err) return done(err);
             verifyUpdatedData(updatedProduct);
           });
