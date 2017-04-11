@@ -14,16 +14,22 @@ var _ = require('lodash');
 var should = require('should');
 var db, Product, CustomerSimple;
 
+function getTimeDiff(t1, t2) {
+  return t2 - t1;
+}
+
 describe('cloudant connector', function() {
   before(function(done) {
     db = getDataSource();
 
+    var ts1 = new Date().getTime();
     Product = db.define('Product', {
       name: {type: String},
       description: {type: String},
       price: {type: Number},
     }, {forceId: false});
-
+    var ts2 = new Date().getTime();
+    console.log('define Product ' + getTimeDiff(ts1, ts2));
     // CustomerSimple means some nested property defs are missing in modelDef,
     // tests for CustomerSimple are created to make sure the typeSearch algorithm
     // won't crash when iterating
@@ -47,8 +53,12 @@ describe('cloudant connector', function() {
         ],
       },
     });
+    var ts3 = new Date().getTime();
+    console.log('define CustomerSimple ' + getTimeDiff(ts2, ts3));
     Product.destroyAll(function(err) {
       CustomerSimple.destroyAll(function(err) {
+        var ts4 = new Date().getTime();
+        console.log('destroy ' + getTimeDiff(ts3, ts4));
         done();
       });
     });
@@ -56,23 +66,33 @@ describe('cloudant connector', function() {
 
   describe('replaceOrCreate', function() {
     after(function cleanUpData(done) {
+      var ats1 = new Date().getTime();
+      console.log('after hook ' + ats1);
       Product.destroyAll(function(err) {
+        var ats2 = new Date().getTime();
+        console.log('after destroy done ' + getTimeDiff(ats1, ats2));
         done();
       });
     });
     it('should replace a model instance if the passing key already exists',
       function(done) {
+        var rts1 = new Date().getTime();
+        console.log('start replace test ' + rts1);
         Product.create({
           id: 1,
           name: 'bread',
           price: 100,
           undefinedProperty: 'ShouldBeRemoved',
         }, function(err, product) {
+          var rts2 = new Date().getTime();
+          console.log('create product ' + getTimeDiff(rts1, rts2));
           if (err) return done(err);
           Product.replaceOrCreate({
             id: product.id,
             name: 'milk',
           }, function(err, updatedProduct) {
+            var rts3 = new Date().getTime();
+            console.log('replaceOrCreate ' + getTimeDiff(rts2, rts3));
             if (err) return done(err);
             verifyUpdatedData(updatedProduct);
           });
@@ -117,8 +137,12 @@ describe('cloudant connector', function() {
           undefinedProperty: 'ShouldBeRemoved',
         }, function(err, product) {
           if (err) return done(err);
+          var ridts1 = new Date().getTime();
+          console.log('replaceById start ' + ridts1);
           Product.replaceById(product.id, {name: 'apple'},
             function(err, updatedProduct) {
+              var ridts2 = new Date().getTime();
+              console.log('replaceById ' + getTimeDiff(ridts1, ridts2));
               if (err) return done(err);
               verifyUpdatedData(updatedProduct);
             });
@@ -137,7 +161,10 @@ describe('cloudant connector', function() {
         };
 
         function verifyDBData(id) {
+          var vts1 = new Date().getTime();
           Product.findById(id, function(err, data) {
+            var vts2 = new Date().getTime();
+            console.log('verify time ' + getTimeDiff(vts1, vts2));
             if (err) return done(err);
             should.not.exist(data.price);
             should.not.exist(data.undefinedProperty);
