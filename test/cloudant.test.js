@@ -137,8 +137,12 @@ describe('cloudant connector', function() {
           undefinedProperty: 'ShouldBeRemoved',
         }, function(err, product) {
           if (err) return done(err);
+          var ridts1 = new Date().getTime();
+          console.log('replaceById start ' + ridts1);
           Product.replaceById(product.id, {name: 'apple'},
             function(err, updatedProduct) {
+              var ridts2 = new Date().getTime();
+              console.log('replaceById ' + getTimeDiff(ridts1, ridts2));
               if (err) return done(err);
               verifyUpdatedData(updatedProduct);
             });
@@ -157,7 +161,10 @@ describe('cloudant connector', function() {
         };
 
         function verifyDBData(id) {
+          var vts1 = new Date().getTime();
           Product.findById(id, function(err, data) {
+            var vts2 = new Date().getTime();
+            console.log('verify time ' + getTimeDiff(vts1, vts2));
             if (err) return done(err);
             should.not.exist(data.price);
             should.not.exist(data.undefinedProperty);
