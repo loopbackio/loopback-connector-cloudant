@@ -24,7 +24,7 @@
     "cloudant": "^1.4.0",
     "debug": "^2.2.0",
     "lodash": "^3.10.1",
-    "loopback-connector": "^2.3.0",
+    "loopback-connector": "^4.0.0",
     "strong-globalize": "^2.6.6"
   },
   "devDependencies": {
