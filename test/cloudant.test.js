@@ -3,9 +3,6 @@
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
-// Comment test cases to get CI pass,
-// will recover them when CI config done
-
 'use strict';
 
 require('./init.js');
@@ -47,16 +44,25 @@ describe('cloudant connector', function() {
         ],
       },
     });
-    Product.destroyAll(function(err) {
-      CustomerSimple.destroyAll(function(err) {
-        done();
+
+    db.automigrate(function cleanUpData(err) {
+      // automigrate only removes the design doc, but not instances' doc,
+      // so clean up data here just in case previous tests use same models.
+      if (err) return done(err);
+      Product.destroyAll(function removeModelInstances(err) {
+        if (err) return done(err);
+        CustomerSimple.destroyAll(function removeModelInstances(err) {
+          if (err) return done(err);
+          done();
+        });
       });
     });
   });
 
   describe('replaceOrCreate', function() {
     after(function cleanUpData(done) {
-      Product.destroyAll(function(err) {
+      Product.destroyAll(function removeModelInstances(err) {
+        if (err) return done(err);
         done();
       });
     });
@@ -104,7 +110,8 @@ describe('cloudant connector', function() {
 
   describe('replaceById', function() {
     after(function cleanUpData(done) {
-      Product.destroyAll(function(err) {
+      Product.destroyAll(function removeModelInstances(err) {
+        if (err) return done(err);
         done();
       });
     });
@@ -187,7 +194,7 @@ describe('cloudant connector', function() {
   // user queries against a non existing property
   // the app won't crash
   describe('nested property', function() {
-    before(function(done) {
+    before(function createSampleData(done) {
       CustomerSimple.create(seed(), done);
     });
     describe('missing in modelDef', function() {
