@@ -10,7 +10,6 @@
 
 var should = require('should');
 require('./init.js');
-// var describe = require('./describe');
 var db;
 
 describe('cloudant regexp', function() {
