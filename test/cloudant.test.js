@@ -198,16 +198,16 @@ describe('cloudant connector', function() {
       CustomerSimple.create(seed(), done);
     });
     describe('missing in modelDef', function() {
-      it('returns result when nested property is not' +
-      'an array type', function(done) {
-        CustomerSimple.find({where: {'address.city': 'San Jose'}},
-        function(err, customers) {
-          if (err) return done(err);
-          customers.length.should.be.equal(1);
-          customers[0].address.city.should.be.eql('San Jose');
-          done();
+      it('returns result when nested property is not an array type',
+        function(done) {
+          CustomerSimple.find({where: {'address.city': 'San Jose'}},
+            function(err, customers) {
+              if (err) return done(err);
+              customers.length.should.be.equal(1);
+              customers[0].address.city.should.be.eql('San Jose');
+              done();
+            });
         });
-      });
       it('returns null when first level property is array', function(done) {
         CustomerSimple.find({where: {'friends.name': {regexp: /^Ringo/}}},
         function(err, customers) {

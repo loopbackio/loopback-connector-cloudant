@@ -9,7 +9,7 @@
 'use strict';
 
 var should = require('should');
-var describe = require('./describe');
+require('./init.js');
 var db;
 
 describe('cloudant regexp', function() {

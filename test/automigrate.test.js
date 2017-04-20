@@ -6,7 +6,7 @@
 'use strict';
 var db, Foo, Bar;
 
-describe('cloudant imported features', function() {
+describe('cloudant automigrate', function() {
   before(function() {
     require('./init.js');
   });
@@ -24,7 +24,10 @@ describe('cloudant imported features', function() {
         if (err) return done(err);
         r.should.not.be.empty();
         r.name.should.equal('foo');
-        done();
+        Foo.destroyAll(function(err) {
+          if (err) return done(err);
+          done();
+        });
       });
     });
   });
