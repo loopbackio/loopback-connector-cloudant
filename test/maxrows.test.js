@@ -3,13 +3,9 @@
 // This file is licensed under the Artistic License 2.0.
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
-// Comment test cases to get CI pass,
-// will recover them when CI config done
-
 'use strict';
 
 var should = require('should');
-var describe = require('./describe');
 var db, Thing;
 
 describe('cloudant max rows', function() {
@@ -26,7 +22,16 @@ describe('cloudant max rows', function() {
     });
     Thing.belongsTo('foo', {model: Foo});
     Foo.hasMany('things', {foreignKey: 'fooId'});
-    db.automigrate(done);
+    db.automigrate(function cleanUpData(err) {
+      if (err) return done(err);
+      Thing.destroyAll(function removeModelInstances(err) {
+        if (err) return done(err);
+        Foo.destroyAll(function removeModelInstances(err) {
+          if (err) return done(err);
+          done();
+        });
+      });
+    });
   });
   it('create two hundred and one', function(done) {
     var foos = Array.apply(null, {length: N}).map(function(n, i) {
