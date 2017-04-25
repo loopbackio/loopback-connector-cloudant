@@ -260,17 +260,31 @@ describe('cloudant connector', function() {
             done();
           });
       });
-      it('returns result when sorting type provided', function(done) {
+      it('returns result when sorting type provided - missing first level' +
+        'property', function(done) {
         CustomerSimple.find({where: {'address.state': 'CA'},
-        order: 'address.city:string DESC'},
-          function(err, customers) {
-            if (err) return done(err);
-            customers.length.should.be.equal(2);
-            customers[0].address.city.should.be.eql('San Mateo');
-            customers[1].address.city.should.be.eql('San Jose');
-            done();
-          });
+          order: 'missingProperty:string'}, function(err, customers) {
+          if (err) return done(err);
+          customers.length.should.be.equal(2);
+          var expected1 = ['San Mateo', 'San Jose'];
+          var expected2 = ['San Jose', 'San Mateo'];
+          var actual = customers.map(function(c) { return c.address.city; });
+          should(actual).be.oneOf(expected1, expected2);
+          done();
+        });
       });
+      it('returns result when sorting type provided - nested property',
+        function(done) {
+          CustomerSimple.find({where: {'address.state': 'CA'},
+            order: 'address.city:string DESC'},
+            function(err, customers) {
+              if (err) return done(err);
+              customers.length.should.be.equal(2);
+              customers[0].address.city.should.be.eql('San Mateo');
+              customers[1].address.city.should.be.eql('San Jose');
+              done();
+            });
+        });
     });
     describe('defined in modelDef', function() {
       it('returns result when complete query of' +

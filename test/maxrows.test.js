@@ -9,6 +9,7 @@ var should = require('should');
 var db, Thing;
 
 describe('cloudant max rows', function() {
+  this.timeout(70000);
   var Foo;
   var N = 201;
   before(function(done) {
