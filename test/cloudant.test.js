@@ -262,6 +262,8 @@ describe('cloudant connector', function() {
       });
       it('returns result when sorting type provided - missing first level' +
         'property', function(done) {
+        // Similar test case exist in juggler, but since it takes time to
+        // recover them, I temporarily add it here
         CustomerSimple.find({where: {'address.state': 'CA'},
           order: 'missingProperty:string'}, function(err, customers) {
           if (err) return done(err);
