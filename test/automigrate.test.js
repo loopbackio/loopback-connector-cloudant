@@ -4,7 +4,7 @@
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
 'use strict';
-var db, Foo, Bar;
+var db, Foo, NotExist;
 
 describe('cloudant automigrate', function() {
   before(function() {
@@ -12,11 +12,12 @@ describe('cloudant automigrate', function() {
   });
   it('automigrates models attached to db', function(done) {
     db = getSchema();
+    // Make sure automigrate doesn't destroy model doesn't exist
+    NotExist = db.define('NotExist', {
+      id: {type: Number, index: true},
+    });
     Foo = db.define('Foo', {
       name: {type: String},
-    });
-    Bar = db.define('Bar', {
-      id: {type: Number, index: true},
     });
     db.once('connected', function() {
       db.automigrate(function verifyMigratedModel(err) {
@@ -30,10 +31,12 @@ describe('cloudant automigrate', function() {
       });
     });
   });
-  it('autoupdates models attache to db', function(done) {
+  it('autoupdates models attached to db', function(done) {
     db = getSchema();
+    // each test case gets a new db since it should not contain models attached
+    // to old db
     Foo = db.define('Foo', {
-      newName: {type: String},
+      updatedName: {type: String},
     });
     db.autoupdate(function(err) {
       if (err) return done(err);
@@ -42,6 +45,20 @@ describe('cloudant automigrate', function() {
         // Verify autoupdate doesn't destroy existing data
         results.length.should.equal(1);
         results[0].name.should.equal('foo');
+        done();
+      });
+    });
+  });
+  it('destroy existing model when automigrates', function(done) {
+    db = getSchema();
+    Foo = db.define('Foo', {
+      updatedName: {type: String},
+    });
+    db.automigrate(function(err) {
+      if (err) return done(err);
+      Foo.find(function(err, result) {
+        if (err) return done(err);
+        result.length.should.equal(0);
         done();
       });
     });
