@@ -9,6 +9,9 @@ var should = require('should');
 var db, Thing;
 
 describe('cloudant max rows', function() {
+  // This test suite creates large number of data,
+  // require more time to complete data cleanUp
+  this.timeout(70000);
   var Foo;
   var N = 201;
   before(function(done) {
