@@ -291,7 +291,24 @@ describe('cloudant connector', function() {
      });
    });
   });
+  describe('updateOrCreate', function() {
+    afterEach(function(done) {
+      Product.destroyById(1, function(err) {
+        if (err) return done(err);
+        done();
+      });
+    });
 
+    it('can call upsert with an id and have it create a document without error',
+      function(done) {
+        Product.upsert({
+          id: '1'
+        }, function(err, res) {
+          if (err) return done(err);
+          done();
+        });
+      });
+  });
   // the test suite is to make sure when
   // user queries against a non existing property
   // the app won't crash
