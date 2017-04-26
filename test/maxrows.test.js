@@ -11,7 +11,9 @@ var db, Thing;
 describe('cloudant max rows', function() {
   // This test suite creates large number of data,
   // require more time to complete data cleanUp
-  this.timeout(70000);
+  // There is no batchDestroy in cloudant, so `automigrate`
+  // fetches all instances then delete them one by one
+  this.timeout(99999);
   var Foo;
   var N = 201;
   before(function(done) {
@@ -25,6 +27,7 @@ describe('cloudant max rows', function() {
     });
     Thing.belongsTo('foo', {model: Foo});
     Foo.hasMany('things', {foreignKey: 'fooId'});
+<<<<<<< HEAD
     db.once('connected', function() {
       db.automigrate(function cleanUpData(err) {
         if (err) return done(err);
@@ -37,6 +40,9 @@ describe('cloudant max rows', function() {
         });
       });
     });
+=======
+    db.automigrate(done);
+>>>>>>> 906054d... autoupdate and automigrate fix
   });
   it('create two hundred and one', function(done) {
     var foos = Array.apply(null, {length: N}).map(function(n, i) {

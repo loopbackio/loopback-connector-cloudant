@@ -25,11 +25,24 @@ describe('cloudant automigrate', function() {
           if (err) return done(err);
           r.should.not.be.empty();
           r.name.should.equal('foo');
-          Foo.destroyAll(function(err) {
-            if (err) return done(err);
-            done();
-          });
+          done();
         });
+      });
+    });
+  });
+  it('autoupdates models attache to db', function(done) {
+    db = getSchema();
+    Foo = db.define('Foo', {
+      newName: {type: String},
+    });
+    db.autoupdate(function(err) {
+      if (err) return done(err);
+      Foo.find(function(err, results) {
+        if (err) return done(err);
+        // Verify autoupdate doesn't destroy existing data
+        results.length.should.equal(1);
+        results[0].name.should.equal('foo');
+        done();
       });
     });
   });

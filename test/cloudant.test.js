@@ -46,6 +46,7 @@ describe('cloudant connector', function() {
       },
     });
 
+<<<<<<< HEAD
     db.once('connected', function() {
       db.automigrate(function cleanUpData(err) {
       // automigrate only removes the design doc, but not instances' doc,
@@ -60,6 +61,9 @@ describe('cloudant connector', function() {
         });
       });
     });
+=======
+    db.automigrate(done);
+>>>>>>> 906054d... autoupdate and automigrate fix
   });
 
   describe('replaceOrCreate', function() {
