@@ -4,12 +4,10 @@
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
 'use strict';
-var db, Foo, NotExist;
+var db, Foo, Bar, NotExist, isActualTestFoo, isActualTestBar;
+require('./init.js');
 
 describe('cloudant automigrate', function() {
-  before(function() {
-    require('./init.js');
-  });
   it('automigrates models attached to db', function(done) {
     db = getSchema();
     // Make sure automigrate doesn't destroy model doesn't exist
@@ -59,6 +57,45 @@ describe('cloudant automigrate', function() {
       Foo.find(function(err, result) {
         if (err) return done(err);
         result.length.should.equal(0);
+        done();
+      });
+    });
+  });
+  describe('isActual', function() {
+    db = getSchema();
+    it('returns true only when all models exist', function(done) {
+      Foo = db.define('Foo', {
+        name: {type: String},
+      });
+      Bar = db.define('Bar', {
+        name: {type: String},
+      });
+      db.isActual(['Foo', 'Bar'], function(err, ok) {
+        if (err) return done(err);
+        ok.should.equal(true);
+        done();
+      });
+    });
+    it('returns false when one or more models not exist', function(done) {
+      // isActualTestFoo and isActualTestBar are not defined/used elsewhere
+      // so they don't exist in database
+      isActualTestFoo = db.define('isActualTestFoo', {
+        name: {type: String},
+      });
+      isActualTestBar = db.define('isActualTestBar', {
+        name: {type: String},
+      });
+      db.isActual(['Foo', 'isActualTestFoo', 'isActualTestBar'],
+        function(err, ok) {
+          if (err) return done(err);
+          ok.should.equal(false);
+          done();
+        });
+    });
+    it('accepts string type single model as param', function(done) {
+      db.isActual('Foo', function(err, ok) {
+        if (err) return done(err);
+        ok.should.equal(true);
         done();
       });
     });

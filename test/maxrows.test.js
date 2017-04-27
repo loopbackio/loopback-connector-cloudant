@@ -27,22 +27,9 @@ describe('cloudant max rows', function() {
     });
     Thing.belongsTo('foo', {model: Foo});
     Foo.hasMany('things', {foreignKey: 'fooId'});
-<<<<<<< HEAD
     db.once('connected', function() {
-      db.automigrate(function cleanUpData(err) {
-        if (err) return done(err);
-        Thing.destroyAll(function removeModelInstances(err) {
-          if (err) return done(err);
-          Foo.destroyAll(function removeModelInstances(err) {
-            if (err) return done(err);
-            done();
-          });
-        });
-      });
+      db.automigrate(done);
     });
-=======
-    db.automigrate(done);
->>>>>>> 906054d... autoupdate and automigrate fix
   });
   it('create two hundred and one', function(done) {
     var foos = Array.apply(null, {length: N}).map(function(n, i) {
