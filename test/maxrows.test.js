@@ -13,7 +13,7 @@ describe('cloudant max rows', function() {
   // require more time to complete data cleanUp
   // There is no batchDestroy in cloudant, so `automigrate`
   // fetches all instances then delete them one by one
-  this.timeout(70000);
+  this.timeout(99999);
   var Foo;
   var N = 201;
   before(function(done) {
