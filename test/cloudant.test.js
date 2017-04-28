@@ -8,6 +8,7 @@
 require('./init.js');
 var Cloudant = require('../lib/cloudant');
 var _ = require('lodash');
+var url = require('url');
 var should = require('should');
 var db, Product, CustomerSimple;
 
@@ -342,25 +343,47 @@ describe('cloudant constructor', function() {
       result.url.should.equal(ds.settings.url);
     });
   });
-  it('should convert first part of url path to database name', function() {
-    var ds = getDataSource();
-    ds.settings = _.clone(ds.settings) || {};
+  it('should convert first part of url path to database name', function(done) {
+    var myConfig = _.clone(global.config);
+    myConfig.url = myConfig.url + '/some/random/path';
+    myConfig.database = '';
     var result = {};
-    ds.settings.Driver = function(options) {
+    myConfig.Driver = function(options) {
       result = options;
     };
-    ds.settings.database = 'testdb';
-    ds.settings.url = 'https://fakeuser:fakepass@definitelynotreal.cloudant.com:8080/some/random/path';
-    var connector = Cloudant.initialize(ds, function(err) {
+    var ds = getDataSource(myConfig);
+    result.url.should.equal(global.config.url);
+    result.database.should.equal('some');
+    done();
+  });
+
+  it('should give 401 error for wrong creds', function(done) {
+    var myConfig = _.clone(global.config);
+    var parsedUrl = url.parse(myConfig.url);
+    parsedUrl.auth = 'foo:bar';
+    myConfig.url = parsedUrl.format();
+    var ds = getDataSource(myConfig);
+    ds.once('error', function(err) {
       should.exist(err);
-      should.exist(result.url);
-      result.url.should.equal('https://fakeuser:fakepass@definitelynotreal.cloudant.com:8080');
-      result.database.should.equal('testdb');
-      ds.settings.database = undefined;
-      connector = Cloudant.initialize(ds, function(err) {
-        should.exist(err);
-        result.database.should.equal('some');
-      });
+      err.statusCode.should.equal(401);
+      err.error.should.equal('unauthorized');
+      err.reason.should.equal('Name or password is incorrect.');
+      done();
+    });
+  });
+  it('should give 404 error for nonexistant db', function(done) {
+    var myConfig = _.clone(global.config);
+    var parsedUrl = url.parse(myConfig.url);
+    parsedUrl.path = '';
+    myConfig.url = parsedUrl.format();
+    myConfig.database = 'idontexist';
+    var ds = getDataSource(myConfig);
+    ds.once('error', function(err) {
+      should.exist(err);
+      err.statusCode.should.equal(404);
+      err.error.should.equal('not_found');
+      err.reason.should.equal('Database does not exist.');
+      done();
     });
   });
 });
