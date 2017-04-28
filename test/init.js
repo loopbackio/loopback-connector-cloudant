@@ -14,9 +14,6 @@ var config = {
   username: process.env.CLOUDANT_USERNAME,
   password: process.env.CLOUDANT_PASSWORD,
   database: process.env.CLOUDANT_DATABASE,
-  plugin: 'retry',
-  retryAttempts: 10,
-  retryTimeout: 50,
 };
 
 console.log('env config ', config);
