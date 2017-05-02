@@ -47,18 +47,7 @@ describe('cloudant connector', function() {
     });
 
     db.once('connected', function() {
-      db.automigrate(function cleanUpData(err) {
-      // automigrate only removes the design doc, but not instances' doc,
-      // so clean up data here just in case previous tests use same models.
-        if (err) return done(err);
-        Product.destroyAll(function removeModelInstances(err) {
-          if (err) return done(err);
-          CustomerSimple.destroyAll(function removeModelInstances(err) {
-            if (err) return done(err);
-            done();
-          });
-        });
-      });
+      db.automigrate(done);
     });
   });
 
