@@ -13,6 +13,7 @@ require('./init.js');
 var db;
 
 describe('cloudant regexp', function() {
+  this.timeout(99999);
   var Foo;
   var N = 10;
   before(function(done) {
