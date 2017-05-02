@@ -36,14 +36,16 @@ describe('cloudant automigrate', function() {
     Foo = db.define('Foo', {
       updatedName: {type: String},
     });
-    db.autoupdate(function(err) {
-      if (err) return done(err);
-      Foo.find(function(err, results) {
+    db.once('connected', function() {
+      db.autoupdate(function(err) {
         if (err) return done(err);
-        // Verify autoupdate doesn't destroy existing data
-        results.length.should.equal(1);
-        results[0].name.should.equal('foo');
-        done();
+        Foo.find(function(err, results) {
+          if (err) return done(err);
+          // Verify autoupdate doesn't destroy existing data
+          results.length.should.equal(1);
+          results[0].name.should.equal('foo');
+          done();
+        });
       });
     });
   });
@@ -52,18 +54,22 @@ describe('cloudant automigrate', function() {
     Foo = db.define('Foo', {
       updatedName: {type: String},
     });
-    db.automigrate(function(err) {
-      if (err) return done(err);
-      Foo.find(function(err, result) {
+    db.once('connected', function() {
+      db.automigrate(function(err) {
         if (err) return done(err);
-        result.length.should.equal(0);
-        done();
+        Foo.find(function(err, result) {
+          if (err) return done(err);
+          result.length.should.equal(0);
+          done();
+        });
       });
     });
   });
   describe('isActual', function() {
     db = getSchema();
     it('returns true only when all models exist', function(done) {
+      // `isActual` requires the model be attached to a db,
+      // therefore use db.define here
       Foo = db.define('Foo', {
         name: {type: String},
       });
@@ -77,8 +83,8 @@ describe('cloudant automigrate', function() {
       });
     });
     it('returns false when one or more models not exist', function(done) {
-      // isActualTestFoo and isActualTestBar are not defined/used elsewhere
-      // so they don't exist in database
+      // model isActualTestFoo and isActualTestBar are not
+      // defined/used elsewhere, so they don't exist in database
       isActualTestFoo = db.define('isActualTestFoo', {
         name: {type: String},
       });
