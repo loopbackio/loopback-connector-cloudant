@@ -17,6 +17,9 @@ describe('cloudant automigrate', function() {
     Foo = db.define('Foo', {
       name: {type: String},
     });
+    Bar = db.define('Bar', {
+      name: {type: String},
+    });
     db.once('connected', function() {
       db.automigrate(function verifyMigratedModel(err) {
         if (err) return done(err);
