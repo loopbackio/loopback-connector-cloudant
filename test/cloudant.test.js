@@ -327,15 +327,13 @@ describe('cloudant connector', function() {
     }];
 
     before(function(done) {
-      SimpleEmployee.create(data, function(err, result) {
-        if (err) done(err);
-        done(null, result);
-      });
+      SimpleEmployee.create(data, done);
     });
 
     it('find instances with numeric id (findById)', function(done) {
       SimpleEmployee.findById(data[1].id, function(err, result) {
         should.not.exist(err);
+        should.exist(result);
         should.deepEqual(result.__data, data[1]);
         done();
       });
@@ -344,6 +342,7 @@ describe('cloudant connector', function() {
     it('find instances with "where" filter', function(done) {
       SimpleEmployee.find({where: {id: data[0].id}}, function(err, result) {
         should.not.exist(err);
+        should.exist(result);
         should.equal(result.length, 1);
         should.deepEqual(result[0].__data, data[0]);
         done();
@@ -353,6 +352,7 @@ describe('cloudant connector', function() {
     it('find instances with "order" filter (ASC)', function(done) {
       SimpleEmployee.find({order: 'id ASC'}, function(err, result) {
         should.not.exist(err);
+        should.exist(result);
         should(result[0].id).equal(data[0].id);
         should(result[1].id).equal(data[1].id);
         should(result[2].id).equal(data[2].id);
@@ -363,6 +363,7 @@ describe('cloudant connector', function() {
     it('find instances with "order" filter (DESC)', function(done) {
       SimpleEmployee.find({order: 'id DESC'}, function(err, result) {
         should.not.exist(err);
+        should.exist(result);
         should(result[0].id).equal(data[2].id);
         should(result[1].id).equal(data[1].id);
         should(result[2].id).equal(data[0].id);
@@ -376,18 +377,20 @@ describe('cloudant connector', function() {
         name: 'Christian Thompson',
         age: 32,
       };
-      data[1].name = 'Christian Thompson';
-      data[1].age = 32;
+      data[1].name = updatedData.name;
+      data[1].age = updatedData.age;
 
       SimpleEmployee.replaceById(data[1].id, updatedData,
         function(err, result) {
           should.not.exist(err);
+          should.exist(result);
           should.equal(result.id, data[1].id);
           should.equal(result.name, updatedData.name);
           should.equal(result.age, updatedData.age);
 
           SimpleEmployee.find(function(err, result) {
             should.not.exist(err);
+            should.exist(result);
             should.equal(result.length, 3);
             should.deepEqual(result[0].__data, data[0]);
             should.deepEqual(result[1].__data, data[1]);
@@ -400,11 +403,13 @@ describe('cloudant connector', function() {
     it('destroy instances with numerical id (destroyById)', function(done) {
       SimpleEmployee.destroyById(data[1].id, function(err, result) {
         should.not.exist(err);
+        should.exist(result);
         should(result).have.property('count');
         should.equal(result.count, 1);
 
         SimpleEmployee.find(function(err, result) {
           should.not.exist(err);
+          should.exist(result);
           should.equal(result.length, 2);
           should.deepEqual(result[0].__data, data[0]);
           should.deepEqual(result[1].__data, data[2]);
@@ -416,11 +421,13 @@ describe('cloudant connector', function() {
     it('destroy instances with "where" filter', function(done) {
       SimpleEmployee.destroyAll({id: data[2].id}, function(err, result) {
         should.not.exist(err);
+        should.exist(result);
         should(result).have.property('count');
         should.equal(result.count, 1);
 
         SimpleEmployee.find(function(err, result) {
           should.not.exist(err);
+          should.exist(result);
           should.equal(result.length, 1);
           should.deepEqual(result[0].__data, data[0]);
           done();
