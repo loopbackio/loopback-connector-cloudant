@@ -10,7 +10,7 @@ var Cloudant = require('../lib/cloudant');
 var _ = require('lodash');
 var url = require('url');
 var should = require('should');
-var db, Product, CustomerSimple;
+var db, Product, CustomerSimple, SimpleEmployee;
 
 describe('cloudant connector', function() {
   before(function(done) {
@@ -43,6 +43,21 @@ describe('cloudant connector', function() {
         labels: [
           {label: String},
         ],
+      },
+    });
+
+    SimpleEmployee = db.define('SimpleEmployee', {
+      id: {
+        type: Number,
+        id: true,
+        required: true,
+        generated: false,
+      },
+      name: {
+        type: String,
+      },
+      age: {
+        type: Number,
       },
     });
 
@@ -290,6 +305,131 @@ describe('cloudant connector', function() {
           customers.length.should.be.equal(1);
           customers[0].favorate.labels[0].label.should.be.equal('food');
           customers[0].favorate.labels[1].label.should.be.equal('drink');
+          done();
+        });
+      });
+    });
+  });
+
+  describe('allow numerical `id` value', function() {
+    var data = [{
+      id: 1,
+      name: 'John Chow',
+      age: 45,
+    }, {
+      id: 5,
+      name: 'Kelly Johnson',
+      age: 25,
+    }, {
+      id: 12,
+      name: 'Michael Santer',
+      age: 30,
+    }];
+
+    before(function(done) {
+      SimpleEmployee.create(data, done);
+    });
+
+    it('find instances with numeric id (findById)', function(done) {
+      SimpleEmployee.findById(data[1].id, function(err, result) {
+        should.not.exist(err);
+        should.exist(result);
+        should.deepEqual(result.__data, data[1]);
+        done();
+      });
+    });
+
+    it('find instances with "where" filter', function(done) {
+      SimpleEmployee.find({where: {id: data[0].id}}, function(err, result) {
+        should.not.exist(err);
+        should.exist(result);
+        should.equal(result.length, 1);
+        should.deepEqual(result[0].__data, data[0]);
+        done();
+      });
+    });
+
+    it('find instances with "order" filter (ASC)', function(done) {
+      SimpleEmployee.find({order: 'id ASC'}, function(err, result) {
+        should.not.exist(err);
+        should.exist(result);
+        should(result[0].id).equal(data[0].id);
+        should(result[1].id).equal(data[1].id);
+        should(result[2].id).equal(data[2].id);
+        done();
+      });
+    });
+
+    it('find instances with "order" filter (DESC)', function(done) {
+      SimpleEmployee.find({order: 'id DESC'}, function(err, result) {
+        should.not.exist(err);
+        should.exist(result);
+        should(result[0].id).equal(data[2].id);
+        should(result[1].id).equal(data[1].id);
+        should(result[2].id).equal(data[0].id);
+        done();
+      });
+    });
+
+    it('replace instances with numerical id (replaceById)', function(done) {
+      var updatedData = {
+        id: data[1].id,
+        name: 'Christian Thompson',
+        age: 32,
+      };
+      data[1].name = updatedData.name;
+      data[1].age = updatedData.age;
+
+      SimpleEmployee.replaceById(data[1].id, updatedData,
+        function(err, result) {
+          should.not.exist(err);
+          should.exist(result);
+          should.equal(result.id, data[1].id);
+          should.equal(result.name, updatedData.name);
+          should.equal(result.age, updatedData.age);
+
+          SimpleEmployee.find(function(err, result) {
+            should.not.exist(err);
+            should.exist(result);
+            should.equal(result.length, 3);
+            should.deepEqual(result[0].__data, data[0]);
+            should.deepEqual(result[1].__data, data[1]);
+            should.deepEqual(result[2].__data, data[2]);
+            done();
+          });
+        });
+    });
+
+    it('destroy instances with numerical id (destroyById)', function(done) {
+      SimpleEmployee.destroyById(data[1].id, function(err, result) {
+        should.not.exist(err);
+        should.exist(result);
+        should(result).have.property('count');
+        should.equal(result.count, 1);
+
+        SimpleEmployee.find(function(err, result) {
+          should.not.exist(err);
+          should.exist(result);
+          should.equal(result.length, 2);
+          should.deepEqual(result[0].__data, data[0]);
+          should.deepEqual(result[1].__data, data[2]);
+          done();
+        });
+      });
+    });
+
+    it('destroy instances with "where" filter', function(done) {
+      SimpleEmployee.destroyAll({id: data[2].id}, function(err, result) {
+        should.not.exist(err);
+        should.exist(result);
+        should(result).have.property('count');
+        should.equal(result.count, 1);
+
+        SimpleEmployee.find(function(err, result) {
+          should.not.exist(err);
+          should.exist(result);
+          should.equal(result.length, 1);
+          should.deepEqual(result[0].__data, data[0]);
           done();
         });
       });
