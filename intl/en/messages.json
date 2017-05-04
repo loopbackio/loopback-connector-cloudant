@@ -1,4 +1,6 @@
 {
-  "f93ce20d178e2d16f45ed0a1a117b990": "example complete",
-  "5bdcd0e36db5b1100819f9aa25e9bdf0": "Cloudant {{regex}} syntax does not support global"
+  "3cde8cc9bca22c67278b202ab0720106": "No instance with id {0} found for {1}",
+  "5bdcd0e36db5b1100819f9aa25e9bdf0": "Cloudant {{regex}} syntax does not support global",
+  "934c33143a59fd286ff6f7d0b8fb6875": "Invalid settings: \"url\" OR \"username\" AND \"password\" required",
+  "f93ce20d178e2d16f45ed0a1a117b990": "example complete"
 }
