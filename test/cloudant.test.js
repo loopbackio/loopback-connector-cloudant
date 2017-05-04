@@ -20,6 +20,9 @@ describe('cloudant connector', function() {
       name: {type: String},
       description: {type: String},
       price: {type: Number},
+      releases: {type: [Number]},
+      type: {type: [String]},
+      foo: [{id: Number, name: String}],
     }, {forceId: false});
 
     // CustomerSimple means some nested property defs are missing in modelDef,
@@ -195,6 +198,93 @@ describe('cloudant connector', function() {
           });
         });
       });
+  });
+
+  describe('model with array props gets updated properly', function() {
+    var prod1, prod2;
+    before('create Product', function(done) {
+      Product.create({
+        id: 1,
+        name: 'bread',
+        price: 100,
+        releases: [1, 2, 3],
+        type: ['plain', 'sesame', 'whole wheat'],
+        foo: [{id: 1, name: 'bread1'}, {id: 2, name: 'bread2'}],
+      }, function(err, product) {
+        if (err) return done(err);
+        prod1 = product;
+        Product.create({
+          id: 2,
+          name: 'bagel',
+          price: 100,
+          releases: [1, 2, 3],
+          type: ['plain', 'sesame', 'whole wheat'],
+          foo: [{id: 1, name: 'bagel1'}, {id: 2, name: 'bagel2'}],
+        }, function(err, product) {
+          if (err) return done(err);
+          prod2 = product;
+          done();
+        });
+      });
+    });
+
+    after(function(done) {
+      Product.destroyAll(function(err) {
+        if (err) return done(err);
+        done();
+      });
+    });
+
+    it('updates a single model with array props',
+      function(done) {
+        prod1.setAttribute('type', ['cinnamon raisin']);
+        prod1.setAttribute('releases', [4, 5, 6]);
+        prod1.setAttribute('foo', [{id: 3, name: 'bread3'}]);
+        Product.updateAll({id: 1}, prod1, {}, function(err, res) {
+          if (err) return done(err);
+          Product.findById('1', function(err, res) {
+            should.not.exist(err);
+            res.__data.releases[0].should.equal(4);
+            res.__data.type[0].should.equal('cinnamon raisin');
+            res.__data.foo[0].name.should.equal('bread3');
+            Product.findById('2', function(err, res) {
+              should.not.exist(err);
+              res.__data.name.should.equal(prod2.name);
+              res.__data.releases.should.deepEqual(prod2.releases);
+              res.__data.type.should.deepEqual(prod2.type);
+              res.__data.foo.should.deepEqual(prod2.foo);
+              done();
+            });
+          });
+        });
+      });
+
+    it('updates all models with array props',
+   function(done) {
+     var data = {
+       price: 200,
+       releases: [7],
+       type: ['everything'],
+       foo: [{id: 1, name: 'bar'}],
+     };
+
+     Product.updateAll({price: 100}, data, {}, function(err, res) {
+       should.not.exist(err);
+       Product.find({}, function(err, res) {
+         should.not.exist(err);
+         res.length.should.equal(2);
+         res[0].__data.price.should.equal(data.price);
+         res[0].__data.releases[0].should.equal(7);
+         res[0].__data.type[0].should.equal('everything');
+         res[0].__data.foo[0].name.should.equal('bar');
+         res[1].__data.price.should.equal(data.price);
+         res[1].__data.releases[0].should.equal(7);
+         res[1].__data.type[0].should.equal('everything');
+         res[1].__data.foo[0].id.should.equal(1);
+         done();
+       });
+     });
+   });
   });
 
   // the test suite is to make sure when
