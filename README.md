@@ -12,8 +12,8 @@ The `loopback-connector-cloudant` module is the Cloudant connector for the LoopB
 
 - [Getting Started](#getting-started)
     - [Design](#design)
-        - [Careful partial update](#careful-partial-update)
-        - [Careful Frequent Modification](#careful-frequent-modification)
+        - [Careful partial update](#partial-update)
+        - [Careful Frequent Modification](#frequent-modification)
         - [Conflict Control](#conflict-control)
     - [Model](#model)
         - [Map between model and document](#map-between-model-and-document)
@@ -47,7 +47,7 @@ The `loopback-connector-cloudant` module is the Cloudant connector for the LoopB
 ## Design
 LoopBack tries best to fit its model to a specific database's design, while limited by the nature of database, it's not always possible to support all LoopBack features perfectly, and user should be aware of some key features about Cloudant before they start to design a Cloudant model.
 
-### Careful partial update
+### Partial update
 
 *Cloudant does not support the idea of updating a document. All "updates" on a document are _destructive_ replacements.*
 
@@ -81,7 +81,7 @@ ds.updateOrCreate('User', {
 
 We have some discussion on update methods, the issue link can be found in [Feature Backlog](https://github.com/strongloop/loopback-connector-cloudant##feature-backlog) section
 
-### Careful Frequent Modification
+### Frequent Modification
 
 Cloudant is not designed to change same document frequently and multiple times. It stores status changes by creating different documents and including the same unique id to tell that they are attached to the same item, not updating the same document.
 
