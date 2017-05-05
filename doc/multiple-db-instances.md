@@ -4,4 +4,4 @@ Whenever the connector calls a driver method inside a model level function, it f
 
 For example, in function `Cloudant.prototype.destroy`, we call driver function by [`mo.db.destroy`](https://github.com/strongloop/loopback-connector-cloudant/blob/a62f72f291ed6fd7a5c318ceea3220cf19a2f2fe/lib/cloudant.js#L612), `mo` is the model.
 
-I am going to add some code example & test case to demo/verify this feature. That's why I keep it in a separate doc page.
+More code example & test case to demo/verify this feature are in progress.
