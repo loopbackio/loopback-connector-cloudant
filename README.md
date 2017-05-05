@@ -97,7 +97,7 @@ More examples to be updated after we complete the `_rev` property refactor.
 
 ## Model 
 
-### Map between model and document
+### Map Between Model And Document
 
 Unlike relational db or mongodb, Cloudant doesn't have a concept as 'table' or 'collection', data in a Cloudant database are all stored as documents.
 
@@ -133,7 +133,7 @@ To create a model instance, the connector creates a non-design document with val
 
 For model properties, we plan to create index for property that has config `index: true`. In the future, it will be the same way as what mongodb connector does.
 
-### Model-specific configuration
+### Model-specific Configuration
 
 You can specify configurations per model for database selection and to
 map a model to a different document:
@@ -162,7 +162,7 @@ database  | String | Database name
 modelIndex | String | Specify the model name to document mapping, defaults to `loopback__model__name`.
 modelSelector | JSON | Use the Cloudant Query selector syntax to associate models to existing data. NOTE: modelSelector and modelIndex are mutually exclusive; see [Selector syntax](https://docs.cloudant.com/cloudant_query.html#selector-syntax).
 
-### _rev property
+### _rev Property
 
 In a document, property `_rev` is the latest doc revision and must be provided when modifying the doc. Currently when updating/deleting a doc, the connector first retrieves that doc, then gets its `_rev`, then calls a modify api with `_rev` included. It makes three calls to the database and this would easily result in race condition.
   
