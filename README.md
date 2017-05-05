@@ -290,40 +290,47 @@ https://github.com/cloudant/nodejs-cloudant#request-plugins
 
 ## Example Usage
 
+*/server/script.js*
 ```javascript
+var util = require('util');
+
+// Here we create datasource dynamically.
+// If you already define a static datasource in server/datasources.json,
+// please check how to load it in 
+// https://github.com/cloudant/nodejs-cloudant#example-code
 var DataSource = require ('loopback-datasource-juggler').DataSource,
     Cloudant   = require ('loopback-connector-cloudant');
 
 var config = {
-    username: 'XXXXX-bluemix',
-    password: 'YYYYYYYYYYYYY',
-    database: 'test'
+    username: 'your_cloudant_username',
+    password: 'your_cloudant_password',
+    database: 'your_cloudant_database'
 };
 
 var db = new DataSource (Cloudant, config);
 
-User = db.define ('User', {
+Test = db.define ('Test', {
   name: { type: String },
-  email: { type: String }
 });
+
 // wait for connected event on the
 // datasource before doing any database
 // operations since we connect asynchronously
 db.once('connected', function() {
-  User.create({
+  Test.create({
     name: "Tony",
-    email: "tony@t.com"
-  }).then(function(user) {
-    console.log('create user ' + user);
-    return User.find({ where: { name: "Tony" }});
-  }).then(function(user) {
-    console.log('find user: ' + user);
-    return User.destroyAll();
-  }).then(function(user) {
-    console.log('destroy user!');
-  })catch(err);
+  }).then(function(test) {
+    console.log('create instance ' + util.inspect(test, 4));
+    return Test.find({ where: { name: "Tony" }});
+  }).then(function(test) {
+    console.log('find instance: ' + util.inspect(test, 4));
+    return Test.destroyAll();
+  }).then(function(test) {
+    console.log('destroy instance!');
+  }).catch(err);
 });
 ```
+
 - Use different DB instances per model definition. Refer to https://github.com/strongloop/loopback-connector-cloudant/blob/master/doc/multiple-db-instances.md
 
 # CRUD
@@ -358,6 +365,8 @@ User can call this function to check if model exists in database.
 */server/script.js*
 ```javascript
 module.export = function migrateData(app) {
+  // Suppose you already define a datasource called `cloudantDS` 
+  // in server/datasources.json
   var ds = app.models.cloudantDS;
   
   // static model created with model.json file
