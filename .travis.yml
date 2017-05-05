@@ -1,0 +1,17 @@
+language: node_js
+sudo: required
+services:
+  - docker
+
+env:
+  CLOUDANT_URL: 'http://0.0.0.0:8080'
+  CLOUDANT_USERNAME: 'admin'
+  CLOUDANT_PASSWORD: 'pass'
+  CLOUDANT_DATABASE: 'test-db'
+
+before_install:
+  - sudo sh setup.sh
+
+node_js:
+  - 4
+  - 6
