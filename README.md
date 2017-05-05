@@ -7,7 +7,7 @@ Local.
 
 For more information, see [Getting started with Cloudant NoSQL DB](https://www.ng.bluemix.net/docs/services/Cloudant/index.html)
 
-The `loopback-connector-cloudant` module is the Cloudant connector for the Loopback framework.
+The `loopback-connector-cloudant` module is the Cloudant connector for the LoopBack framework.
 <!-- TOC -->
 
 - [loopback-connector-cloudant](#loopback-connector-cloudant)
@@ -46,7 +46,7 @@ The `loopback-connector-cloudant` module is the Cloudant connector for the Loopb
 # Getting Started
 
 ## Design
-Loopback tries best to fit its model to a specific database's design, while limited by the nature of database, it's not always possible to support all Loopback features perfectly, and user would like to be aware of some key features about Cloudant before they start to design a Cloudant model.
+LoopBack tries best to fit its model to a specific database's design, while limited by the nature of database, it's not always possible to support all LoopBack features perfectly, and user would like to be aware of some key features about Cloudant before they start to design a Cloudant model.
 
 ### Careful partial update
 
@@ -104,7 +104,7 @@ This part will be done after we complete the `_rev` property refactor.
 
 Unlike relational db or mongodb, Cloudant doesn't have a concept as 'table' or 'collection', data in a Cloudant database are all stored as documents.
 
-The connector uses a design document to represent a Loopback model, and common documents to represent model instances.
+The connector uses a design document to represent a LoopBack model, and common documents to represent model instances.
 
 The following is a comparison among different databases:
 
@@ -184,7 +184,7 @@ Bluemix Cloudant will be more stable for production.
   - No request limit.
   - Please follow https://hub.docker.com/r/ibmcom/cloudant-developer/ to create your Cloudant local instance
 
-- Setup Cloudant on Bluemix
+- Cloudant on Bluemix
 
   - Limit request per second by default.
   - Choose Bluemix Cloudant if you already have a Bluemix account with a better situation than limited-days' free trial.
@@ -200,7 +200,7 @@ Bluemix Cloudant will be more stable for production.
     1. Click on the icon, and it will direct you to the database page. Check "Service Credentials" on the left to see your credentials.
     1. Check "Manage" then click on button "LAUNCH" to see your Cloudant dashboard.
 
-- Create Cloudant DBaaS account
+- Cloudant DBaaS account
   
   - Limit request per second.
   - Limited free trial.
@@ -335,7 +335,9 @@ db.once('connected', function() {
 
 # CRUD
 
-Loopback api assumes user include the `_rev` when modifying data, so please make sure you handle document's revision properly before you call a POST/PATCH/DELETE api. For details, refer to https://github.com/strongloop/loopback-connector-cloudant#_rev-property
+User can find most CRUD operation apis documented in https://loopback.io/doc/en/lb3/Built-in-models-REST-API.html
+
+Please note that after the `_rev` property refactor done, cloudant model api will assume user include the `_rev` when modifying data, so please make sure you handle document's revision properly before you call a POST/PATCH/DELETE api. For details, refer to https://github.com/strongloop/loopback-connector-cloudant#_rev-property
 
 I believe there are more stuff TBD in this part, appreciate more ideas.
 
@@ -405,7 +407,7 @@ Not implemented yet, track it in story https://github.com/strongloop/loopback-co
 # Query
 
 -  Uses Cloudant Query (Lucene) to support ad-hoc searching.
--  [Loopback query](http://loopback.io/doc/en/lb3/Querying-data.html) support for: fields, limit, order, skip and where filters.
+-  [LoopBack query](http://loopback.io/doc/en/lb3/Querying-data.html) support for: fields, limit, order, skip and where filters.
 - Please check [Advanced Queries](https://github.com/strongloop/loopback-connector-cloudant/blob/master/doc/advanced-queries.md) for details about regex filter, nested filter and order.
 
 # Testing
