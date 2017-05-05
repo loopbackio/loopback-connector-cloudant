@@ -47,7 +47,7 @@ The `loopback-connector-cloudant` module is the Cloudant connector for the LoopB
 ## Design
 LoopBack tries best to fit its model to a specific database's design, while limited by the nature of database, it's not always possible to support all LoopBack features perfectly, and user should be aware of some key features about Cloudant before they start to design a Cloudant model.
 
-### Partial update
+### Partial Update
 
 *Cloudant does not support the idea of updating a document. All "updates" on a document are _destructive_ replacements.*
 
