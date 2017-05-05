@@ -10,7 +10,6 @@ For more information, see [Getting started with Cloudant NoSQL DB](https://www.n
 The `loopback-connector-cloudant` module is the Cloudant connector for the LoopBack framework.
 <!-- TOC -->
 
-- [loopback-connector-cloudant](#loopback-connector-cloudant)
 - [Getting Started](#getting-started)
     - [Design](#design)
         - [Careful partial update](#careful-partial-update)
@@ -46,7 +45,7 @@ The `loopback-connector-cloudant` module is the Cloudant connector for the LoopB
 # Getting Started
 
 ## Design
-LoopBack tries best to fit its model to a specific database's design, while limited by the nature of database, it's not always possible to support all LoopBack features perfectly, and user would like to be aware of some key features about Cloudant before they start to design a Cloudant model.
+LoopBack tries best to fit its model to a specific database's design, while limited by the nature of database, it's not always possible to support all LoopBack features perfectly, and user should be aware of some key features about Cloudant before they start to design a Cloudant model.
 
 ### Careful partial update
 
@@ -92,11 +91,9 @@ And by properly controlling the conflict, developer can still do a safe modify. 
 
 ### Conflict Control
 
-TBD. 
-
 The basic idea is when modifying a document, user needs to control conflict by handling the revision of a document, currently the connector controls this process, after retriving the latest revision, connector uses it to update/delete doc, and returns 409 conflict error if doc changes during that time slot. In the middle, user could not interfere and provide their own conflict solution.
 
-This part will be done after we complete the `_rev` property refactor.
+More examples to be updated after we complete the `_rev` property refactor.
 
 ## Model 
 
@@ -173,7 +170,7 @@ Considering the nature of Cloudant, we plan to give user the flexibility to defi
 
 # Setup Cloudant Instance
 
-For user that don't have a cloudant server to develop or test, here is some suggestions can help you quickly setup one.
+For user that don't have a cloudant server to develop or test, here are some suggestions can help you quickly setup one.
 
 For development use, a docker container of Cloudant local is easy to setup and there is no request limit per second.
 
@@ -339,7 +336,7 @@ User can find most CRUD operation apis documented in https://loopback.io/doc/en/
 
 Please note that after the `_rev` property refactor done, cloudant model api will assume user include the `_rev` when modifying data, so please make sure you handle document's revision properly before you call a POST/PATCH/DELETE api. For details, refer to https://github.com/strongloop/loopback-connector-cloudant#_rev-property
 
-I believe there are more stuff TBD in this part, appreciate more ideas.
+We are still in progress of refactoring some methods, more details to be updated.
 
 ## Update
 
@@ -460,5 +457,5 @@ Not implemented yet, track it in https://github.com/strongloop/loopback-connecto
 
 ## Index
 
-TBD
+To be updated
 
