@@ -20,6 +20,9 @@ describe('cloudant connector', function() {
       name: {type: String},
       description: {type: String},
       price: {type: Number},
+      releases: {type: ['number']},
+      type: {type: [String]},
+      foo: {type: [Object]},
     }, {forceId: false});
 
     // CustomerSimple means some nested property defs are missing in modelDef,
@@ -195,6 +198,98 @@ describe('cloudant connector', function() {
           });
         });
       });
+  });
+
+  describe('model with array props gets updated properly', function() {
+    var prod1, prod2;
+    before('create Product', function(done) {
+      Product.create({
+        id: 1,
+        name: 'bread',
+        price: 100,
+        releases: [1, 2, 3],
+        type: ['plain', 'sesame', 'whole wheat'],
+        foo: [{id: 1, name: 'bread1'}, {id: 2, name: 'bread2'}],
+      }, function(err, product) {
+        if (err) return done(err);
+        prod1 = product;
+        Product.create({
+          id: 2,
+          name: 'bagel',
+          price: 100,
+          releases: [1, 2, 3],
+          type: ['plain', 'sesame', 'whole wheat'],
+          foo: [{id: 1, name: 'bagel1'}, {id: 2, name: 'bagel2'}],
+        }, function(err, product) {
+          if (err) return done(err);
+          prod2 = product;
+          done();
+        });
+      });
+    });
+
+    after(function(done) {
+      Product.destroyAll(function(err) {
+        if (err) return done(err);
+        done();
+      });
+    });
+
+    it('updates a single instance with array props',
+      function(done) {
+        prod1.setAttribute('type', ['cinnamon raisin']);
+        prod1.setAttribute('releases', [4, 5, 6]);
+        prod1.setAttribute('foo', [{id: 3, name: 'bread3'}]);
+        Product.updateAll({id: 1}, prod1, function(err, res) {
+          if (err) return done(err);
+          Product.findById('1', function(err, res) {
+            if (err) done(err);
+            res.name.should.equal(prod1.name);
+            res.price.should.equal(prod1.price);
+            res.releases.should.deepEqual([4, 5, 6]);
+            res.type.should.deepEqual(['cinnamon raisin']);
+            res.foo.should.deepEqual([{id: 3, name: 'bread3'}]);
+            Product.findById('2', function(err, res) {
+              if (err) done(err);
+              res.name.should.equal(prod2.name);
+              res.price.should.equal(prod2.price);
+              res.releases.should.deepEqual(prod2.releases);
+              res.type.should.deepEqual(prod2.type);
+              res.foo.should.deepEqual(prod2.foo);
+              done();
+            });
+          });
+        });
+      });
+
+    it('updates all matching instances with array props',
+   function(done) {
+     var data = {
+       price: 200,
+       releases: [7],
+       type: ['everything'],
+       foo: [{id: 1, name: 'bar'}],
+     };
+
+     Product.updateAll({price: 100}, data, function(err, res) {
+       if (err) done(err);
+       Product.find(function(err, res) {
+         if (err) done(err);
+         res.length.should.equal(2);
+         res[0].name.should.oneOf(prod1.name, prod2.name);
+         res[0].price.should.equal(data.price);
+         res[0].releases.should.deepEqual(data.releases);
+         res[0].type.should.deepEqual(data.type);
+         res[0].foo.should.deepEqual(data.foo);
+         res[1].name.should.oneOf(prod1.name, prod2.name);
+         res[1].price.should.equal(data.price);
+         res[1].releases.should.deepEqual(data.releases);
+         res[1].type.should.deepEqual(data.type);
+         res[1].foo.should.deepEqual(data.foo);
+         done();
+       });
+     });
+   });
   });
 
   // the test suite is to make sure when
