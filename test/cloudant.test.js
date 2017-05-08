@@ -301,11 +301,23 @@ describe('cloudant connector', function() {
 
     it('can call upsert with an id and have it create a document without error',
       function(done) {
+        // scenario: upsert does a create
         Product.upsert({
-          id: '1'
+          id: '1',
+          name: 'bread',
         }, function(err, res) {
           if (err) return done(err);
-          done();
+          res.id.should.equal('1');
+          res.name.should.equal('bread');
+          // scenario: upsert does a update
+          Product.upsert({
+            id: '1',
+            name: 'newBread',
+          }, function(err, res) {
+            res.id.should.equal('1');
+            res.name.should.equal('newBread');
+            done();
+          });
         });
       });
   });
