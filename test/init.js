@@ -9,19 +9,22 @@ module.exports = require('should');
 
 var DataSource = require('loopback-datasource-juggler').DataSource;
 
-var config = {
-  url: process.env.CLOUDANT_URL,
-  username: process.env.CLOUDANT_USERNAME,
-  password: process.env.CLOUDANT_PASSWORD,
-  database: process.env.CLOUDANT_DATABASE,
-  plugin: 'retry',
-  retryAttempts: 10,
-  retryTimeout: 50,
-};
+var config = require('rc')('loopback', {test: {cloudant: {}}}).test.cloudant;
 
 console.log('env config ', config);
 
-global.config = config;
+global.getConfig = function() {
+  var dbConf = {
+    url: process.env.CLOUDANT_URL || config.url || 'localhost',
+    username: process.env.CLOUDANT_USERNAME || config.username || 'admin',
+    password: process.env.CLOUDANT_PASSWORD || config.password || 'pass',
+    database: process.env.CLOUDANT_DATABASE || config.database || 'test-db',
+    plugin: 'retry',
+    retryAttempts: 10,
+    retryTimeout: 50,
+  };
+  return dbConf;
+};
 
 global.getDataSource = global.getSchema = function(customConfig) {
   var db = new DataSource(require('../'), customConfig || config);
