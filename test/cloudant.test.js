@@ -115,10 +115,7 @@ describe('cloudant connector', function() {
 
   describe('updateOrCreate', function() {
     afterEach(function(done) {
-      Product.destroyById(1, function(err) {
-        if (err) return done(err);
-        done();
-      });
+      Product.destroyById(1, done);
     });
 
     it('can call upsert with an id and have it create a document without error',
@@ -131,11 +128,12 @@ describe('cloudant connector', function() {
           if (err) return done(err);
           res.id.should.equal('1');
           res.name.should.equal('bread');
-          // scenario: upsert does a update
+          // scenario: upsert does an update
           Product.upsert({
             id: '1',
             name: 'newBread',
           }, function(err, res) {
+            if (err) return done(err);
             res.id.should.equal('1');
             res.name.should.equal('newBread');
             done();
