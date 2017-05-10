@@ -8,6 +8,15 @@ var db, Foo, Bar, NotExist, isActualTestFoo, isActualTestBar;
 require('./init.js');
 
 describe('cloudant automigrate', function() {
+  after(function(done) {
+    NotExist.destroyAll(function() {
+      Foo.destroyAll(function() {
+        Bar.destroyAll(function() {
+          done();
+        });
+      });
+    });
+  });
   it('automigrates models attached to db', function(done) {
     db = getSchema();
     // Make sure automigrate doesn't destroy model doesn't exist
