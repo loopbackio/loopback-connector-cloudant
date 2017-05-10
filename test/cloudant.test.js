@@ -68,6 +68,13 @@ describe('cloudant connector', function() {
       db.automigrate(done);
     });
   });
+  after(function(done) {
+    CustomerSimple.destroyAll(function() {
+      SimpleEmployee.destroyAll(function() {
+        done();
+      });
+    });
+  });
 
   describe('replaceOrCreate', function() {
     after(function cleanUpData(done) {
