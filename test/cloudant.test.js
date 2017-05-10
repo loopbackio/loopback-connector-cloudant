@@ -78,7 +78,7 @@ describe('cloudant connector', function() {
 
   describe('replaceOrCreate', function() {
     after(function cleanUpData(done) {
-      Product.destroyAll(function removeModelInstances(err) {
+      Product.destroyById(1, function(err) {
         if (err) return done(err);
         done();
       });
@@ -127,7 +127,7 @@ describe('cloudant connector', function() {
 
   describe('replaceById', function() {
     after(function cleanUpData(done) {
-      Product.destroyAll(function removeModelInstances(err) {
+      Product.destroyById(2, function(err) {
         if (err) return done(err);
         done();
       });
