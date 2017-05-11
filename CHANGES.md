@@ -1,3 +1,13 @@
+2017-05-11, Version 1.2.3
+=========================
+
+ * 1.x fix/upsert (#129) (Janny)
+
+ * cloudant: allow passthrough of settings (#114) (Sakib Hasan)
+
+ * Fix cloudant url for CI (Diana Lau)
+
+
 2017-03-06, Version 1.2.2
 =========================
 
