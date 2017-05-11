@@ -68,10 +68,23 @@ describe('cloudant connector', function() {
       db.automigrate(done);
     });
   });
+  after('Clean up used models', function(done) {
+    CustomerSimple.destroyAll(function(err, res) {
+      should.not.exist(err);
+      res.should.have.property('count');
+      res.count.should.equal(6);
+      SimpleEmployee.destroyAll(function(err, res) {
+        should.not.exist(err);
+        res.should.have.property('count');
+        res.count.should.equal(1);
+        done();
+      });
+    });
+  });
 
   describe('replaceOrCreate', function() {
     after(function cleanUpData(done) {
-      Product.destroyAll(function removeModelInstances(err) {
+      Product.destroyById(1, function(err) {
         if (err) return done(err);
         done();
       });
@@ -120,7 +133,7 @@ describe('cloudant connector', function() {
 
   describe('replaceById', function() {
     after(function cleanUpData(done) {
-      Product.destroyAll(function removeModelInstances(err) {
+      Product.destroyById(2, function(err) {
         if (err) return done(err);
         done();
       });
@@ -229,8 +242,10 @@ describe('cloudant connector', function() {
     });
 
     after(function(done) {
-      Product.destroyAll(function(err) {
-        if (err) return done(err);
+      Product.destroyAll(function(err, res) {
+        should.not.exist(err);
+        res.should.have.property('count');
+        res.count.should.equal(2);
         done();
       });
     });

@@ -6,8 +6,27 @@
 'use strict';
 var db, Foo, Bar, NotExist, isActualTestFoo, isActualTestBar;
 require('./init.js');
+var should = require('should');
 
 describe('cloudant automigrate', function() {
+  after('Clean up used models', function(done) {
+    NotExist.destroyAll(function(err, res) {
+      should.not.exist(err);
+      res.should.have.property('count');
+      res.count.should.equal(0);
+      Foo.destroyAll(function(err, res) {
+        should.not.exist(err);
+        res.should.have.property('count');
+        res.count.should.equal(0);
+        Bar.destroyAll(function(err, res) {
+          should.not.exist(err);
+          res.should.have.property('count');
+          res.count.should.equal(0);
+          done();
+        });
+      });
+    });
+  });
   it('automigrates models attached to db', function(done) {
     db = getSchema();
     // Make sure automigrate doesn't destroy model doesn't exist
