@@ -112,6 +112,35 @@ describe('cloudant connector', function() {
         };
       });
   });
+
+  describe('updateOrCreate', function() {
+    afterEach(function(done) {
+      Product.destroyById(1, done);
+    });
+
+    it('can call upsert with an id and have it create a document without error',
+      function(done) {
+        // scenario: upsert does a create
+        Product.upsert({
+          id: '1',
+          name: 'bread',
+        }, function(err, res) {
+          if (err) return done(err);
+          res.id.should.equal('1');
+          res.name.should.equal('bread');
+          // scenario: upsert does an update
+          Product.upsert({
+            id: '1',
+            name: 'newBread',
+          }, function(err, res) {
+            if (err) return done(err);
+            res.id.should.equal('1');
+            res.name.should.equal('newBread');
+            done();
+          });
+        });
+      });
+  });
 });
 
 describe('cloudant constructor', function() {
