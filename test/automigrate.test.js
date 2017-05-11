@@ -6,12 +6,22 @@
 'use strict';
 var db, Foo, Bar, NotExist, isActualTestFoo, isActualTestBar;
 require('./init.js');
+var should = require('should');
 
 describe('cloudant automigrate', function() {
-  after(function(done) {
-    NotExist.destroyAll(function() {
-      Foo.destroyAll(function() {
-        Bar.destroyAll(function() {
+  after('Clean up used models', function(done) {
+    NotExist.destroyAll(function(err, res) {
+      should.not.exist(err);
+      res.should.have.property('count');
+      res.count.should.equal(0);
+      Foo.destroyAll(function(err, res) {
+        should.not.exist(err);
+        res.should.have.property('count');
+        res.count.should.equal(0);
+        Bar.destroyAll(function(err, res) {
+          should.not.exist(err);
+          res.should.have.property('count');
+          res.count.should.equal(0);
           done();
         });
       });

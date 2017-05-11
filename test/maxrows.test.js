@@ -90,9 +90,15 @@ describe('cloudant max rows', function() {
       done();
     });
   });
-  after(function(done) {
-    Foo.destroyAll(function() {
-      Thing.destroyAll(function() {
+  after('Clean up used models', function(done) {
+    Foo.destroyAll(function(err, res) {
+      should.not.exist(err);
+      res.should.have.property('count');
+      res.count.should.equal(N);
+      Thing.destroyAll(function(err, res) {
+        should.not.exist(err);
+        res.should.have.property('count');
+        res.count.should.equal(N);
         done();
       });
     });

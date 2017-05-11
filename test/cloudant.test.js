@@ -68,9 +68,15 @@ describe('cloudant connector', function() {
       db.automigrate(done);
     });
   });
-  after(function(done) {
-    CustomerSimple.destroyAll(function() {
-      SimpleEmployee.destroyAll(function() {
+  after('Clean up used models', function(done) {
+    CustomerSimple.destroyAll(function(err, res) {
+      should.not.exist(err);
+      res.should.have.property('count');
+      res.count.should.equal(6);
+      SimpleEmployee.destroyAll(function(err, res) {
+        should.not.exist(err);
+        res.should.have.property('count');
+        res.count.should.equal(1);
         done();
       });
     });
@@ -236,8 +242,10 @@ describe('cloudant connector', function() {
     });
 
     after(function(done) {
-      Product.destroyAll(function(err) {
-        if (err) return done(err);
+      Product.destroyAll(function(err, res) {
+        should.not.exist(err);
+        res.should.have.property('count');
+        res.count.should.equal(2);
         done();
       });
     });
