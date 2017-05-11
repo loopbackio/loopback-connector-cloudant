@@ -42,7 +42,7 @@ describe('cloudant max rows', function() {
     });
   });
   it('find all two hundred and one', function(done) {
-    Foo.all({limit: 201}, function(err, entries) {
+    Foo.all({limit: N}, function(err, entries) {
       if (err) return done(err);
       entries.should.have.lengthOf(N);
       var things = Array.apply(null, {length: N}).map(function(n, i) {
@@ -91,16 +91,42 @@ describe('cloudant max rows', function() {
     });
   });
   after('Clean up used models', function(done) {
-    Foo.destroyAll(function(err, res) {
-      should.not.exist(err);
-      res.should.have.property('count');
-      res.count.should.equal(N);
-      Thing.destroyAll(function(err, res) {
-        should.not.exist(err);
-        res.should.have.property('count');
-        res.count.should.equal(N);
-        done();
-      });
-    });
+    Foo.destroyAll({
+      where: {
+        and: [
+          {
+            bar: {
+              gte: 1,
+            },
+          },
+          {
+            bar: {
+              lte: N,
+            },
+          },
+        ]}}, {ddocDelete: true}, function(err, res) {
+          should.not.exist(err);
+          res.should.have.property('count');
+          res.count.should.equal(N);
+          Thing.destroyAll({
+            where: {
+              and: [
+                {
+                  bar: {
+                    gte: 1,
+                  },
+                },
+                {
+                  bar: {
+                    lte: N,
+                  },
+                },
+              ]}}, {ddocDelete: true}, function(err, res) {
+                should.not.exist(err);
+                res.should.have.property('count');
+                res.count.should.equal(N);
+                done();
+              });
+        });
   });
 });
