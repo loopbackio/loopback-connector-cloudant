@@ -16,6 +16,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
+    "pretest": "sh setup.sh",
     "test": "mocha -G --timeout 40000",
     "posttest": "npm run lint"
   },
