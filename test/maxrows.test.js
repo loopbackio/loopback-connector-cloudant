@@ -42,7 +42,7 @@ describe('cloudant max rows', function() {
     });
   });
   it('find all two hundred and one', function(done) {
-    Foo.all(function(err, entries) {
+    Foo.all({limit: N}, function(err, entries) {
       if (err) return done(err);
       entries.should.have.lengthOf(N);
       var things = Array.apply(null, {length: N}).map(function(n, i) {

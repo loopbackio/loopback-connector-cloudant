@@ -12,6 +12,8 @@ var url = require('url');
 var should = require('should');
 var db, Product, CustomerSimple, SimpleEmployee;
 
+var QUERY_MAX = 1000;
+
 describe('cloudant connector', function() {
   before(function(done) {
     db = getDataSource();
@@ -71,10 +73,7 @@ describe('cloudant connector', function() {
 
   describe('replaceOrCreate', function() {
     after(function cleanUpData(done) {
-      Product.destroyAll(function removeModelInstances(err) {
-        if (err) return done(err);
-        done();
-      });
+      Product.destroyAll(done);
     });
     it('should replace a model instance if the passing key already exists',
       function(done) {
@@ -120,10 +119,7 @@ describe('cloudant connector', function() {
 
   describe('replaceById', function() {
     after(function cleanUpData(done) {
-      Product.destroyAll(function removeModelInstances(err) {
-        if (err) return done(err);
-        done();
-      });
+      Product.destroyAll(null, {limit: QUERY_MAX}, done);
     });
     it('should replace the model instance if the provided key already exists',
       function(done) {
@@ -229,10 +225,7 @@ describe('cloudant connector', function() {
     });
 
     after(function(done) {
-      Product.destroyAll(function(err) {
-        if (err) return done(err);
-        done();
-      });
+      Product.destroyAll(null, {limit: QUERY_MAX}, done);
     });
 
     it('updates a single instance with array props',
@@ -296,9 +289,17 @@ describe('cloudant connector', function() {
   // user queries against a non existing property
   // the app won't crash
   describe('nested property', function() {
+    var seedCount = 0;
     before(function createSampleData(done) {
-      CustomerSimple.create(seed(), done);
+      var seedItems = seed();
+      seedCount = seedItems.length;
+      CustomerSimple.create(seedItems, done);
     });
+
+    after(function(done) {
+      CustomerSimple.destroyAll(null, {limit: seedCount}, done);
+    });
+
     describe('missing in modelDef', function() {
       it('returns result when nested property is not an array type',
         function(done) {
@@ -425,6 +426,10 @@ describe('cloudant connector', function() {
       SimpleEmployee.create(data, done);
     });
 
+    after(function(done) {
+      SimpleEmployee.destroyAll(null, {limit: QUERY_MAX}, done);
+    });
+
     it('find instances with numeric id (findById)', function(done) {
       SimpleEmployee.findById(data[1].id, function(err, result) {
         should.not.exist(err);
@@ -514,20 +519,21 @@ describe('cloudant connector', function() {
     });
 
     it('destroy instances with "where" filter', function(done) {
-      SimpleEmployee.destroyAll({id: data[2].id}, function(err, result) {
-        should.not.exist(err);
-        should.exist(result);
-        should(result).have.property('count');
-        should.equal(result.count, 1);
-
-        SimpleEmployee.find(function(err, result) {
+      SimpleEmployee.destroyAll({id: data[2].id}, {limit: QUERY_MAX},
+        function(err, result) {
           should.not.exist(err);
           should.exist(result);
-          should.equal(result.length, 1);
-          should.deepEqual(result[0].__data, data[0]);
-          done();
+          should(result).have.property('count');
+          should.equal(result.count, 1);
+
+          SimpleEmployee.find(function(err, result) {
+            should.not.exist(err);
+            should.exist(result);
+            should.equal(result.length, 1);
+            should.deepEqual(result[0].__data, data[0]);
+            done();
+          });
         });
-      });
     });
   });
 });
