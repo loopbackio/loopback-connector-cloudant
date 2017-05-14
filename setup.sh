@@ -1,16 +1,35 @@
+#!/bin/bash
+
 # Shell script to start the database and app services before running the tests.
 
 ## color codes
 RED='\033[1;31m'
 GREEN='\033[1;32m'
+YELLOW='\033[1;33m'
 CYAN='\033[1;36m'
 PLAIN='\033[0m'
 
 ## variables
+HOST=localhost
 USER='admin'
 PASSWORD='pass'
 PORT=8080
-DATABASE='test'
+DATABASE='test-db'
+if [ "$1" ]; then
+    HOST=$1
+fi
+if [ "$2" ]; then
+    USER=$2
+fi
+if [ "$3" ]; then
+    PASSWORD=$3
+fi
+if [ "$4" ]; then
+    PORT=$4
+fi
+if [ "$5" ]; then
+    DATABASE=$5
+fi
 
 ## check if docker exists
 printf "\n${RED}>> Checking for docker${PLAIN} ${GREEN}...${PLAIN}"
@@ -33,13 +52,20 @@ docker-compose up -d cloudant > /dev/null 2>&1
 printf "\n${CYAN}Database service started.${PLAIN}\n"
 
 ## (Cloudant only) Accept Cloudant license
-printf "\n${RED}>> Accept Cloudant license${PLAIN} ${GREEN}...${PLAIN}\n"
-docker exec -it cloudant-testdb cast license --silent
+printf "\n${RED}>> Accepting license${PLAIN} ${GREEN}...${PLAIN}"
+docker exec -it cloudant-testdb cast license --silent > /dev/null 2>&1
+LICENSE_OUTPUT=$?
+if [ "$LICENSE_OUTPUT" -ne 0 ]; then
+    printf "\n${CYAN}Status: ${PLAIN}${RED}Failed to accept license. Terminating setup.${PLAIN}\n"
+    exit 1
+fi
+printf "\n${CYAN}License accepted.${PLAIN}\n"
 
 ## (Cloudant only) Initialize data volume
 ## password has to be `pass` in order for it to work
-printf "\n${RED}>> Initialize Cloudant Data Volume${PLAIN} ${GREEN}...${PLAIN}\n"
-docker exec cloudant-testdb cast database init -v -y -p pass
+printf "\n${RED}>> Initialize data volume${PLAIN} ${GREEN}...${PLAIN}"
+docker exec cloudant-testdb cast database init -v -y -p pass > /dev/null 2>&1
+printf "\n${CYAN}Data volume initialized.${PLAIN}\n"
 
 ## Create database
 OUTPUT=$?
@@ -50,7 +76,7 @@ WAIT_STRING="."
 printf "\n${GREEN}Waiting for cloudant service to be up $WAIT_STRING${PLAIN}"
 while [ "$OUTPUT" -ne 200 ] && [ "$TIMEOUT" -gt 0 ]
     do
-        OUTPUT=$(curl -s -o /dev/null -w "%{http_code}" --request GET --url http://admin:pass@0.0.0.0:8080/_all_dbs)
+        OUTPUT=$(curl -s -o /dev/null -w "%{http_code}" --request GET --url http://$USER:$PASSWORD@$HOST:$PORT/_all_dbs)
         sleep 1s
         TIMEOUT=$((TIMEOUT - 1))
         TIME_PASSED=$((TIME_PASSED + 1))
@@ -64,19 +90,29 @@ while [ "$OUTPUT" -ne 200 ] && [ "$TIMEOUT" -gt 0 ]
 if [ "$TIMEOUT" -le 0 ]; then
     printf "\n${RED}Failed to start Cloudant service. Terminating setup.${PLAIN}\n"
     exit 1
-else
-    printf "\n${CYAN}Cloudant started.${PLAIN}\n"
-
-    ## create database --- TODO check return code 
-    printf "\n${CYAN}Creating database in Cloudant${PLAIN}\n"
-    curl --request PUT --url http://admin:pass@0.0.0.0:8080/test-db
-
-     ## setting env variables
-    printf "\n${CYAN}Setting env variables to run test${PLAIN}\n"
-    export CLOUDANT_URL=http://admin:pass@0.0.0.0:8080/
-    export CLOUDANT_USERNAME=$USER
-    export CLOUDANT_PASSWORD=$PASSWORD
-    export CLOUDANT_PORT=$PORT
-    export CLOUDANT_DATABASE=$DATABASE
 fi
+printf "\n${CYAN}Cloudant started.${PLAIN}\n"
 
+## create database --- TODO check return code 
+printf "\n${RED}>> Creating database in Cloudant${PLAIN}"
+curl --request PUT --url http://$USER:$PASSWORD@$HOST:$PORT/$DATABASE > /dev/null 2>&1
+DB_OUTPUT=$?
+if [ "$DB_OUTPUT" -ne 0 ]; then
+    printf "\n${CYAN}Status: ${PLAIN}${RED}Database could not be created. Terminating setup.${PLAIN}\n"
+    exit 1
+fi
+printf "\n${CYAN}Database created succesfully.${PLAIN}\n"
+
+## set env variables for running test
+printf "\n${RED}>> Setting env variables to run test${PLAIN} ${GREEN}...${PLAIN}"
+export CLOUDANT_URL=http://$USER:$PASSWORD@$HOST:$PORT
+export CLOUDANT_USERNAME=$USER
+export CLOUDANT_PASSWORD=$PASSWORD
+export CLOUDANT_PORT=$PORT
+export CLOUDANT_DATABASE=$DATABASE
+export CI=true
+printf "\n${CYAN}Env variables set.${PLAIN}\n"
+
+printf "\n${CYAN}Status: ${PLAIN}${GREEN}Set up completed successfully.${PLAIN}\n"
+printf "\n${CYAN}Instance url: ${YELLOW}http://$USER:$PASSWORD@$HOST:$PORT/$DATABASE${PLAIN}\n"
+printf "\n${CYAN}To run the test suite:${PLAIN} ${YELLOW}npm test${PLAIN}\n\n"
