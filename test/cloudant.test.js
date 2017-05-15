@@ -117,6 +117,64 @@ describe('cloudant connector', function() {
       });
   });
 
+  describe('updateOrCreate', function() {
+    var data = [{
+      id: 10,
+      name: 'Foo',
+      age: 45,
+    }, {
+      id: 3,
+      name: 'Bar',
+      age: 25,
+    }, {
+      id: 120,
+      name: 'Baz',
+      age: 30,
+    }];
+
+    before(function(done) {
+      SimpleEmployee.create(data, done);
+    });
+
+    after(function(done) {
+      SimpleEmployee.destroyAll(null, {limit: QUERY_MAX}, done);
+    });
+
+    it('create new instance if instance does not exist', function(done) {
+      var newData = {
+        id: 35,
+        name: 'Cruz',
+        age: 22,
+      };
+      SimpleEmployee.updateOrCreate(newData,
+      function(err, result, newInstance) {
+        should.not.exist(err);
+        should.exist(result);
+        result.id.should.equal(newData.id);
+        result.name.should.equal(newData.name);
+        result.age.should.equal(newData.age);
+        done();
+      });
+    });
+
+    it('update existing instance if instance exists', function(done) {
+      var updatedData = {
+        id: 35,
+        name: 'Kim',
+        age: 18,
+      };
+      SimpleEmployee.updateOrCreate(updatedData,
+      function(err, result) {
+        should.not.exist(err);
+        should.exist(result);
+        result.id.should.equal(updatedData.id);
+        result.name.should.equal(updatedData.name);
+        result.age.should.equal(updatedData.age);
+        done();
+      });
+    });
+  });
+
   describe('replaceById', function() {
     after(function cleanUpData(done) {
       Product.destroyAll(null, {limit: QUERY_MAX}, done);
