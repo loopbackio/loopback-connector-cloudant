@@ -19,13 +19,13 @@ if [ "$1" ]; then
     HOST=$1
 fi
 if [ "$2" ]; then
-    USER=$2
+    PORT=$2
 fi
-if [ "$3" ]; then
-    PASSWORD=$3
+if [ "$2" ]; then
+    USER=$3
 fi
 if [ "$4" ]; then
-    PORT=$4
+    PASSWORD=$4
 fi
 if [ "$5" ]; then
     DATABASE=$5
@@ -36,7 +36,7 @@ printf "\n${RED}>> Checking for docker${PLAIN} ${GREEN}...${PLAIN}"
 docker -v > /dev/null 2>&1
 DOCKER_EXISTS=$?
 if [ "$DOCKER_EXISTS" -ne 0 ]; then
-    printf "\n${CYAN}Status: ${PLAIN}${RED}Docker not found. Terminating setup.${PLAIN}\n"
+    printf "\n\n${CYAN}Status: ${PLAIN}${RED}Docker not found. Terminating setup.${PLAIN}\n\n"
     exit 1
 fi
 printf "\n${CYAN}Found docker. Moving on with the setup.${PLAIN}\n"
@@ -56,7 +56,7 @@ printf "\n${RED}>> Accepting license${PLAIN} ${GREEN}...${PLAIN}"
 docker exec -it cloudant-testdb cast license --silent > /dev/null 2>&1
 LICENSE_OUTPUT=$?
 if [ "$LICENSE_OUTPUT" -ne 0 ]; then
-    printf "\n${CYAN}Status: ${PLAIN}${RED}Failed to accept license. Terminating setup.${PLAIN}\n"
+    printf "\n\n${CYAN}Status: ${PLAIN}${RED}Failed to accept license. Terminating setup.${PLAIN}\n\n"
     exit 1
 fi
 printf "\n${CYAN}License accepted.${PLAIN}\n"
@@ -88,17 +88,17 @@ while [ "$OUTPUT" -ne 200 ] && [ "$TIMEOUT" -gt 0 ]
     done
 
 if [ "$TIMEOUT" -le 0 ]; then
-    printf "\n${RED}Failed to start Cloudant service. Terminating setup.${PLAIN}\n"
+    printf "\n\n${CYAN}Status: ${PLAIN}${RED}Failed to start Cloudant service. Terminating setup.${PLAIN}\n\n"
     exit 1
 fi
 printf "\n${CYAN}Cloudant started.${PLAIN}\n"
 
-## create database --- TODO check return code 
+## create database
 printf "\n${RED}>> Creating database in Cloudant${PLAIN}"
 curl --request PUT --url http://$USER:$PASSWORD@$HOST:$PORT/$DATABASE > /dev/null 2>&1
 DB_OUTPUT=$?
 if [ "$DB_OUTPUT" -ne 0 ]; then
-    printf "\n${CYAN}Status: ${PLAIN}${RED}Database could not be created. Terminating setup.${PLAIN}\n"
+    printf "\n\n${CYAN}Status: ${PLAIN}${RED}Database could not be created. Terminating setup.${PLAIN}\n\n"
     exit 1
 fi
 printf "\n${CYAN}Database created succesfully.${PLAIN}\n"

@@ -443,7 +443,7 @@ Currently the imported test cases from juggler doesn't fit Cloudant connector, t
 ```bash
 source setup.sh <HOST> <USER> <PASSWORD> <PORT> <DATABASE>
 ```
-where `<HOST>`, `<USER>`, `<PASSWORD>`, `<PORT>` and `<DATABASE>` are optional parameters. The default values are `localhost`, `admin`, `pass`, `8080` and `test-db` respectively.
+where `<HOST>`, `<PORT>`, `<USER>`, `<PASSWORD>` and `<DATABASE>` are optional parameters. The default values are `localhost`, `8080` `admin`, `pass` and `test-db` respectively.
 - Run the test:
 ```bash
 npm test
