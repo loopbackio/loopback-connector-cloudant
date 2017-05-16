@@ -65,7 +65,7 @@ describe('create', function() {
     });
   });
 
-  it('throws on update when model exists and _rev is different ',
+  it('throws on create when model exists and _rev is different ',
     function(done) {
       var initialResult;
       async.waterfall([

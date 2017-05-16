@@ -95,15 +95,15 @@ describe('updateOrCreate', function() {
           initialResult = _.cloneDeep(result);
           // Simulate the idea of another caller changing the record first!
           result.price = 250;
-          return Product.updateOrCreate(result, callback);
+          return Product.create(result, callback);
         },
         function(result, callback) {
           // Someone beat us to it, but we don't know that yet.
           initialResult.price = 150;
-          return Product.updateOrCreate(initialResult, callback);
+          return Product.create(initialResult, callback);
         },
       ], function(err, result) {
-        testUtil.hasError(err, result).should.be.ok();
+        err.should.be.ok();
         should(_.includes(err.message, 'Document update conflict'));
         done();
       });
