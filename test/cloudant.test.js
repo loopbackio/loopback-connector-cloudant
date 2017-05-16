@@ -158,19 +158,31 @@ describe('cloudant connector', function() {
     });
 
     it('update existing instance if instance exists', function(done) {
-      var updatedData = {
+      var updatedData = [{
         id: 35,
         name: 'Kim',
         age: 18,
-      };
-      SimpleEmployee.updateOrCreate(updatedData,
+      }, {
+        id: 10,
+        name: 'Tim',
+        age: 60,
+      }];
+      SimpleEmployee.updateOrCreate(updatedData[0],
       function(err, result) {
         should.not.exist(err);
         should.exist(result);
-        result.id.should.equal(updatedData.id);
-        result.name.should.equal(updatedData.name);
-        result.age.should.equal(updatedData.age);
-        done();
+        result.id.should.equal(updatedData[0].id);
+        result.name.should.equal(updatedData[0].name);
+        result.age.should.equal(updatedData[0].age);
+        SimpleEmployee.updateOrCreate(updatedData[1],
+        function(err, result) {
+          should.not.exist(err);
+          should.exist(result);
+          result.id.should.equal(updatedData[1].id);
+          result.name.should.equal(updatedData[1].name);
+          result.age.should.equal(updatedData[1].age);
+          done();
+        });
       });
     });
   });
