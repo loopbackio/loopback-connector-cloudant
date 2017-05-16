@@ -117,6 +117,76 @@ describe('cloudant connector', function() {
       });
   });
 
+  describe('updateOrCreate', function() {
+    var data = [{
+      id: 10,
+      name: 'Foo',
+      age: 45,
+    }, {
+      id: 3,
+      name: 'Bar',
+      age: 25,
+    }, {
+      id: 120,
+      name: 'Baz',
+      age: 30,
+    }];
+
+    before(function(done) {
+      SimpleEmployee.create(data, done);
+    });
+
+    after(function(done) {
+      SimpleEmployee.destroyAll(null, {limit: QUERY_MAX}, done);
+    });
+
+    it('create new instance if instance does not exist', function(done) {
+      var newData = {
+        id: 35,
+        name: 'Cruz',
+        age: 22,
+      };
+      SimpleEmployee.updateOrCreate(newData,
+      function(err, result, newInstance) {
+        should.not.exist(err);
+        should.exist(result);
+        result.id.should.equal(newData.id);
+        result.name.should.equal(newData.name);
+        result.age.should.equal(newData.age);
+        done();
+      });
+    });
+
+    it('update existing instance if instance exists', function(done) {
+      var updatedData = [{
+        id: 35,
+        name: 'Kim',
+        age: 18,
+      }, {
+        id: 10,
+        name: 'Tim',
+        age: 60,
+      }];
+      SimpleEmployee.updateOrCreate(updatedData[0],
+      function(err, result) {
+        should.not.exist(err);
+        should.exist(result);
+        result.id.should.equal(updatedData[0].id);
+        result.name.should.equal(updatedData[0].name);
+        result.age.should.equal(updatedData[0].age);
+        SimpleEmployee.updateOrCreate(updatedData[1],
+        function(err, result) {
+          should.not.exist(err);
+          should.exist(result);
+          result.id.should.equal(updatedData[1].id);
+          result.name.should.equal(updatedData[1].name);
+          result.age.should.equal(updatedData[1].age);
+          done();
+        });
+      });
+    });
+  });
+
   describe('replaceById', function() {
     after(function cleanUpData(done) {
       Product.destroyAll(null, {limit: QUERY_MAX}, done);
