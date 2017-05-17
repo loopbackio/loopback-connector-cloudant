@@ -43,3 +43,14 @@ exports.QUERY_MAX = 1000;
 exports.hasError = function hasError(err, result) {
   return !!err && !result;
 };
+
+/**
+ * Helper function for checking if error or result was returned.
+ * Note that if both err and result exist, this method will return false!
+ * @param {*} err The error to check.
+ * @param {*} result The result to check.
+ * @returns {Boolean} True if there is a result AND no error.
+ */
+exports.hasResult = function hasResult(err, result) {
+  return !err && !!result;
+};
