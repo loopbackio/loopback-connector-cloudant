@@ -8,12 +8,12 @@ PLAIN='\033[0m'
 
 ## cleaning up previous builds
 echo "\n${RED}Finding old builds and cleaning up${PLAIN} ${GREEN}...${PLAIN}"
-docker-compose down > /dev/null 2>&1
+docker rm -vf cloudant-testdb
 echo "${CYAN}Clean up complete.${PLAIN}\n"
 
 ## put up the database service
 echo "${RED}Starting the database service${PLAIN} ${GREEN}...${PLAIN}"
-docker-compose up -d cloudant
+docker run -d -p 8080:80 --privileged --name cloudant-testdb ibmcom/cloudant-developer:1.0.1
 echo "${CYAN}Database service started.${PLAIN}\n"
 
 ## (Cloudant only) Accept Cloudant license
