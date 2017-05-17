@@ -273,8 +273,6 @@ Let's say we have an instance in the database:
     });
   ```
 
-**Note:** When calling either `replaceOrCreate` or `updateOrCreate` function, **_do not specify the `_rev` value**_, unless the user is confident it should do a `replace`/`update` instead of a `create`. This is because Cloudant does not allow custom `_rev` value on a `create` operation.
-
 # Setup Cloudant Instance
 
 For user that don't have a cloudant server to develop or test, here are some suggestions can help you quickly setup one.

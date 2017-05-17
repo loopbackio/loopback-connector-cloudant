@@ -73,7 +73,7 @@ describe('updateOrCreate', function() {
       // Change the record in some way before updating.
       updatedBread.price = 200;
       Product.updateOrCreate(updatedBread, function(err, result) {
-        should.not.exist(err);
+        testUtil.hasError(err, result).should.not.be.ok();
         should.exist(result._rev);
         testUtil.checkModel(updatedBread, result);
         done();
