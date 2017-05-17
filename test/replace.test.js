@@ -64,33 +64,32 @@ describe('replaceOrCreate', function() {
     });
   });
 
-  it('throws on replace when model exists and _rev is different ',
-    function(done) {
-      var initialResult;
-      async.waterfall([
-        function(callback) {
-          return Product.create(bread, callback);
-        },
-        function(result, callback) {
-          return Product.findById(result.id, callback);
-        },
-        function(result, callback) {
-          initialResult = _.cloneDeep(result);
-          // Simulate the idea of another caller changing the record first!
-          result.price = 250;
-          return Product.create(result, callback);
-        },
-        function(result, callback) {
-          // Someone beat us to it, but we don't know that yet.
-          initialResult.price = 150;
-          return Product.create(initialResult, callback);
-        },
-      ], function(err, result) {
-        err.should.be.ok();
-        should(_.includes(err.message, 'Document update conflict'));
-        done();
-      });
-    });
+  it('throws on replace when model exists and _rev is different',
+     function(done) {
+       var initialResult;
+       async.waterfall([
+         function(callback) {
+           return Product.create(bread, callback);
+         },
+         function(result, callback) {
+           return Product.findById(result.id, callback);
+         },
+         function(result, callback) {
+           initialResult = _.cloneDeep(result);
+           // Simulate the idea of another caller changing the record first!
+           result.price = 250;
+           return Product.replaceOrCreate(result, callback);
+         },
+         function(result, options, callback) {
+           initialResult.price = 150;
+           return Product.replaceOrCreate(initialResult, callback);
+         },
+       ], function(err, result) {
+         testUtil.hasError(err, result).should.be.ok();
+         should(_.includes(err.message, 'Document update conflict'));
+         done();
+       });
+     });
 
   afterEach(cleanUpData);
 });
