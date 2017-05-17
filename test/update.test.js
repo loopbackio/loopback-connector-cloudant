@@ -129,6 +129,8 @@ describe('updateAll', function() {
     });
   });
 
+  after(cleanUpData);
+
   it('updates a model instance', function(done) {
     var newData = {
       name: 'bread2',
