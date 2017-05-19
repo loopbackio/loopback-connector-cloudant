@@ -8,11 +8,10 @@
 require('./init.js');
 var Cloudant = require('../lib/cloudant');
 var _ = require('lodash');
-var url = require('url');
 var should = require('should');
+var testUtil = require('./lib/test-util');
+var url = require('url');
 var db, Product, CustomerSimple, SimpleEmployee;
-
-var QUERY_MAX = 1000;
 
 describe('cloudant connector', function() {
   before(function(done) {
@@ -69,166 +68,6 @@ describe('cloudant connector', function() {
     db.once('connected', function() {
       db.automigrate(done);
     });
-  });
-
-  describe('replaceOrCreate', function() {
-    after(function cleanUpData(done) {
-      Product.destroyAll(done);
-    });
-    it('should replace a model instance if the passing key already exists',
-      function(done) {
-        Product.create({
-          id: 1,
-          name: 'bread',
-          price: 100,
-          undefinedProperty: 'ShouldBeRemoved',
-        }, function(err, product) {
-          if (err) return done(err);
-          Product.replaceOrCreate({
-            id: product.id,
-            name: 'milk',
-          }, function(err, updatedProduct) {
-            if (err) return done(err);
-            verifyUpdatedData(updatedProduct);
-          });
-        });
-
-        function verifyUpdatedData(data) {
-          // Verify callback data
-          should.exist(data.id);
-          should.not.exist(data.price);
-          // Should remove extraneous properties not defined in the model
-          should.not.exist(data.undefinedProperty);
-          data.name.should.be.equal('milk');
-
-          // Verify DB data
-          verifyDBData(data.id);
-        };
-
-        function verifyDBData(id) {
-          Product.findById(id, function(err, data) {
-            if (err) return done(err);
-            should.not.exist(data.price);
-            should.not.exist(data.undefinedProperty);
-            data.name.should.be.equal('milk');
-            done();
-          });
-        };
-      });
-  });
-
-  describe('updateOrCreate', function() {
-    var data = [{
-      id: 10,
-      name: 'Foo',
-      age: 45,
-    }, {
-      id: 3,
-      name: 'Bar',
-      age: 25,
-    }, {
-      id: 120,
-      name: 'Baz',
-      age: 30,
-    }];
-
-    before(function(done) {
-      SimpleEmployee.create(data, done);
-    });
-
-    after(function(done) {
-      SimpleEmployee.destroyAll(null, {limit: QUERY_MAX}, done);
-    });
-
-    it('create new instance if instance does not exist', function(done) {
-      var newData = {
-        id: 35,
-        name: 'Cruz',
-        age: 22,
-      };
-      SimpleEmployee.updateOrCreate(newData,
-      function(err, result, newInstance) {
-        should.not.exist(err);
-        should.exist(result);
-        result.id.should.equal(newData.id);
-        result.name.should.equal(newData.name);
-        result.age.should.equal(newData.age);
-        done();
-      });
-    });
-
-    it('update existing instance if instance exists', function(done) {
-      var updatedData = [{
-        id: 35,
-        name: 'Kim',
-        age: 18,
-      }, {
-        id: 10,
-        name: 'Tim',
-        age: 60,
-      }];
-      SimpleEmployee.updateOrCreate(updatedData[0],
-      function(err, result) {
-        should.not.exist(err);
-        should.exist(result);
-        result.id.should.equal(updatedData[0].id);
-        result.name.should.equal(updatedData[0].name);
-        result.age.should.equal(updatedData[0].age);
-        SimpleEmployee.updateOrCreate(updatedData[1],
-        function(err, result) {
-          should.not.exist(err);
-          should.exist(result);
-          result.id.should.equal(updatedData[1].id);
-          result.name.should.equal(updatedData[1].name);
-          result.age.should.equal(updatedData[1].age);
-          done();
-        });
-      });
-    });
-  });
-
-  describe('replaceById', function() {
-    after(function cleanUpData(done) {
-      Product.destroyAll(null, {limit: QUERY_MAX}, done);
-    });
-    it('should replace the model instance if the provided key already exists',
-      function(done) {
-        Product.create({
-          id: 2,
-          name: 'bread',
-          price: 100,
-          undefinedProperty: 'ShouldBeRemoved',
-        }, function(err, product) {
-          if (err) return done(err);
-          Product.replaceById(product.id, {name: 'apple'},
-            function(err, updatedProduct) {
-              if (err) return done(err);
-              verifyUpdatedData(updatedProduct);
-            });
-        });
-
-        function verifyUpdatedData(data) {
-          // Verify callback data
-          should.exist(data.id);
-          should.not.exist(data.price);
-          // Should remove extraneous properties not defined in the model
-          should.not.exist(data.undefinedProperty);
-          data.name.should.be.equal('apple');
-
-          // Verify DB data
-          verifyDBData(data.id);
-        };
-
-        function verifyDBData(id) {
-          Product.findById(id, function(err, data) {
-            if (err) return done(err);
-            should.not.exist(data.price);
-            should.not.exist(data.undefinedProperty);
-            data.name.should.be.equal('apple');
-            done();
-          });
-        };
-      });
   });
 
   describe('updateAll and updateAttributes', function() {
@@ -295,7 +134,7 @@ describe('cloudant connector', function() {
     });
 
     after(function(done) {
-      Product.destroyAll(null, {limit: QUERY_MAX}, done);
+      Product.destroyAll(null, {limit: testUtil.QUERY_MAX}, done);
     });
 
     it('updates a single instance with array props',
@@ -491,20 +330,25 @@ describe('cloudant connector', function() {
       name: 'Michael Santer',
       age: 30,
     }];
+    var rev;
 
     before(function(done) {
-      SimpleEmployee.create(data, done);
+      SimpleEmployee.create(data, function(err, result) {
+        should.not.exist(err);
+        rev = result[1]._rev;
+        done();
+      });
     });
 
     after(function(done) {
-      SimpleEmployee.destroyAll(null, {limit: QUERY_MAX}, done);
+      SimpleEmployee.destroyAll(null, {limit: testUtil.QUERY_MAX}, done);
     });
 
     it('find instances with numeric id (findById)', function(done) {
       SimpleEmployee.findById(data[1].id, function(err, result) {
         should.not.exist(err);
         should.exist(result);
-        should.deepEqual(result.__data, data[1]);
+        testUtil.checkData(data[1], result.__data);
         done();
       });
     });
@@ -514,7 +358,7 @@ describe('cloudant connector', function() {
         should.not.exist(err);
         should.exist(result);
         should.equal(result.length, 1);
-        should.deepEqual(result[0].__data, data[0]);
+        testUtil.checkData(data[0], result[0].__data);
         done();
       });
     });
@@ -546,6 +390,7 @@ describe('cloudant connector', function() {
         id: data[1].id,
         name: 'Christian Thompson',
         age: 32,
+        _rev: rev,
       };
       data[1].name = updatedData.name;
       data[1].age = updatedData.age;
@@ -562,9 +407,9 @@ describe('cloudant connector', function() {
             should.not.exist(err);
             should.exist(result);
             should.equal(result.length, 3);
-            should.deepEqual(result[0].__data, data[0]);
-            should.deepEqual(result[1].__data, data[1]);
-            should.deepEqual(result[2].__data, data[2]);
+            testUtil.checkData(data[0], result[0].__data);
+            testUtil.checkData(data[1], result[1].__data);
+            testUtil.checkData(data[2], result[2].__data);
             done();
           });
         });
@@ -581,15 +426,15 @@ describe('cloudant connector', function() {
           should.not.exist(err);
           should.exist(result);
           should.equal(result.length, 2);
-          should.deepEqual(result[0].__data, data[0]);
-          should.deepEqual(result[1].__data, data[2]);
+          testUtil.checkData(data[0], result[0].__data);
+          testUtil.checkData(data[2], result[1].__data);
           done();
         });
       });
     });
 
     it('destroy instances with "where" filter', function(done) {
-      SimpleEmployee.destroyAll({id: data[2].id}, {limit: QUERY_MAX},
+      SimpleEmployee.destroyAll({id: data[2].id}, {limit: testUtil.QUERY_MAX},
         function(err, result) {
           should.not.exist(err);
           should.exist(result);
@@ -600,10 +445,16 @@ describe('cloudant connector', function() {
             should.not.exist(err);
             should.exist(result);
             should.equal(result.length, 1);
-            should.deepEqual(result[0].__data, data[0]);
+            testUtil.checkData(data[0], result[0].__data);
             done();
           });
         });
+    });
+
+    after(function(done) {
+      SimpleEmployee.destroyAll(null, {limit: 1000}, function(err) {
+        return done(err);
+      });
     });
   });
 });
