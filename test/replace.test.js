@@ -111,25 +111,44 @@ describe('replaceById', function() {
     });
   });
 
-  after(cleanUpData);
+  afterEach(cleanUpData);
 
-  it('replaces instance by id', function(done) {
+  it('replaces instance by id after finding', function(done) {
+    Product.find(function(err, result) {
+      testUtil.hasError(err, result).should.not.be.ok();
+      testUtil.hasResult(err, result).should.be.ok();
+      var updatedData = _.clone(result);
+      updatedData.name = 'bread3';
+      var id = result[0].id;
+      var oldRev = result[0]._rev;
+      Product.replaceById(id, updatedData[0], function(err, result) {
+        if (err) throw err;
+        testUtil.hasError(err, result).should.not.be.ok();
+        testUtil.hasResult(err, result).should.be.ok();
+        oldRev.should.not.equal(result._rev);
+        testUtil.checkModel(updatedData, result);
+        done();
+      });
+    });
+  });
+
+  it('replaces instance by id after creating', function(done) {
     var newData = {
       name: 'bread2',
       price: 100,
     };
-    Product.find(function(err, result) {
+    Product.create(newData, function(err, result) {
       testUtil.hasError(err, result).should.not.be.ok();
       testUtil.hasResult(err, result).should.be.ok();
-      var id = result[0].id;
-      var oldRev = result[0]._rev;
-      newData._rev = result[0]._rev;
-      Product.replaceById(id, newData, function(err, result) {
+      var updatedData = _.clone(result);
+      updatedData.name = 'bread3';
+      var id = result.id;
+      var oldRev = result._rev;
+      Product.replaceById(id, updatedData, function(err, result) {
         testUtil.hasError(err, result).should.not.be.ok();
         testUtil.hasResult(err, result).should.be.ok();
-        newData._rev = result._rev;
         oldRev.should.not.equal(result._rev);
-        testUtil.checkModel(newData, result);
+        testUtil.checkModel(updatedData, result);
         done();
       });
     });

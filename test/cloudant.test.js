@@ -70,50 +70,6 @@ describe('cloudant connector', function() {
     });
   });
 
-  describe('replaceById', function() {
-    after(function cleanUpData(done) {
-      Product.destroyAll(null, {limit: testUtil.QUERY_MAX}, done);
-    });
-    it('should replace the model instance if the provided key already exists',
-      function(done) {
-        Product.create({
-          id: 2,
-          name: 'bread',
-          price: 100,
-          undefinedProperty: 'ShouldBeRemoved',
-        }, function(err, product) {
-          if (err) return done(err);
-          Product.replaceById(product.id, {name: 'apple'},
-            function(err, updatedProduct) {
-              if (err) return done(err);
-              verifyUpdatedData(updatedProduct);
-            });
-        });
-
-        function verifyUpdatedData(data) {
-          // Verify callback data
-          should.exist(data.id);
-          should.not.exist(data.price);
-          // Should remove extraneous properties not defined in the model
-          should.not.exist(data.undefinedProperty);
-          data.name.should.be.equal('apple');
-
-          // Verify DB data
-          verifyDBData(data.id);
-        };
-
-        function verifyDBData(id) {
-          Product.findById(id, function(err, data) {
-            if (err) return done(err);
-            should.not.exist(data.price);
-            should.not.exist(data.undefinedProperty);
-            data.name.should.be.equal('apple');
-            done();
-          });
-        };
-      });
-  });
-
   describe('updateAll and updateAttributes', function() {
     var productInstance;
     beforeEach('create Product', function(done) {
@@ -374,9 +330,14 @@ describe('cloudant connector', function() {
       name: 'Michael Santer',
       age: 30,
     }];
+    var rev;
 
     before(function(done) {
-      SimpleEmployee.create(data, done);
+      SimpleEmployee.create(data, function(err, result) {
+        should.not.exist(err);
+        rev = result[1]._rev;
+        done();
+      });
     });
 
     after(function(done) {
@@ -429,6 +390,7 @@ describe('cloudant connector', function() {
         id: data[1].id,
         name: 'Christian Thompson',
         age: 32,
+        _rev: rev,
       };
       data[1].name = updatedData.name;
       data[1].age = updatedData.age;
