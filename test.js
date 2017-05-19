@@ -27,11 +27,7 @@ var CONNECT_DELAY = ms('5s');
 var containerToDelete = null;
 
 async.waterfall([
-  dockerStart('ibmcom/cloudant-developer:1.0.1'),
-  sleep(ms('2s')),
-  dockerExec(['cast', 'license', '--silent']),
-  sleep(ms('2s')),
-  dockerExec(['cast', 'database', 'init', '-v', '-y', '-p', 'pass']),
+  dockerStart('ibmcom/cloudant-developer:2.0.1'),
   sleep(ms('2s')),
   setCloudantEnv,
   waitFor('/_all_dbs'),
@@ -75,7 +71,6 @@ function dockerStart(imgName) {
           Image: imgName,
           HostConfig: {
             PublishAllPorts: true,
-            Privileged: true,
           },
         }, function(err, container) {
           console.log('recording container for later cleanup: ', container.id);
@@ -86,25 +81,6 @@ function dockerStart(imgName) {
           container.start(function(err, data) {
             next(err, container);
           });
-        });
-      });
-    });
-  };
-}
-
-function dockerExec(cmd) {
-  return function exec(container, next) {
-    console.log('docker exec: %j', cmd);
-    container.exec({Cmd: cmd}, function(err, exec) {
-      if (err) {
-        return next(err);
-      }
-      exec.start(function(err, stream) {
-        if (err) {
-          return next(err);
-        }
-        docker.modem.followProgress(stream, function(err, output) {
-          next(err, container);
         });
       });
     });
