@@ -169,6 +169,8 @@ Our connector allows the user to retrieve back the `_rev` property upon all CRUD
 
 If you would like to have a `_rev` property on your model, as an end user, the onus is on you to add the property in the model definition.
 
+**Note:** All CRUD operations require `_rev` (except create) and __it is up to the user to specify them__. The connector does not handle such cases due to possibilities of race condition when two users try to update the same document.
+
 #### Example CRUD operations with `_rev`
 
 `model.json`
