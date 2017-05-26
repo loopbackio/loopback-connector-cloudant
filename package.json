@@ -17,7 +17,8 @@
   "scripts": {
     "lint": "eslint .",
     "test": "node test.js",
-    "posttest": "npm run lint"
+    "posttest": "npm run lint",
+    "mocha": "./node_modules/.bin/_mocha --timeout 40000 test/*.test.js"
   },
   "dependencies": {
     "async": "^1.5.0",
