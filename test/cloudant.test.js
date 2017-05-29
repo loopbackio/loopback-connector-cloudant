@@ -70,41 +70,6 @@ describe('cloudant connector', function() {
     });
   });
 
-  describe('updateAll and updateAttributes', function() {
-    var productInstance;
-    beforeEach('create Product', function(done) {
-      Product.create({
-        id: 1,
-        name: 'bread',
-        price: 100,
-      }, function(err, product) {
-        if (err) return done(err);
-        productInstance = product;
-        done();
-      });
-    });
-
-    afterEach(function(done) {
-      Product.destroyById(1, function(err) {
-        if (err) return done(err);
-        done();
-      });
-    });
-
-    it('accepts loopback model instance as input data for update',
-      function(done) {
-        productInstance.setAttribute('name', 'butter');
-        Product.updateAll({id: '1'}, productInstance, function(err, res) {
-          if (err) return done(err);
-
-          Product.findById('1', function(err, prod) {
-            prod.name.should.equal('butter');
-            done();
-          });
-        });
-      });
-  });
-
   describe('model with array props gets updated properly', function() {
     var prod1, prod2;
     before('create Product', function(done) {
