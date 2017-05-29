@@ -472,11 +472,14 @@ describe('cloudant constructor', function() {
         foo: 'bar',
       };
       ds.settings.plugin = 'whack-a-mole';
+      ds.settings.requestDefault = {proxy: 'http://localhost:8080'};
       var connector = Cloudant.initialize(ds, function(err) {
         should.not.exist(err);
         should.exist(result.foobar);
         result.foobar.foo.should.be.equal('bar');
         result.plugin.should.be.equal(ds.settings.plugin);
+        should.exist(result.requestDefault);
+        result.requestDefault.proxy.should.be.equal('http://localhost:8080');
       });
     });
 
