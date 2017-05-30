@@ -13,7 +13,7 @@ var url = require('url');
 
 var db, sampleData;
 
-describe.only('cloudant view', function() {
+describe('cloudant view', function() {
   describe('viewDocs', function(done) {
     before(function(done) {
       db = getDataSource();
@@ -81,12 +81,12 @@ function generateSamples() {
   var samples = [
     {
       model: 'purchase',
-      'customer_id': 1,
+      customerId: 1,
       basket: ['food', 'drink'],
     },
     {
       model: 'purchase',
-      'customer_id': 2,
+      customerId: 2,
       basket: ['book', 'video'],
     },
     {
