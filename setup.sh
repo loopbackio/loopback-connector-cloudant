@@ -39,13 +39,17 @@
      printf "\n\n${CYAN}Status: ${PLAIN}${RED}Docker not found. Terminating setup.${PLAIN}\n\n"		
      exit 1		
  fi	
+ printf "\n${CYAN}Found docker. Moving on with the setup.${PLAIN}\n"
+
+ ## check if docker-compose exists		
+ printf "\n${RED}>> Checking for docker-compose${PLAIN} ${GREEN}...${PLAIN}"		
  docker-compose -v > /dev/null 2>&1
  DOCKER_COMPOSE_EXISTS=$?
  if [ "$DOCKER_COMPOSE_EXISTS" -ne 0 ]; then		
      printf "\n\n${CYAN}Status: ${PLAIN}${RED}Docker compose not found. Terminating setup.${PLAIN}\n\n"		
      exit 1		
- fi	
- printf "\n${CYAN}Found docker. Moving on with the setup.${PLAIN}\n"		
+ fi
+ printf "\n${CYAN}Found docker-compose. Moving on with the setup.${PLAIN}\n"
  		
  ## cleaning up previous builds		
  printf "\n${RED}>> Finding old builds and cleaning up${PLAIN} ${GREEN}...${PLAIN}"		
@@ -59,7 +63,7 @@
  		
  ## (Cloudant only) Accept Cloudant license		
  printf "\n${RED}>> Accepting license${PLAIN} ${GREEN}...${PLAIN}"		
- docker exec -it cloudant-testdb cast license --silent > /dev/null 2>&1		
+ docker exec -it cloudant-testdb cast license --silent > /dev/null 2>&1	
  LICENSE_OUTPUT=$?		
  if [ "$LICENSE_OUTPUT" -ne 0 ]; then		
      printf "\n\n${CYAN}Status: ${PLAIN}${RED}Failed to accept license. Terminating setup.${PLAIN}\n\n"		

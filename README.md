@@ -567,7 +567,7 @@ Currently the imported test cases from juggler doesn't fit Cloudant connector, t
 ```bash
 source setup.sh <HOST> <USER> <PASSWORD> <PORT> <DATABASE>
 ```
-where `<HOST>`, `<PORT>`, `<USER>`, `<PASSWORD>` and `<DATABASE>` are optional parameters. The default values are `localhost`, `8080` `admin`, `pass` and `test-db` respectively.
+where `<HOST>`, `<PORT>`, `<USER>`, `<PASSWORD>` and `<DATABASE>` are optional parameters. The default values are `localhost`, `8080` `admin`, `pass` and `testdb` respectively.
 - Run the test:
 ```bash
 npm run mocha
