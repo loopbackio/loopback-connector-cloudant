@@ -10,7 +10,7 @@ those typically used within Loopback.
 
 ### Regex Filtering
 
-LoopBack filter uses `regexp` as the regular expression field name, the connector converts it to a cloudant syntax name, which is `$regex`, then send the corresponding query to database. Therefore please provide `regexp` instead of `$regex` or `regex` in the filter of a LoopBack api, for example:
+LoopBack filter uses `regexp` as the regular expression field name, the connector converts it to a cloudant syntax name, which is `$regex`, then sends the corresponding query to database. Therefore, please provide `regexp` instead of `$regex` or `regex` in the filter of a LoopBack api, for example:
 
 ```
 MyModel.find({where: {regexp: '^A'}}, cb);
