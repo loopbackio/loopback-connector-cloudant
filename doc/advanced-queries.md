@@ -10,8 +10,15 @@ those typically used within Loopback.
 
 ### Regex Filtering
 
-When filtering by `$regex` in Cloudant, you must provide at least one target field
-that can be filtered with an equality operator.
+LoopBack filter uses `regexp` as the regular expression field name, the connector converts it to a cloudant syntax name, which is `$regex`, then sends the corresponding query to database. Therefore, please provide `regexp` instead of `$regex` or `regex` in the filter of a LoopBack api, for example:
+
+```
+MyModel.find({where: {regexp: '^A'}}, cb);
+```
+
+More details of the LoopBack syntax regexp filter, refer to [document of where filter](https://loopback.io/doc/en/lb2/Where-filter.html#regular-expressions)
+
+When filtering by `$regex` in Cloudant, you must provide at least one target field that can be filtered with an equality operator.
 
 See the [Cloudant Query Docs](https://docs.cloudant.com/cloudant_query.html#sort-syntax)
 for more information.
