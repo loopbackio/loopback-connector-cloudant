@@ -140,16 +140,14 @@ describe('updateAll', function() {
       testUtil.hasError(err, result).should.not.be.ok();
       testUtil.hasResult(err, result).should.be.ok();
       var id = result[0].id;
-      var oldRev = result[0]._rev;
       Product.update({id: id}, newData, function(err, result) {
         testUtil.hasError(err, result).should.not.be.ok();
         testUtil.hasResult(err, result).should.be.ok();
-        var newRev = result[0].rev;
-        oldRev.should.not.equal(newRev);
+        result.should.have.property('count');
+        result.count.should.equal(1);
         Product.find(function(err, result) {
           testUtil.hasError(err, result).should.not.be.ok();
           testUtil.hasResult(err, result).should.be.ok();
-          newRev.should.equal(result[0]._rev);
           done();
         });
       });
