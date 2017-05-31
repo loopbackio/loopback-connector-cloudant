@@ -13,7 +13,7 @@ those typically used within Loopback.
 LoopBack filter uses `regexp` as the regular expression field name, the connector converts it to a cloudant syntax name, which is `$regex`, then sends the corresponding query to database. Therefore, please provide `regexp` instead of `$regex` or `regex` in the filter of a LoopBack api, for example:
 
 ```
-MyModel.find({where: {regexp: '^A'}}, cb);
+MyModel.find({where: { afieldname: {regexp: '^A'}}}, cb);
 ```
 
 More details of the LoopBack syntax regexp filter, refer to [document of where filter](https://loopback.io/doc/en/lb2/Where-filter.html#regular-expressions)

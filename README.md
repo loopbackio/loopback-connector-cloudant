@@ -545,8 +545,7 @@ module.exports = function(server) {
   // 'server/datasources.json' file
   var ds = server.datasources.cloudantDB;
 
-
-  ds.on('connected', function() {
+  ds.once('connected', function() {
     // 1. Please note `ds.connector.viewDocs()` is the correct way to call it,
     // NOT `ds.viewDocs()`
     // 2. This api matches the Cloudant endpoint:
