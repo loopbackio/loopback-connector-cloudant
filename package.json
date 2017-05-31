@@ -16,7 +16,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
-    "test": "mocha -G --timeout 10000",
+    "test": "node test.js",
     "posttest": "npm run lint"
   },
   "dependencies": {
@@ -29,10 +29,12 @@
     "strong-globalize": "^2.6.6"
   },
   "devDependencies": {
+    "dockerode": "^2.4.3",
     "eslint": "^2.13.1",
     "eslint-config-loopback": "^4.0.0",
     "loopback-datasource-juggler": "^2.53.0",
     "mocha": "^2.3.4",
+    "ms": "^2.0.0",
     "rc": "^1.1.5",
     "should": "^7.1.1",
     "sinon": "^1.17.2"
