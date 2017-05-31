@@ -58,7 +58,8 @@ describe('updateAll', function() {
           should.not.exist(err);
           should.exist(result);
           newData.id = id;
-          should.deepEqual(newData, result[0].__data);
+          should.equal(newData.name, result[0].name);
+          should.equal(newData.price, result[0].price);
           done();
         });
       });
