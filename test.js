@@ -98,7 +98,7 @@ function setCloudantEnv(container, next) {
       ['NetworkSettings', 'Ports', '80/tcp', '0', 'HostPort']);
     process.env.CLOUDANT_PORT = port;
     process.env.CLOUDANT_HOST = host;
-    process.env.CLOUDANT_URL = 'http://' + host + ':' + port;
+    process.env.CLOUDANT_URL = 'http://' + process.env.CLOUDANT_USERNAME + ':' + process.env.CLOUDANT_PASSWORD + '@' + host + ':' + port;
     console.log('env:', _.pick(process.env, [
       'CLOUDANT_URL',
       'CLOUDANT_HOST',
@@ -129,7 +129,7 @@ function waitFor(path) {
         next(err || new Error('failed to contact Cloudant'));
       }
       http.get(opts, function(res) {
-        res.pipe(devNull());
+        res.on('data', function() {});
         res.on('error', tryAgain);
         res.on('end', function() {
           if (res.statusCode === 200) {
@@ -157,7 +157,7 @@ function createDB(db) {
     };
     console.log('creating db: %j', db);
     http.request(opts, function(res) {
-      res.pipe(devNull());
+      res.on('data', function() {});
       res.on('error', next);
       res.on('end', function() {
         setImmediate(next, null, container);
@@ -195,14 +195,4 @@ function dockerCleanup(next) {
   } else {
     setImmediate(next);
   }
-}
-
-// A Writable Stream that just consumes a stream. Useful for draining readable
-// streams so that they 'end' properly, like sometimes-empty http responses.
-function devNull() {
-  return new require('stream').Writable({
-    write: function(_chunk, _encoding, cb) {
-      return cb(null);
-    },
-  });
 }
