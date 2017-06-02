@@ -154,3 +154,50 @@ describe('updateAll', function() {
     });
   });
 });
+
+describe('updateAttributes', function() {
+  before(function(done) {
+    db = getDataSource();
+
+    Product = db.define('Product', {
+      name: {type: String},
+      description: {type: String},
+      price: {type: Number},
+    }, {forceId: false, updateOnLoad: true});
+
+    db.once('connected', function() {
+      db.automigrate(function(err) {
+        Product.create(bread, done);
+      });
+    });
+  });
+
+  after(cleanUpData);
+
+  it('update an attribute for a model instance', function(done) {
+    var updateFields = {
+      name: 'bread2',
+    };
+    Product.find(function(err, result) {
+      testUtil.hasError(err, result).should.not.be.ok();
+      testUtil.hasResult(err, result).should.be.ok();
+      var id = result[0].id;
+      var oldRev = result[0]._rev;
+      var newData = _.cloneDeep(result[0]);
+      newData.name = updateFields.name;
+      var product = new Product(result[0]);
+      product.updateAttributes(newData, function(err, result) {
+        testUtil.hasError(err, result).should.not.be.ok();
+        testUtil.hasResult(err, result).should.be.ok();
+        var newRev = result._rev;
+        oldRev.should.not.equal(newRev);
+        Product.find(function(err, result) {
+          testUtil.hasError(err, result).should.not.be.ok();
+          testUtil.hasResult(err, result).should.be.ok();
+          newRev.should.equal(result[0]._rev);
+          done();
+        });
+      });
+    });
+  });
+});
