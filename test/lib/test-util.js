@@ -34,14 +34,17 @@ exports.checkData = function checkData(expected, actual) {
 exports.QUERY_MAX = 1000;
 
 /**
- * Helper function for checking if error or result was returned.
- * Note that if both err and result exist, this method will return false!
+ * Helper function for refining error message if both err and result exist.
  * @param {*} err The error to check.
  * @param {*} result The result to check.
- * @returns {Boolean} True if there is an error AND no result.
+ * @returns {Error} The refined Error message.
  */
-exports.hasError = function hasError(err, result) {
-  return !!err && !result;
+exports.refinedError = function refinedError(err, result) {
+  var newErr = null;
+  if (!!err && result)
+    newErr = new Error('both err and result were returned!');
+  else if (err) newErr = err;
+  return newErr;
 };
 
 /**
