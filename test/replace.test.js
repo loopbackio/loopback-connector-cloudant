@@ -40,7 +40,8 @@ describe('replaceOrCreate', function() {
 
   it('creates when the instance does not exist', function(done) {
     Product.replaceOrCreate(bread, function(err, result) {
-      testUtil.hasError(err, result).should.not.be.ok();
+      err = testUtil.refinedError(err, result);
+      if (err) return done(err);
       testUtil.checkModel(bread, result);
       done();
     });
@@ -49,14 +50,16 @@ describe('replaceOrCreate', function() {
   it('replaces when the instance exists', function(done) {
     // Use create, not replaceOrCreate!
     Product.create(bread, function(err, result) {
-      testUtil.hasError(err, result).should.not.be.ok();
+      err = testUtil.refinedError(err, result);
+      if (err) return done(err);
       should.exist(result._rev);
       var updatedBread = _.cloneDeep(result);
       // Make the new record different a subset of the old one.
       delete updatedBread.price;
 
       Product.replaceOrCreate(updatedBread, function(err, result) {
-        testUtil.hasError(err, result).should.not.be.ok();
+        err = testUtil.refinedError(err, result);
+        if (err) return done(err);
         testUtil.checkModel(updatedBread, result);
         should.notDeepEqual(bread, result);
         done();
@@ -85,7 +88,7 @@ describe('replaceOrCreate', function() {
            return Product.replaceOrCreate(initialResult, callback);
          },
        ], function(err, result) {
-         testUtil.hasError(err, result).should.be.ok();
+         var err = testUtil.refinedError(err, result);
          should(_.includes(err.message, 'Document update conflict'));
          done();
        });
@@ -115,15 +118,16 @@ describe('replaceById', function() {
 
   it('replaces instance by id after finding', function(done) {
     Product.find(function(err, result) {
-      testUtil.hasError(err, result).should.not.be.ok();
+      err = testUtil.refinedError(err, result);
+      if (err) return done(err);
       testUtil.hasResult(err, result).should.be.ok();
       var updatedData = _.clone(result);
       updatedData.name = 'bread3';
       var id = result[0].id;
       var oldRev = result[0]._rev;
       Product.replaceById(id, updatedData[0], function(err, result) {
-        if (err) throw err;
-        testUtil.hasError(err, result).should.not.be.ok();
+        err = testUtil.refinedError(err, result);
+        if (err) return done(err);
         testUtil.hasResult(err, result).should.be.ok();
         oldRev.should.not.equal(result._rev);
         testUtil.checkModel(updatedData, result);
@@ -138,14 +142,16 @@ describe('replaceById', function() {
       price: 100,
     };
     Product.create(newData, function(err, result) {
-      testUtil.hasError(err, result).should.not.be.ok();
+      err = testUtil.refinedError(err, result);
+      if (err) return done(err);
       testUtil.hasResult(err, result).should.be.ok();
       var updatedData = _.clone(result);
       updatedData.name = 'bread3';
       var id = result.id;
       var oldRev = result._rev;
       Product.replaceById(id, updatedData, function(err, result) {
-        testUtil.hasError(err, result).should.not.be.ok();
+        err = testUtil.refinedError(err, result);
+        if (err) return done(err);
         testUtil.hasResult(err, result).should.be.ok();
         oldRev.should.not.equal(result._rev);
         testUtil.checkModel(updatedData, result);

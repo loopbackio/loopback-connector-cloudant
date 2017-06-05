@@ -55,7 +55,8 @@ describe('find', function() {
 
   it('find all model instance', function(done) {
     Product.find(function(err, result) {
-      testUtil.hasError(err, result).should.not.be.ok();
+      err = testUtil.refinedError(err, result);
+      if (err) return done(err);
       should.exist(result);
       result.length.should.equal(bread.length);
       for (var i = 0; i < bread.length; i++) {
@@ -68,7 +69,8 @@ describe('find', function() {
 
   it('findById all model instance', function(done) {
     Product.findById(1, function(err, result) {
-      testUtil.hasError(err, result).should.not.be.ok();
+      err = testUtil.refinedError(err, result);
+      if (err) return done(err);
       should.exist(result);
       should.exist(result._rev);
       testUtil.checkModel(bread[0], result);

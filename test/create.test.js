@@ -39,9 +39,11 @@ describe('create', function() {
   });
   it('creates when model instance does not exist', function(done) {
     Product.create(bread, function(err, result) {
-      testUtil.hasError(err, result).should.not.be.ok();
+      err = testUtil.refinedError(err, result);
+      if (err) return done(err);
       Product.findById(result.id, function(err, result) {
-        testUtil.hasError(err, result).should.not.be.ok();
+        err = testUtil.refinedError(err, result);
+        if (err) return done(err);
         should.exist(result._rev);
         testUtil.checkModel(bread, result);
         done();
@@ -51,13 +53,15 @@ describe('create', function() {
 
   it('replaces when the instance exists', function(done) {
     Product.create(bread, function(err, result) {
-      testUtil.hasError(err, result).should.not.be.ok();
+      err = testUtil.refinedError(err, result);
+      if (err) return done(err);
       should.exist(result._rev);
       var updatedBread = _.cloneDeep(result);
       // Make the new record different a subset of the old one.
       delete updatedBread.price;
       Product.create(updatedBread, function(err, result) {
-        testUtil.hasError(err, result).should.not.be.ok();
+        err = testUtil.refinedError(err, result);
+        if (err) return done(err);
         testUtil.checkModel(updatedBread, result);
         should.notDeepEqual(bread, result);
         done();

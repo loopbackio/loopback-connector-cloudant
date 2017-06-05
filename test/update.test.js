@@ -40,9 +40,11 @@ describe('updateOrCreate', function() {
 
   it('creates when model instance does not exist', function(done) {
     Product.updateOrCreate(bread, function(err, result) {
-      testUtil.hasError(err, result).should.not.be.ok();
+      err = testUtil.refinedError(err, result);
+      if (err) return done(err);
       Product.findById(result.id, function(err, result) {
-        testUtil.hasError(err, result).should.not.be.ok();
+        err = testUtil.refinedError(err, result);
+        if (err) return done(err);
         should.exist(result._rev);
         testUtil.checkModel(bread, result);
         done();
@@ -54,9 +56,11 @@ describe('updateOrCreate', function() {
     function(done) {
       var breadWithId = _.merge({id: 1}, bread);
       Product.updateOrCreate(breadWithId, function(err, result) {
-        testUtil.hasError(err, result).should.not.be.ok();
+        err = testUtil.refinedError(err, result);
+        if (err) return done(err);
         Product.findById(result.id, function(err, result) {
-          testUtil.hasError(err, result).should.not.be.ok();
+          err = testUtil.refinedError(err, result);
+          if (err) return done(err);
           should.exist(result._rev);
           testUtil.checkModel(breadWithId, result);
           done();
@@ -67,13 +71,15 @@ describe('updateOrCreate', function() {
   it('updates when model exists and _rev matches', function(done) {
     // Use create, not updateOrCreate!
     Product.create(bread, function(err, result) {
-      testUtil.hasError(err, result).should.not.be.ok();
+      err = testUtil.refinedError(err, result);
+      if (err) return done(err);
       should.exist(result._rev);
       var updatedBread = _.cloneDeep(result);
       // Change the record in some way before updating.
       updatedBread.price = 200;
       Product.updateOrCreate(updatedBread, function(err, result) {
-        testUtil.hasError(err, result).should.not.be.ok();
+        err = testUtil.refinedError(err, result);
+        if (err) return done(err);
         should.exist(result._rev);
         testUtil.checkModel(updatedBread, result);
         done();
@@ -103,7 +109,7 @@ describe('updateOrCreate', function() {
            return Product.updateOrCreate(initialResult, callback);
          },
        ], function(err, result) {
-         testUtil.hasError(err, result).should.be.ok();
+         err = testUtil.refinedError(err, result);
          should(_.includes(err.message, 'Document update conflict'));
          done();
        });
@@ -137,16 +143,19 @@ describe('updateAll', function() {
       price: 250,
     };
     Product.find(function(err, result) {
-      testUtil.hasError(err, result).should.not.be.ok();
+      err = testUtil.refinedError(err, result);
+      if (err) return done(err);
       testUtil.hasResult(err, result).should.be.ok();
       var id = result[0].id;
       Product.update({id: id}, newData, function(err, result) {
-        testUtil.hasError(err, result).should.not.be.ok();
+        err = testUtil.refinedError(err, result);
+        if (err) return done(err);
         testUtil.hasResult(err, result).should.be.ok();
         result.should.have.property('count');
         result.count.should.equal(1);
         Product.find(function(err, result) {
-          testUtil.hasError(err, result).should.not.be.ok();
+          err = testUtil.refinedError(err, result);
+          if (err) return done(err);
           testUtil.hasResult(err, result).should.be.ok();
           done();
         });
@@ -179,7 +188,8 @@ describe('updateAttributes', function() {
       name: 'bread2',
     };
     Product.find(function(err, result) {
-      testUtil.hasError(err, result).should.not.be.ok();
+      err = testUtil.refinedError(err, result);
+      if (err) return done(err);
       testUtil.hasResult(err, result).should.be.ok();
       var id = result[0].id;
       var oldRev = result[0]._rev;
@@ -187,12 +197,14 @@ describe('updateAttributes', function() {
       newData.name = updateFields.name;
       var product = new Product(result[0]);
       product.updateAttributes(newData, function(err, result) {
-        testUtil.hasError(err, result).should.not.be.ok();
+        err = testUtil.refinedError(err, result);
+        if (err) return done(err);
         testUtil.hasResult(err, result).should.be.ok();
         var newRev = result._rev;
         oldRev.should.not.equal(newRev);
         Product.find(function(err, result) {
-          testUtil.hasError(err, result).should.not.be.ok();
+          err = testUtil.refinedError(err, result);
+          if (err) return done(err);
           testUtil.hasResult(err, result).should.be.ok();
           newRev.should.equal(result[0]._rev);
           done();
