@@ -129,15 +129,23 @@ describe('updateAll', function() {
     }, {forceId: false});
 
     db.once('connected', function() {
-      db.automigrate(function(err) {
-        Product.create(bread, done);
-      });
+      db.automigrate(done);
     });
   });
 
-  after(cleanUpData);
+  beforeEach(function(done) {
+    Product.create([{
+      name: 'bread',
+      price: 100,
+    }, {
+      name: 'bread-x',
+      price: 110,
+    }], done);
+  });
 
-  it('updates a model instance', function(done) {
+  afterEach(cleanUpData);
+
+  it('updates a model instance without `_rev` property', function(done) {
     var newData = {
       name: 'bread2',
       price: 250,
@@ -157,6 +165,39 @@ describe('updateAll', function() {
           err = testUtil.refinedError(err, result);
           if (err) return done(err);
           testUtil.hasResult(err, result).should.be.ok();
+          result.length.should.equal(2);
+          newData.name.should.be.oneOf(result[0].name, result[1].name);
+          newData.price.should.be.oneOf(result[0].price, result[1].price);
+          done();
+        });
+      });
+    });
+  });
+
+  it('updates a model instance with `_rev` property', function(done) {
+    var newData = {
+      name: 'bread2',
+      price: 250,
+    };
+    Product.find(function(err, result) {
+      err = testUtil.refinedError(err, result);
+      if (err) return done(err);
+      testUtil.hasResult(err, result).should.be.ok();
+      var id = result[0].id;
+      newData._rev = result[0]._rev;
+      Product.update({id: id}, newData, function(err, result) {
+        err = testUtil.refinedError(err, result);
+        if (err) return done(err);
+        testUtil.hasResult(err, result).should.be.ok();
+        result.should.have.property('count');
+        result.count.should.equal(1);
+        Product.find(function(err, result) {
+          err = testUtil.refinedError(err, result);
+          if (err) return done(err);
+          testUtil.hasResult(err, result).should.be.ok();
+          result.length.should.equal(2);
+          newData.name.should.be.oneOf(result[0].name, result[1].name);
+          newData.price.should.be.oneOf(result[0].price, result[1].price);
           done();
         });
       });

@@ -93,6 +93,8 @@ describe('cloudant connector', function() {
         }, function(err, product) {
           if (err) return done(err);
           prod2 = product;
+          delete prod1._rev;
+          delete prod2._rev;
           done();
         });
       });
