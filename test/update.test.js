@@ -164,6 +164,101 @@ describe('updateAll', function() {
   });
 });
 
+describe('bulkReplace', function() {
+  var breads = [{
+    name: 'bread1',
+    price: 10,
+  }, {
+    name: 'bread2',
+    price: 20,
+  }, {
+    name: 'bread3',
+    price: 30,
+  }, {
+    name: 'bread4',
+    price: 40,
+  }, {
+    name: 'bread5',
+    price: 50,
+  }, {
+    name: 'bread6',
+    price: 60,
+  }, {
+    name: 'bread7',
+    price: 70,
+  }];
+
+  var dataToBeUpdated = [{
+    name: 'bread1-update',
+    price: 100,
+  }, {
+    name: 'bread4-update',
+    price: 200,
+  }, {
+    name: 'bread6-update',
+    price: 300,
+  }];
+
+  before(function(done) {
+    db = getDataSource();
+
+    Product = db.define('Product', {
+      name: {type: String},
+      description: {type: String},
+      price: {type: Number},
+    }, {forceId: false});
+
+    db.once('connected', function() {
+      db.automigrate(function(err) {
+        Product.create(breads, done);
+      });
+    });
+  });
+
+  afterEach(cleanUpData);
+
+  it('bulk replaces with an array of data', function(done) {
+    Product.find(function(err, result) {
+      err = testUtil.refinedError(err, result);
+      if (err) return done(err);
+      testUtil.hasResult(err, result).should.be.ok();
+
+      dataToBeUpdated[0].id = result[0].id;
+      dataToBeUpdated[0]._rev = result[0]._rev;
+
+      dataToBeUpdated[1].id = result[3].id;
+      dataToBeUpdated[1]._rev = result[3]._rev;
+
+      dataToBeUpdated[2].id = result[5].id;
+      dataToBeUpdated[2]._rev = result[5]._rev;
+      db.connector.bulkReplace('Product', dataToBeUpdated,
+      function(err, result) {
+        err = testUtil.refinedError(err, result);
+        if (err) return done(err);
+        testUtil.hasResult(err, result).should.be.ok();
+        should.equal(result.length, dataToBeUpdated.length);
+        Product.find(function(err, result) {
+          err = testUtil.refinedError(err, result);
+          if (err) return done(err);
+          testUtil.hasResult(err, result).should.be.ok();
+          result.length.should.equal(breads.length);
+          done();
+        });
+      });
+    });
+  });
+
+  it('throws error when `_rev` and `_id` is not provided with data',
+  function(done) {
+    db.connector.bulkReplace('Product', dataToBeUpdated,
+      function(err, result) {
+        err = testUtil.refinedError(err, result);
+        should.exist(err);
+        done();
+      });
+  });
+});
+
 describe('updateAttributes', function() {
   before(function(done) {
     db = getDataSource();
