@@ -587,7 +587,7 @@ module.exports = function(server) {
 
 # Bulk replace
 
-Given an array of data to be updated, Cloudant supports the idea of performing bulk replace on a model instance.
+Given an array of data to be updated, Cloudant supports the idea of performing bulk replace on a model instance. Please note, unlike other CRUD operations, bulk replace does not invoke any operation hooks.
 
 **Note:** To perform bulk replace, each data in the array data set needs to have the `id` and `_rev` property corresponding to the documents `id` and `_rev` property in the database.
 
