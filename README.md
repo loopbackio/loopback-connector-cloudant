@@ -279,6 +279,29 @@ Let's say we have an instance in the database:
     });
   ```
 
+  - update/updateAll
+
+    - with `_rev` property
+      ```javascript
+        Model.updateAll({
+          _rev:'2-abcedf',
+          name:'Bar4'
+        }, {name: 'Bar4-updated', _rev: '2-abcedf'}, function(err, result) {
+          if (err) throw err;
+          console.log('Update an existing instance: ' + JSON.stringify(result));
+        });
+      ```
+
+    - without `_rev` property
+      ```javascript
+        Model.updateAll({
+          name:'Bar4'
+        }, {name: 'Bar4-updated'}, function(err, result) {
+          if (err) throw err;
+          console.log('Update an existing instance: ' + JSON.stringify(result));
+        });
+      ```
+
 # Setup Cloudant Instance
 
 For user that don't have a cloudant server to develop or test, here are some suggestions can help you quickly setup one.
