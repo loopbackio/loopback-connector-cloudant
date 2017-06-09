@@ -19,6 +19,9 @@ describe('prototype functions in couchdb.js', function() {
   };
   it('connects', function(done) {
     ds = new DataSource(require('../../').couchdb, couchConfig);
+    // make sure we get a valid nano instance by creating a new datasource
+    // and also test we can call ds.connector.couchdb.use(dbName) to get
+    // available nano apis for a database
     (typeof ds.connector.couchdb.use === 'function').should.equal(true);
     done();
   });
@@ -28,6 +31,10 @@ describe('prototype functions in couchdb.js', function() {
       'Customer', name: 'foo',
       age: 10,
     }, function(err, result) {
+      if (err) return done(err);
+      result.ok.should.equal(true);
+      should.exist(result.id);
+      should.exist(result.rev);
       console.log(result);
       done();
     });
@@ -37,6 +44,8 @@ describe('prototype functions in couchdb.js', function() {
       'loopback__model__name', ['loopback__model__name'],
         function(err, result) {
           if (err) return done(err);
+          result.id.should.equal('_design/loopback__model__name__ddoc');
+          result.name.should.equal('loopback__model__name');
           console.log(result);
           done();
         });
@@ -46,6 +55,9 @@ describe('prototype functions in couchdb.js', function() {
       'loopback__model__Customer__property__name', ['name'],
         function(err, result) {
           if (err) return done(err);
+          result.id.should.
+            equal('_design/loopback__model__Customer__property__name__ddoc');
+          result.name.should.equal('loopback__model__Customer__property__name');
           console.log(result);
           done();
         });
@@ -55,6 +67,8 @@ describe('prototype functions in couchdb.js', function() {
       if (err) return done(err);
       ds.connector.deleteIndex('fake', function(err, result) {
         if (err) return done(err);
+        result.ok.should.equal(true);
+        result.id.should.equal('_design/fake');
         console.log(result);
         done();
       });
@@ -63,13 +77,16 @@ describe('prototype functions in couchdb.js', function() {
   it('find by query', function(done) {
     ds.connector._find('Customer', {age: 10}, function(err, result) {
       if (err) return done(err);
+      result.docs.length.should.equal(1);
+      result.docs[0]['loopback__model__name'].should.equal('Customer');
+      result.docs[0].age.should.equal(10);
       console.log(result);
       done();
     });
   });
 });
 
-describe('model operations', function() {
+describe.only('model operations', function() {
   before(function(done) {
     ds = new DataSource(require('../../').couchdb, couchConfig);
     ds.define('Customer', {
@@ -90,12 +107,18 @@ describe('model operations', function() {
       age: 10,
     }, function(err, result) {
       console.log(result);
+      result.ok.should.equal(true);
+      should.exist(result.id);
+      should.exist(result.rev);
       done();
     });
   });
   it('finds by query', function(done) {
     ds.connector._find('Customer', {age: 10}, function(err, result) {
       if (err) return done(err);
+      result.docs.length.should.equal(1);
+      result.docs[0]['loopback__model__name'].should.equal('Customer');
+      result.docs[0].age.should.equal(10);
       console.log(result);
       done();
     });
