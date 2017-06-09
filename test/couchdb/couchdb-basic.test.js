@@ -12,7 +12,7 @@ var testUtil = require('./../lib/test-util');
 var url = require('url');
 var couchConfig, ds;
 
-describe('couchdb.js prototype functions', function() {
+describe('prototype functions in couchdb.js', function() {
   couchConfig = {
     url: '',
     database: 'dev',
