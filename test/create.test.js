@@ -37,6 +37,27 @@ describe('create', function() {
       db.automigrate(done);
     });
   });
+
+  it('creates a model instance when `_rev` is provided', function(done) {
+    var newBread = _.cloneDeep(bread);
+    newBread._rev = '1-somerandomrev';
+    Product.create(newBread, function(err, result) {
+      err = testUtil.refinedError(err, result);
+      if (err) return done(err);
+      Product.findById(result.id, function(err, result) {
+        err = testUtil.refinedError(err, result);
+        if (err) return done(err);
+        // cloudant's post call ignores the `_rev` value for their own safety check
+        // therefore, creating an instance with a random `_rev` value works.
+        // however, it shall not be equal to the `_rev` value the user provides.
+        should.exist(result._rev);
+        should.notEqual(newBread._rev, result._rev);
+        testUtil.checkModel(newBread, result);
+        done();
+      });
+    });
+  });
+
   it('creates when model instance does not exist', function(done) {
     Product.create(bread, function(err, result) {
       err = testUtil.refinedError(err, result);
