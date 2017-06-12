@@ -15,7 +15,7 @@ var couchConfig, ds;
 describe('prototype functions in couchdb.js', function() {
   couchConfig = {
     url: '',
-    database: 'dev',
+    database: 'demo',
   };
   it('connects', function(done) {
     ds = new DataSource(require('../../').couchdb, couchConfig);
@@ -75,11 +75,11 @@ describe('prototype functions in couchdb.js', function() {
     });
   });
   it('find by query', function(done) {
-    ds.connector._find('Customer', {age: 10}, function(err, result) {
+    ds.connector._find('Customer', {name: 'foo'}, function(err, result) {
       if (err) return done(err);
       result.docs.length.should.equal(1);
       result.docs[0]['loopback__model__name'].should.equal('Customer');
-      result.docs[0].age.should.equal(10);
+      result.docs[0].name.should.equal('foo');
       console.log(result);
       done();
     });
@@ -102,9 +102,12 @@ describe.only('model operations', function() {
   });
   it('inserts model instance', function(done) {
     ds.connector.create({
-      'loopback__model__name':
-      'Customer', name: 'foo',
+      'loopback__model__name': 'Customer',
+      name: 'foo',
       age: 10,
+      address: {
+        city: 'Toronto',
+      },
     }, function(err, result) {
       console.log(result);
       result.ok.should.equal(true);
@@ -122,5 +125,32 @@ describe.only('model operations', function() {
       console.log(result);
       done();
     });
+  });
+  it('create index for nested property', function(done) {
+    ds.connector.createIndex(
+      'loopback__model__Customer__property__address__city__ddoc',
+      'loopback__model__Customer__property__address__city', ['address.city'],
+        function(err, result) {
+          if (err) return done(err);
+          result.id.should.
+            equal(
+              '_design/loopback__model__Customer__property__address__city__ddoc'
+            );
+          result.name.should.equal(
+            'loopback__model__Customer__property__address__city');
+          console.log(result);
+          done();
+        });
+  });
+  it('query nested property', function(done) {
+    ds.connector._find('Customer', {'address.city': 'Toronto'},
+      function(err, result) {
+        if (err) return done(err);
+        result.docs.length.should.equal(1);
+        result.docs[0]['loopback__model__name'].should.equal('Customer');
+        result.docs[0].address.city.should.equal('Toronto');
+        console.log(result);
+        done();
+      });
   });
 });
