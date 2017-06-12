@@ -8,4 +8,6 @@
 var SG = require('strong-globalize');
 SG.SetRootDir(__dirname);
 
-module.exports = require('./lib/cloudant');
+module.exports = {};
+module.exports.cloudant = require('./lib/cloudant');
+module.exports.couchdb = require('./lib/couchdb/couchdb');
