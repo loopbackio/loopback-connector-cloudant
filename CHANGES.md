@@ -1,3 +1,11 @@
+2017-06-13, Version 1.2.4
+=========================
+
+ * Backport: return back result count in updateAll (#146) (Sakib Hasan)
+
+ * Backport docker ci (#147) (Sakib Hasan)
+
+
 2017-05-11, Version 1.2.3
 =========================
 
