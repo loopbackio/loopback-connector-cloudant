@@ -7,6 +7,7 @@
 
 var should = require('should');
 var db, Thing;
+var describe = require('./describe.js');
 
 describe('cloudant max rows', function() {
   // This test suite creates large number of data,
@@ -27,9 +28,7 @@ describe('cloudant max rows', function() {
     });
     Thing.belongsTo('foo', {model: Foo});
     Foo.hasMany('things', {foreignKey: 'fooId'});
-    db.once('connected', function() {
-      db.automigrate(done);
-    });
+    db.automigrate(done);
   });
   it('create two hundred and one', function(done) {
     var foos = Array.apply(null, {length: N}).map(function(n, i) {
@@ -55,7 +54,7 @@ describe('cloudant max rows', function() {
       });
     });
   });
-  it('find all limt ten', function(done) {
+  it.skip('find all limt ten', function(done) {
     Foo.all({limit: 10, order: 'bar'}, function(err, entries) {
       if (err) return done(err);
       entries.should.have.lengthOf(10);
@@ -63,7 +62,7 @@ describe('cloudant max rows', function() {
       done();
     });
   });
-  it('find all skip ten limit ten', function(done) {
+  it.skip('find all skip ten limit ten', function(done) {
     Foo.all({skip: 10, limit: 10, order: 'bar'}, function(err, entries) {
       if (err) return done(err);
       entries.should.have.lengthOf(10);
@@ -71,7 +70,7 @@ describe('cloudant max rows', function() {
       done();
     });
   });
-  it('find all skip two hundred', function(done) {
+  it.skip('find all skip two hundred', function(done) {
     Foo.all({skip: 200, order: 'bar'}, function(err, entries) {
       if (err) return done(err);
       entries.should.have.lengthOf(1);
