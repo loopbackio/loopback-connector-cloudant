@@ -6,6 +6,7 @@
 'use strict';
 var db, Foo, Bar, NotExist, isActualTestFoo, isActualTestBar;
 require('./init.js');
+var describe = require('./describe.js');
 
 describe('cloudant automigrate', function() {
   it('automigrates models attached to db', function(done) {

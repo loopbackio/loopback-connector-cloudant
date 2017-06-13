@@ -33,9 +33,7 @@ describe('replaceOrCreate', function() {
       price: {type: Number},
     }, {forceId: false});
 
-    db.once('connected', function() {
-      db.automigrate(done);
-    });
+    db.automigrate(done);
   });
 
   it('creates when the instance does not exist', function(done) {
@@ -107,10 +105,8 @@ describe('replaceById', function() {
       price: {type: Number},
     }, {forceId: false});
 
-    db.once('connected', function() {
-      db.automigrate(function(err) {
-        Product.create(bread, done);
-      });
+    db.automigrate(function(err) {
+      Product.create(bread, done);
     });
   });
 

@@ -10,6 +10,7 @@ var _ = require('lodash');
 var async = require('async');
 var should = require('should');
 var url = require('url');
+var describe = require('./describe.js');
 
 var db, sampleData;
 
@@ -18,13 +19,11 @@ describe('cloudant view', function() {
     before(function(done) {
       db = getDataSource();
       var connector = db.connector;
-      db.on('connected', function() {
-        async.series([insertSampleData, insertViewDdoc], done);
-      });
+      async.series([insertSampleData, insertViewDdoc], done);
 
       function insertSampleData(cb) {
         sampleData = generateSamples();
-        connector.cloudant.use(connector.getDbName(connector))
+        connector.couchdb.use(connector.getDbName(connector))
           .bulk({docs: sampleData}, cb);
       };
       function insertViewDdoc(cb) {
@@ -41,7 +40,7 @@ describe('cloudant view', function() {
             },
           },
         };
-        connector.cloudant.use(connector.getDbName(connector)).insert(
+        connector.couchdb.use(connector.getDbName(connector)).insert(
           JSON.parse(JSON.stringify(ddoc)), cb);
       };
     });
