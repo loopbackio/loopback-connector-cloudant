@@ -10,7 +10,7 @@ module.exports = require('should');
 var DataSource = require('loopback-datasource-juggler').DataSource;
 
 var config = {
-  url: 'provide_url_here',
+  url: '',
   database: 'test',
 };
 
