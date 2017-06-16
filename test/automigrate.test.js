@@ -6,6 +6,7 @@
 'use strict';
 var db, Foo, Bar, NotExist, isActualTestFoo, isActualTestBar;
 require('./init.js');
+var util = require('util');
 
 describe('cloudant automigrate', function() {
   it('automigrates models attached to db', function(done) {
@@ -20,15 +21,13 @@ describe('cloudant automigrate', function() {
     Bar = db.define('Bar', {
       name: {type: String},
     });
-    db.once('connected', function() {
-      db.automigrate(function verifyMigratedModel(err) {
+    db.automigrate(function verifyMigratedModel(err) {
+      if (err) return done(err);
+      Foo.create({name: 'foo'}, function(err, r) {
         if (err) return done(err);
-        Foo.create({name: 'foo'}, function(err, r) {
-          if (err) return done(err);
-          r.should.not.be.empty();
-          r.name.should.equal('foo');
-          done();
-        });
+        r.should.not.be.empty();
+        r.name.should.equal('foo');
+        done();
       });
     });
   });
@@ -39,16 +38,14 @@ describe('cloudant automigrate', function() {
     Foo = db.define('Foo', {
       updatedName: {type: String},
     });
-    db.once('connected', function() {
-      db.autoupdate(function(err) {
+    db.autoupdate(function(err) {
+      if (err) return done(err);
+      Foo.find(function(err, results) {
         if (err) return done(err);
-        Foo.find(function(err, results) {
-          if (err) return done(err);
-          // Verify autoupdate doesn't destroy existing data
-          results.length.should.equal(1);
-          results[0].name.should.equal('foo');
-          done();
-        });
+        // Verify autoupdate doesn't destroy existing data
+        results.length.should.equal(1);
+        results[0].name.should.equal('foo');
+        done();
       });
     });
   });
@@ -57,18 +54,43 @@ describe('cloudant automigrate', function() {
     Foo = db.define('Foo', {
       updatedName: {type: String},
     });
-    db.once('connected', function() {
-      db.automigrate(function(err) {
+    db.automigrate(function(err) {
+      if (err) return done(err);
+      Foo.find(function(err, result) {
         if (err) return done(err);
-        Foo.find(function(err, result) {
+        result.length.should.equal(0);
+        done();
+      });
+    });
+  });
+  it('create index for property with `index: true`', function(done) {
+    db = getSchema();
+    Foo = db.define('Foo', {
+      age: {type: Number, index: true},
+      name: {type: String},
+    });
+    db.automigrate(function(err) {
+      if (err) return done(err);
+      Foo.create([
+        {name: 'John', age: 20},
+        {name: 'Lucy', age: 10},
+        {name: 'Zoe', age: 25}], function(err, r) {
+        if (err) return done(err);
+        Foo.find({
+          where: {age: {gt: null}},
+          order: 'age',
+        }, function(err, result) {
           if (err) return done(err);
-          result.length.should.equal(0);
+          result.length.should.equal(3);
+          result[0].age.should.equal(10);
+          result[1].age.should.equal(20);
+          result[2].age.should.equal(25);
           done();
         });
       });
     });
   });
-  describe('isActual', function() {
+  describe.skip('isActual', function() {
     db = getSchema();
     it('returns true only when all models exist', function(done) {
       // `isActual` requires the model be attached to a db,

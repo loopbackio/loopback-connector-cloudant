@@ -10,13 +10,8 @@ module.exports = require('should');
 var DataSource = require('loopback-datasource-juggler').DataSource;
 
 var config = {
-  url: process.env.CLOUDANT_URL,
-  username: process.env.CLOUDANT_USERNAME,
-  password: process.env.CLOUDANT_PASSWORD,
-  database: process.env.CLOUDANT_DATABASE,
-  plugin: 'retry',
-  retryAttempts: 10,
-  retryTimeout: 50,
+  url: '',
+  database: 'test',
 };
 
 console.log('env config ', config);
@@ -35,6 +30,8 @@ global.connectorCapabilities = {
   ilike: false,
   nilike: false,
   nestedProperty: true,
+  adhocSort: false,
+  supportPagination: false,
 };
 
 global.sinon = require('sinon');

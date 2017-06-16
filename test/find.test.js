@@ -6,7 +6,7 @@
 'use strict';
 
 require('./init.js');
-var Cloudant = require('../lib/cloudant');
+var CouchDB = require('../lib/couchdb');
 var _ = require('lodash');
 var async = require('async');
 var should = require('should');
@@ -43,11 +43,9 @@ describe('find', function() {
       price: {type: Number},
     }, {forceId: false});
 
-    db.once('connected', function() {
-      db.automigrate(function(err) {
-        should.not.exist(err);
-        Product.create(bread, done);
-      });
+    db.automigrate(function(err) {
+      should.not.exist(err);
+      Product.create(bread, done);
     });
   });
 

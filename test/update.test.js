@@ -33,9 +33,7 @@ describe('updateOrCreate', function() {
       price: {type: Number},
     }, {forceId: false});
 
-    db.once('connected', function() {
-      db.automigrate(done);
-    });
+    db.automigrate(done);
   });
 
   it('creates when model instance does not exist', function(done) {
@@ -128,9 +126,7 @@ describe('updateAll', function() {
       price: {type: Number},
     }, {forceId: false});
 
-    db.once('connected', function() {
-      db.automigrate(done);
-    });
+    db.automigrate(done);
   });
 
   beforeEach(function(done) {
@@ -248,12 +244,7 @@ describe('bulkReplace', function() {
       description: {type: String},
       price: {type: Number},
     }, {forceId: false});
-
-    db.once('connected', function() {
-      db.automigrate(function(err) {
-        Product.create(breads, done);
-      });
-    });
+    Product.create(breads, done);
   });
 
   afterEach(cleanUpData);
@@ -310,11 +301,7 @@ describe('updateAttributes', function() {
       price: {type: Number},
     }, {forceId: false, updateOnLoad: true});
 
-    db.once('connected', function() {
-      db.automigrate(function(err) {
-        Product.create(bread, done);
-      });
-    });
+    Product.create(bread, done);
   });
 
   after(cleanUpData);
