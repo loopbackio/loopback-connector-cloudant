@@ -10,8 +10,13 @@ module.exports = require('should');
 var DataSource = require('loopback-datasource-juggler').DataSource;
 
 var config = {
-  url: '',
-  database: 'test',
+  url: process.env.COUCHDB_URL,
+  username: process.env.COUCHDB_USERNAME,
+  password: process.env.COUCHDB_PASSWORD,
+  database: process.env.COUCHDB_DATABASE,
+  plugin: 'retry',
+  retryAttempts: 10,
+  retryTimeout: 50,
 };
 
 console.log('env config ', config);

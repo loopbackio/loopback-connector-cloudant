@@ -27,7 +27,7 @@ var CONNECT_DELAY = ms('5s');
 var containerToDelete = null;
 
 async.waterfall([
-  dockerStart('klaemo/couchdb:2.0-dev'),
+  dockerStart('klaemo/couchdb:2.0.0'),
   sleep(ms('2s')),
   setCloudantEnv,
   waitFor('/_all_dbs'),
@@ -69,7 +69,13 @@ function dockerStart(imgName) {
         console.log('starting container from image: %s', imgName);
         docker.createContainer({
           Image: imgName,
-          Cmd: '-d -p 5984:5984 klaemo/couchdb:2.0-dev --with-haproxy --admin=admin:pass',
+          HostConfig: {
+            PublishAllPorts: true,
+          },
+          Env: [
+            'COUCHDB_USER=' + process.env.COUCHDB_USERNAME,
+            'COUCHDB_PASSWORD=' + process.env.COUCHDB_PASSWORD,
+          ],
         }, function(err, container) {
           console.log('recording container for later cleanup: ', container.id);
           containerToDelete = container;
@@ -90,11 +96,10 @@ function setCloudantEnv(container, next) {
     // if swarm, Node.Ip will be set to actual node's IP
     // if not swarm, but remote docker, use docker host's IP
     // if local docker, use localhost
-    console.log(c);
     var host = _.get(c, 'Node.IP', _.get(docker, 'modem.host', '127.0.0.1'));
     // container's port 80 is dynamically mapped to an external port
     var port = _.get(c,
-      ['NetworkSettings', 'Ports', '80/tcp', '0', 'HostPort']);
+      ['NetworkSettings', 'Ports', '5984/tcp', '0', 'HostPort']);
     process.env.COUCHDB_PORT = port;
     process.env.COUCHDB_HOST = host;
     process.env.COUCHDB_URL = 'http://' + host + ':' + port;
@@ -186,7 +191,6 @@ function run(cmd) {
 
 // clean up any previous containers
 function dockerCleanup(next) {
-  containerToDelete = false;
   if (containerToDelete) {
     console.log('cleaning up container: %s', containerToDelete.id);
     containerToDelete.remove({force: true}, function(err) {
