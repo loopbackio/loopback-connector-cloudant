@@ -11,15 +11,15 @@ var ms = require('ms');
 // we don't pass any node flags, so we can call _mocha instead the wrapper
 var mochaBin = require.resolve('mocha/bin/_mocha');
 
-process.env.CLOUDANT_DATABASE = 'test-db';
-process.env.CLOUDANT_PASSWORD = 'pass';
-process.env.CLOUDANT_USERNAME = 'admin';
+process.env.COUCHDB_DATABASE = 'test-db';
+process.env.COUCHDB_PASSWORD = 'pass';
+process.env.COUCHDB_USERNAME = 'admin';
 
 // these are placeholders. They get set dynamically based on what IP and port
 // get assigned by docker.
-process.env.CLOUDANT_PORT = 'TBD';
-process.env.CLOUDANT_HOST = 'TBD';
-process.env.CLOUDANT_URL = 'TBD';
+process.env.COUCHDB_PORT = 'TBD';
+process.env.COUCHDB_HOST = 'TBD';
+process.env.COUCHDB_URL = 'TBD';
 
 var CONNECT_RETRIES = 30;
 var CONNECT_DELAY = ms('5s');
@@ -27,7 +27,7 @@ var CONNECT_DELAY = ms('5s');
 var containerToDelete = null;
 
 async.waterfall([
-  dockerStart('ibmcom/cloudant-developer:2.0.1'),
+  dockerStart('klaemo/couchdb:2.0-dev'),
   sleep(ms('2s')),
   setCloudantEnv,
   waitFor('/_all_dbs'),
@@ -69,9 +69,7 @@ function dockerStart(imgName) {
         console.log('starting container from image: %s', imgName);
         docker.createContainer({
           Image: imgName,
-          HostConfig: {
-            PublishAllPorts: true,
-          },
+          Cmd: '-d -p 5984:5984 klaemo/couchdb:2.0-dev --with-haproxy --admin=admin:pass',
         }, function(err, container) {
           console.log('recording container for later cleanup: ', container.id);
           containerToDelete = container;
@@ -92,20 +90,21 @@ function setCloudantEnv(container, next) {
     // if swarm, Node.Ip will be set to actual node's IP
     // if not swarm, but remote docker, use docker host's IP
     // if local docker, use localhost
+    console.log(c);
     var host = _.get(c, 'Node.IP', _.get(docker, 'modem.host', '127.0.0.1'));
     // container's port 80 is dynamically mapped to an external port
     var port = _.get(c,
       ['NetworkSettings', 'Ports', '80/tcp', '0', 'HostPort']);
-    process.env.CLOUDANT_PORT = port;
-    process.env.CLOUDANT_HOST = host;
-    process.env.CLOUDANT_URL = 'http://' + host + ':' + port;
+    process.env.COUCHDB_PORT = port;
+    process.env.COUCHDB_HOST = host;
+    process.env.COUCHDB_URL = 'http://' + host + ':' + port;
     console.log('env:', _.pick(process.env, [
-      'CLOUDANT_URL',
-      'CLOUDANT_HOST',
-      'CLOUDANT_PORT',
-      'CLOUDANT_USERNAME',
-      'CLOUDANT_PASSWORD',
-      'CLOUDANT_DATABASE',
+      'COUCHDB_URL',
+      'COUCHDB_HOST',
+      'COUCHDB_PORT',
+      'COUCHDB_USERNAME',
+      'COUCHDB_PASSWORD',
+      'COUCHDB_DATABASE',
     ]));
     next(null, container);
   });
@@ -114,9 +113,9 @@ function setCloudantEnv(container, next) {
 function waitFor(path) {
   return function waitForPath(container, next) {
     var opts = {
-      host: process.env.CLOUDANT_HOST,
-      port: process.env.CLOUDANT_PORT,
-      auth: process.env.CLOUDANT_USERNAME + ':' + process.env.CLOUDANT_PASSWORD,
+      host: process.env.COUCHDB_HOST,
+      port: process.env.COUCHDB_PORT,
+      auth: process.env.COUCHDB_USERNAME + ':' + process.env.COUCHDB_PASSWORD,
       path: path,
     };
 
@@ -126,7 +125,7 @@ function waitFor(path) {
     function ping(err, tries) {
       console.log('ping (%d/%d)', CONNECT_RETRIES - tries, CONNECT_RETRIES);
       if (tries < 1) {
-        next(err || new Error('failed to contact Cloudant'));
+        next(err || new Error('failed to contact Couchdb'));
       }
       http.get(opts, function(res) {
         res.pipe(devNull());
@@ -151,9 +150,9 @@ function createDB(db) {
     var opts = {
       method: 'PUT',
       path: '/' + db,
-      host: process.env.CLOUDANT_HOST,
-      port: process.env.CLOUDANT_PORT,
-      auth: process.env.CLOUDANT_USERNAME + ':' + process.env.CLOUDANT_PASSWORD,
+      host: process.env.COUCHDB_HOST,
+      port: process.env.COUCHDB_PORT,
+      auth: process.env.COUCHDB_USERNAME + ':' + process.env.COUCHDB_PASSWORD,
     };
     console.log('creating db: %j', db);
     http.request(opts, function(res) {
@@ -187,6 +186,7 @@ function run(cmd) {
 
 // clean up any previous containers
 function dockerCleanup(next) {
+  containerToDelete = false;
   if (containerToDelete) {
     console.log('cleaning up container: %s', containerToDelete.id);
     containerToDelete.remove({force: true}, function(err) {

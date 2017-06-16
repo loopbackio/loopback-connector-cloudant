@@ -32,6 +32,8 @@ global.connectorCapabilities = {
   nestedProperty: true,
   adhocSort: false,
   supportPagination: false,
+  ignoreUndefinedConditionValue: false,
+  deleteWithOtherThanId: false,
 };
 
 global.sinon = require('sinon');
