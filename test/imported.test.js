@@ -10,5 +10,5 @@
 var describe = require('./describe');
 
 describe('cloudant imported features', function() {
-  // require('loopback-datasource-juggler/test/common.batch.js');
+  require('loopback-datasource-juggler/test/common.batch.js');
 });

@@ -18,10 +18,6 @@ var config = {
   retryAttempts: 10,
   retryTimeout: 50,
 };
-var config = {
-  url: 'http://admin:pass@127.0.0.1:32769',
-  database: 'test-db',
-};
 
 console.log('env config ', config);
 
