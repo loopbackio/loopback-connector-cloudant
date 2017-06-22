@@ -26,6 +26,7 @@
     "debug": "^2.2.0",
     "lodash": "^4.17.4",
     "loopback-connector": "^4.0.0",
+    "nano": "^6.3.0",
     "request": "^2.81.0",
     "strong-globalize": "^2.6.6"
   },
@@ -33,7 +34,7 @@
     "dockerode": "^2.4.3",
     "eslint": "^2.13.1",
     "eslint-config-loopback": "^4.0.0",
-    "loopback-datasource-juggler": "^3.0.0",
+    "loopback-datasource-juggler": "git://github.com/strongloop/loopback-datasource-juggler.git#couchdb/test",
     "mocha": "^2.3.4",
     "ms": "^2.0.0",
     "rc": "^1.1.5",

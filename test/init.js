@@ -10,10 +10,10 @@ module.exports = require('should');
 var DataSource = require('loopback-datasource-juggler').DataSource;
 
 var config = {
-  url: process.env.CLOUDANT_URL,
-  username: process.env.CLOUDANT_USERNAME,
-  password: process.env.CLOUDANT_PASSWORD,
-  database: process.env.CLOUDANT_DATABASE,
+  url: process.env.COUCHDB_URL,
+  username: process.env.COUCHDB_USERNAME,
+  password: process.env.COUCHDB_PASSWORD,
+  database: process.env.COUCHDB_DATABASE,
   plugin: 'retry',
   retryAttempts: 10,
   retryTimeout: 50,
@@ -35,6 +35,10 @@ global.connectorCapabilities = {
   ilike: false,
   nilike: false,
   nestedProperty: true,
+  adhocSort: false,
+  supportPagination: false,
+  ignoreUndefinedConditionValue: false,
+  deleteWithOtherThanId: false,
 };
 
 global.sinon = require('sinon');

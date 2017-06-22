@@ -33,9 +33,7 @@ describe('create', function() {
       price: {type: Number},
     }, {forceId: false});
 
-    db.once('connected', function() {
-      db.automigrate(done);
-    });
+    db.automigrate(done);
   });
 
   it('creates a model instance when `_rev` is provided', function(done) {

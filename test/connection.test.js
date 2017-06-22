@@ -4,6 +4,7 @@
 // License text available at https://opensource.org/licenses/Artistic-2.0
 
 'use strict';
+var describe = require('./describe.js');
 
 describe('connectivity', function() {
   var db;
@@ -12,9 +13,7 @@ describe('connectivity', function() {
   describe('ping()', function() {
     context('with a valid connection', function() {
       it('returns true', function(done) {
-        db.once('connected', function() {
-          db.ping(done);
-        });
+        db.ping(done);
       });
     });
   });
