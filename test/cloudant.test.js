@@ -467,13 +467,18 @@ describe('cloudant constructor', function() {
       result.url.should.equal(ds.settings.url);
     });
   });
-  it.skip('should convert first part of url path to database name', function(done) {
+  it('should convert first part of url path to database name', function(done) {
     var myConfig = _.clone(global.config);
     myConfig.url = myConfig.url + '/some/random/path';
     myConfig.database = '';
     var result = {};
     myConfig.Driver = function(options) {
       result = options;
+      var fakedb = {db: {}};
+      fakedb.db.get = function(opts, cb) {
+        cb();
+      };
+      return fakedb;
     };
     var ds = getDataSource(myConfig);
     result.url.should.equal(global.config.url);
@@ -481,7 +486,7 @@ describe('cloudant constructor', function() {
     done();
   });
 
-  it.skip('should give 401 error for wrong creds', function(done) {
+  it('should give 401 error for wrong creds', function(done) {
     var myConfig = _.clone(global.config);
     var parsedUrl = url.parse(myConfig.url);
     parsedUrl.auth = 'foo:bar';
@@ -495,7 +500,7 @@ describe('cloudant constructor', function() {
       done();
     });
   });
-  it.skip('should give 404 error for nonexistant db', function(done) {
+  it('should give 404 error for nonexistant db', function(done) {
     var myConfig = _.clone(global.config);
     var parsedUrl = url.parse(myConfig.url);
     parsedUrl.path = '';
