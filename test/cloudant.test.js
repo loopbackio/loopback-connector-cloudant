@@ -237,8 +237,8 @@ describe('cloudant connector', function() {
             done();
           });
       });
-      it.skip('returns result when sorting type provided - missing first level'
-        + 'property', function(done) {
+      it.skip('returns result when sorting type provided - ' +
+        'missing first level property', function(done) {
         // Similar test case exist in juggler, but since it takes time to
         // recover them, I temporarily add it here
         CustomerSimple.find({where: {'address.state': 'CA'},
@@ -350,18 +350,18 @@ describe('cloudant connector', function() {
       });
     });
 
-    // Not sure why
-    it.skip('replace instances with numerical id (replaceById)', function(done) {
-      var updatedData = {
-        id: data[1].id,
-        name: 'Christian Thompson',
-        age: 32,
-        _rev: rev,
-      };
-      data[1].name = updatedData.name;
-      data[1].age = updatedData.age;
+    it('replace instances with numerical id (replaceById)',
+       function(done) {
+         var updatedData = {
+           id: data[1].id,
+           name: 'Christian Thompson',
+           age: 32,
+           _rev: rev,
+         };
+         data[1].name = updatedData.name;
+         data[1].age = updatedData.age;
 
-      SimpleEmployee.replaceById(data[1].id, updatedData,
+         SimpleEmployee.replaceById(data[1].id, updatedData,
         function(err, result) {
           should.not.exist(err);
           should.exist(result);
@@ -373,13 +373,17 @@ describe('cloudant connector', function() {
             should.not.exist(err);
             should.exist(result);
             should.equal(result.length, 3);
-            testUtil.checkData(data[0], result[0].__data);
-            testUtil.checkData(data[1], result[1].__data);
-            testUtil.checkData(data[2], result[2].__data);
+            // checkData ignoring its order
+            data.forEach(function(item, index) {
+              var r = _.find(result, function(o) {
+                return o.__data.id === item.id;
+              });
+              testUtil.checkData(data[index], r.__data);
+            });
             done();
           });
         });
-    });
+       });
 
     it('destroy instances with numerical id (destroyById)', function(done) {
       SimpleEmployee.destroyById(data[1].id, function(err, result) {
