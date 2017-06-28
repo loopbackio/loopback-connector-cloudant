@@ -7,14 +7,9 @@
 // will recover them when CI config done
 
 'use strict';
-var describe = require('./describe');
 
 describe('cloudant imported features', function() {
-  before(function() {
-    require('./init.js');
-  });
-
   require('loopback-datasource-juggler/test/include.test.js');
-  require('loopback-datasource-juggler/test/basic-query.test.js');
-  require('./relations.test.js');
+  require('loopback-datasource-juggler/test/basic-querying.test.js');
+  require('loopback-datasource-juggler/test/relations.test.js');
 });
