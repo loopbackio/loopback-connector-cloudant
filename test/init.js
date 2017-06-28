@@ -35,6 +35,9 @@ global.connectorCapabilities = {
   ilike: false,
   nilike: false,
   nestedProperty: true,
+  supportPagination: false,
+  ignoreUndefinedConditionValue: false,
+  deleteWithOtherThanId: false,
 };
 
 global.sinon = require('sinon');
