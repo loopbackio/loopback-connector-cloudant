@@ -102,7 +102,6 @@ function setCloudantEnv(container, next) {
     var pass = process.env.CLOUDANT_PASSWORD;
     process.env.CLOUDANT_URL = 'http://' + usr + ':' + pass + '@' +
       host + ':' + port;
-    process.env.CLOUDANT_URL = 'http://' + host + ':' + port;
     console.log('env:', _.pick(process.env, [
       'CLOUDANT_URL',
       'CLOUDANT_HOST',

@@ -9,7 +9,9 @@
 'use strict';
 
 describe('cloudant imported features', function() {
-  require('loopback-datasource-juggler/test/include.test.js');
+  require('./lib/cloudant.juggler.compatible');
   require('loopback-datasource-juggler/test/basic-querying.test.js');
   require('loopback-datasource-juggler/test/relations.test.js');
+  require('loopback-datasource-juggler/test/include.test.js');
+  require('./init');
 });
