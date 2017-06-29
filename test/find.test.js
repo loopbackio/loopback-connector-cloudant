@@ -43,11 +43,9 @@ describe('find', function() {
       price: {type: Number},
     }, {forceId: false});
 
-    db.once('connected', function() {
-      db.automigrate(function(err) {
-        should.not.exist(err);
-        Product.create(bread, done);
-      });
+    db.automigrate(function(err) {
+      should.not.exist(err);
+      Product.create(bread, done);
     });
   });
 

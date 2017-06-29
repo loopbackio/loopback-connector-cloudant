@@ -33,9 +33,7 @@ describe('replaceOrCreate', function() {
       price: {type: Number},
     }, {forceId: false});
 
-    db.once('connected', function() {
-      db.automigrate(done);
-    });
+    db.automigrate(done);
   });
 
   it('creates when the instance does not exist', function(done) {

@@ -8,7 +8,7 @@
 var should = require('should');
 var db, Thing;
 
-describe('cloudant max rows', function() {
+describe.skip('cloudant max rows', function() {
   // This test suite creates large number of data,
   // require more time to complete data cleanUp
   // There is no batchDestroy in cloudant, so `automigrate`
@@ -27,9 +27,7 @@ describe('cloudant max rows', function() {
     });
     Thing.belongsTo('foo', {model: Foo});
     Foo.hasMany('things', {foreignKey: 'fooId'});
-    db.once('connected', function() {
-      db.automigrate(done);
-    });
+    db.automigrate(done);
   });
   it('create two hundred and one', function(done) {
     var foos = Array.apply(null, {length: N}).map(function(n, i) {

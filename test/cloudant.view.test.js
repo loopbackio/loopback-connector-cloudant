@@ -18,7 +18,7 @@ describe('cloudant view', function() {
     before(function(done) {
       db = getDataSource();
       var connector = db.connector;
-      db.on('connected', function() {
+      db.once('connected', function(err) {
         async.series([insertSampleData, insertViewDdoc], done);
       });
 

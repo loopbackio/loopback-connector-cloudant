@@ -20,15 +20,13 @@ describe('cloudant automigrate', function() {
     Bar = db.define('Bar', {
       name: {type: String},
     });
-    db.once('connected', function() {
-      db.automigrate(function verifyMigratedModel(err) {
+    db.automigrate(function verifyMigratedModel(err) {
+      if (err) return done(err);
+      Foo.create({name: 'foo'}, function(err, r) {
         if (err) return done(err);
-        Foo.create({name: 'foo'}, function(err, r) {
-          if (err) return done(err);
-          r.should.not.be.empty();
-          r.name.should.equal('foo');
-          done();
-        });
+        r.should.not.be.empty();
+        r.name.should.equal('foo');
+        done();
       });
     });
   });
@@ -39,7 +37,7 @@ describe('cloudant automigrate', function() {
     Foo = db.define('Foo', {
       updatedName: {type: String},
     });
-    db.once('connected', function() {
+    db.once('connected', function(err) {
       db.autoupdate(function(err) {
         if (err) return done(err);
         Foo.find(function(err, results) {
@@ -57,14 +55,12 @@ describe('cloudant automigrate', function() {
     Foo = db.define('Foo', {
       updatedName: {type: String},
     });
-    db.once('connected', function() {
-      db.automigrate(function(err) {
+    db.automigrate(function(err) {
+      if (err) return done(err);
+      Foo.find(function(err, result) {
         if (err) return done(err);
-        Foo.find(function(err, result) {
-          if (err) return done(err);
-          result.length.should.equal(0);
-          done();
-        });
+        result.length.should.equal(0);
+        done();
       });
     });
   });

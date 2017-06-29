@@ -8,6 +8,7 @@
 module.exports = require('should');
 
 var DataSource = require('loopback-datasource-juggler').DataSource;
+var _ = require('lodash');
 
 var config = {
   url: process.env.CLOUDANT_URL,
@@ -28,6 +29,21 @@ global.getDataSource = global.getSchema = function(customConfig) {
   db.log = function(a) {
     console.log(a);
   };
+
+  var originalConnector = _.clone(db.connector);
+  var overrideConnector = {};
+
+  overrideConnector.automigrate = function(models, cb) {
+    if (db.connected) return originalConnector.automigrate(models, cb);
+    else {
+      db.once('connected', function() {
+        originalConnector.cloudant = db.connector.cloudant;
+        originalConnector.automigrate(models, cb);
+      });
+    };
+  };
+
+  db.connector.automigrate = overrideConnector.automigrate;
   return db;
 };
 
@@ -38,6 +54,7 @@ global.connectorCapabilities = {
   supportPagination: false,
   ignoreUndefinedConditionValue: false,
   deleteWithOtherThanId: false,
+  adhocSort: false,
 };
 
 global.sinon = require('sinon');
