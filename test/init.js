@@ -95,6 +95,7 @@ global.connectorCapabilities = {
   ignoreUndefinedConditionValue: false,
   deleteWithOtherThanId: false,
   adhocSort: false,
+  cloudantCompatible: false,
 };
 
 global.sinon = require('sinon');
