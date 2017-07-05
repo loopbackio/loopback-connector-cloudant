@@ -6,8 +6,15 @@
 'use strict';
 
 describe('cloudant imported features', function() {
-  require('loopback-datasource-juggler/test/common.batch.js');
-  // require('loopback-datasource-juggler/test/basic-querying.test.js');
-  // require('loopback-datasource-juggler/test/relations.test.js');
-  // require('loopback-datasource-juggler/test/include.test.js');
+  before(function() {
+    IMPORTED_TEST = true;
+  });
+  after(function() {
+    IMPORTED_TEST = false;
+  });
+  require('loopback-datasource-juggler/test/datatype.test.js');
+  require('loopback-datasource-juggler/test/basic-querying.test.js');
+  require('loopback-datasource-juggler/test/hooks.test.js');
+  require('loopback-datasource-juggler/test/relations.test.js');
+  require('loopback-datasource-juggler/test/include.test.js');
 });

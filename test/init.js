@@ -23,6 +23,7 @@ var config = {
 console.log('env config ', config);
 
 global.config = config;
+global.IMPORTED_TEST = false;
 
 global.getDataSource = global.getSchema = function(customConfig) {
   var db = new DataSource(require('../'), customConfig || config);
@@ -43,7 +44,46 @@ global.getDataSource = global.getSchema = function(customConfig) {
     };
   };
 
+  overrideConnector.save = function(model, data, options, cb) {
+    if (!IMPORTED_TEST) {
+      return originalConnector.save(model, data, options, cb);
+    } else {
+      var self = this;
+      var idName = self.idName(model);
+      var id = data[idName];
+      var mo = self.selectModel(model);
+      data[idName] = id.toString();
+
+      mo.db.get(id, function(err, doc) {
+        if (err) return cb(err);
+        data._rev = doc._rev;
+        var saveHandler = function(err, id) {
+          if (err) return cb(err);
+          mo.db.get(id, function(err, doc) {
+            if (err) return cb(err);
+            cb(null, self.fromDB(model, mo, doc));
+          });
+        };
+        self._insert(model, data, saveHandler);
+      });
+    }
+  };
+
+  overrideConnector._insert = function(model, data, cb) {
+    if (!IMPORTED_TEST) {
+      return originalConnector._insert(model, data, cb);
+    } else {
+      originalConnector._insert(model, data, function(err, rid, rrev) {
+        if (err) return cb(err);
+        cb(null, rid);
+      });
+    }
+  };
+
   db.connector.automigrate = overrideConnector.automigrate;
+  db.connector._insert = overrideConnector._insert;
+  db.connector.save = overrideConnector.save;
+
   return db;
 };
 
