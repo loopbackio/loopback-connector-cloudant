@@ -8,7 +8,7 @@
 var should = require('should');
 var db, Thing;
 
-describe.skip('cloudant max rows', function() {
+describe('cloudant max rows', function() {
   // This test suite creates large number of data,
   // require more time to complete data cleanUp
   // There is no batchDestroy in cloudant, so `automigrate`
