@@ -98,7 +98,10 @@ function setCloudantEnv(container, next) {
       ['NetworkSettings', 'Ports', '80/tcp', '0', 'HostPort']);
     process.env.CLOUDANT_PORT = port;
     process.env.CLOUDANT_HOST = host;
-    process.env.CLOUDANT_URL = 'http://' + host + ':' + port;
+    var usr = process.env.CLOUDANT_USERNAME;
+    var pass = process.env.CLOUDANT_PASSWORD;
+    process.env.CLOUDANT_URL = 'http://' + usr + ':' + pass + '@' +
+      host + ':' + port;
     console.log('env:', _.pick(process.env, [
       'CLOUDANT_URL',
       'CLOUDANT_HOST',

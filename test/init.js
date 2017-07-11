@@ -8,6 +8,7 @@
 module.exports = require('should');
 
 var DataSource = require('loopback-datasource-juggler').DataSource;
+var _ = require('lodash');
 
 var config = {
   url: process.env.CLOUDANT_URL,
@@ -22,12 +23,67 @@ var config = {
 console.log('env config ', config);
 
 global.config = config;
+global.IMPORTED_TEST = false;
 
 global.getDataSource = global.getSchema = function(customConfig) {
   var db = new DataSource(require('../'), customConfig || config);
   db.log = function(a) {
     console.log(a);
   };
+
+  var originalConnector = _.clone(db.connector);
+  var overrideConnector = {};
+
+  overrideConnector.automigrate = function(models, cb) {
+    if (db.connected) return originalConnector.automigrate(models, cb);
+    else {
+      db.once('connected', function() {
+        originalConnector.cloudant = db.connector.cloudant;
+        originalConnector.automigrate(models, cb);
+      });
+    };
+  };
+
+  overrideConnector.save = function(model, data, options, cb) {
+    if (!IMPORTED_TEST) {
+      return originalConnector.save(model, data, options, cb);
+    } else {
+      var self = this;
+      var idName = self.idName(model);
+      var id = data[idName];
+      var mo = self.selectModel(model);
+      data[idName] = id.toString();
+
+      mo.db.get(id, function(err, doc) {
+        if (err) return cb(err);
+        data._rev = doc._rev;
+        var saveHandler = function(err, id) {
+          if (err) return cb(err);
+          mo.db.get(id, function(err, doc) {
+            if (err) return cb(err);
+            cb(null, self.fromDB(model, mo, doc));
+          });
+        };
+        self._insert(model, data, saveHandler);
+      });
+    }
+  };
+
+  overrideConnector._insert = function(model, data, cb) {
+    if (!IMPORTED_TEST) {
+      return originalConnector._insert(model, data, cb);
+    } else {
+      originalConnector._insert(model, data, function(err, rid, rrev) {
+        if (err) return cb(err);
+        cb(null, rid);
+      });
+    }
+  };
+
+  db.connector.automigrate = overrideConnector.automigrate;
+  db.connector._insert = overrideConnector._insert;
+  db.connector.save = overrideConnector.save;
+
   return db;
 };
 
@@ -35,6 +91,11 @@ global.connectorCapabilities = {
   ilike: false,
   nilike: false,
   nestedProperty: true,
+  supportPagination: false,
+  ignoreUndefinedConditionValue: false,
+  deleteWithOtherThanId: false,
+  adhocSort: false,
+  cloudantCompatible: false,
 };
 
 global.sinon = require('sinon');

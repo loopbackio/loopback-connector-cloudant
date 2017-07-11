@@ -65,9 +65,7 @@ describe('cloudant connector', function() {
       },
     });
 
-    db.once('connected', function() {
-      db.automigrate(done);
-    });
+    db.automigrate(done);
   });
 
   describe('model with array props gets updated properly', function() {

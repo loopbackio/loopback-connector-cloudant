@@ -27,9 +27,7 @@ describe('cloudant max rows', function() {
     });
     Thing.belongsTo('foo', {model: Foo});
     Foo.hasMany('things', {foreignKey: 'fooId'});
-    db.once('connected', function() {
-      db.automigrate(done);
-    });
+    db.automigrate(done);
   });
   it('create two hundred and one', function(done) {
     var foos = Array.apply(null, {length: N}).map(function(n, i) {
