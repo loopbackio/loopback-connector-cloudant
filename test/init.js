@@ -83,7 +83,6 @@ global.getDataSource = global.getSchema = function(customConfig) {
   db.connector.automigrate = overrideConnector.automigrate;
   db.connector._insert = overrideConnector._insert;
   db.connector.save = overrideConnector.save;
-  db.connector.replaceById = undefined;
 
   return db;
 };
