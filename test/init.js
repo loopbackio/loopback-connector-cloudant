@@ -93,7 +93,6 @@ global.connectorCapabilities = {
   nestedProperty: true,
   supportPagination: false,
   ignoreUndefinedConditionValue: false,
-  deleteWithOtherThanId: false,
   adhocSort: false,
   cloudantCompatible: false,
 };
