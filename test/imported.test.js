@@ -17,4 +17,5 @@ describe('cloudant imported features', function() {
   require('loopback-datasource-juggler/test/hooks.test.js');
   require('loopback-datasource-juggler/test/relations.test.js');
   require('loopback-datasource-juggler/test/include.test.js');
+  require('loopback-datasource-juggler/test/manipulation.test.js');
 });
