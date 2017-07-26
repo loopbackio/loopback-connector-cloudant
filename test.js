@@ -75,10 +75,12 @@ function dockerStart(imgName) {
         }, function(err, container) {
           console.log('recording container for later cleanup: ', container.id);
           containerToDelete = container;
+          console.log('err: ', err);
           if (err) {
             return next(err);
           }
           container.start(function(err, data) {
+            console.log('start err', err);
             next(err, container);
           });
         });
