@@ -1,3 +1,9 @@
+2017-08-03, Version 1.2.5
+=========================
+
+ * Ensure _id can be set as id on a model (Taranveer Virk)
+
+
 2017-06-13, Version 1.2.4
 =========================
 
