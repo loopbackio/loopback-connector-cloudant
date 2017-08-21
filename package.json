@@ -26,7 +26,7 @@
     "debug": "^2.2.0",
     "lodash": "^4.17.4",
     "loopback-connector": "^4.0.0",
-    "loopback-connector-couchdb2": "^1.0.0",
+    "loopback-connector-couchdb2": "https://github.com/strongloop/loopback-connector-couchdb2.git",
     "request": "^2.81.0",
     "strong-globalize": "^2.6.6"
   },
