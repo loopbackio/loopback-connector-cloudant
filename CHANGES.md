@@ -1,3 +1,109 @@
+2017-08-22, Version 2.0.2
+=========================
+
+ * Inherit couchdb functionalities (#163) (Sakib Hasan)
+
+ * Add stalebot configuration (Kevin Delisle)
+
+ * Recover & reuse couchdb2 tests (jannyHou)
+
+ * Fix readme (ssh24)
+
+ * Create Issue and PR Templates (#171) (Sakib Hasan)
+
+ * Add CODEOWNER file (Diana Lau)
+
+ * Recover manipulation.test.js (#159) (Janny)
+
+ * Recover juggler tests (#158) (Janny)
+
+ * Require init on mocha args (ssh24)
+
+ * Do not strip _rev value on create (ssh24)
+
+ * Fix docs on bulk replace op hooks (ssh24)
+
+ * Fix update/updateAll function (ssh24)
+
+ * Add cloudant specific bulkReplace function (ssh24)
+
+ * Check error and result (#149) (Janny)
+
+ * Fix updateAttributes function (ssh24)
+
+ * Fix doc (#148) (Janny)
+
+ * viewDocs (#133) (Janny)
+
+ * Return back result count in updateAll (ssh24)
+
+ * Fix database name typo on README (ssh24)
+
+ * Add regexp doc (#143) (Janny)
+
+ * Add proxy config test (#142) (Janny)
+
+ * Allow users to spawn docker and run tests (ssh24)
+
+ * test: use Cloudant 2.x based image for testing (Ryan Graham)
+
+ * test: replace setup.sh with test.js (Ryan Graham)
+
+ * Refactor functions in cloudant (ssh24)
+
+ * Allow handling of ._rev on models (#123) (Kevin Delisle)
+
+ * Allow travis to run against the latest code base (#138) (Sakib Hasan)
+
+ * Add docker setup (#132) (Sakib Hasan)
+
+ * Fix updateOrCreate (#136) (Sakib Hasan)
+
+ * Fix typo (#135) (Janny)
+
+ * cloudant.test: cleanup after test runs (Kevin Delisle)
+
+ * Setup Travis with Docker Compose (Kevin Delisle)
+
+ * Refactor doc (#116) (Janny)
+
+ * reinstate bulk update (biniam)
+
+ * add array prop update tests (biniam)
+
+ * update docs with current revision (biniam)
+
+ * Allow id property to be a number (#115) (Sakib Hasan)
+
+ * autoupdate and automigrate fix (#109) (Janny)
+
+ * update readme to doc async connect (biniam)
+
+ * check cloudant db in config (biniam)
+
+ * call driver asynchronously (biniam)
+
+ * Fix sort query builder (#107) (Janny)
+
+ * Recover maxrows.test.js (#91) (Janny)
+
+ * Fix regexp.test.js (#103) (Janny)
+
+ * Use define function in loopback-connector (jannyHou)
+
+ * add url config example (biniam)
+
+ * Update connector to 4.0.0 (ssh24)
+
+ * Add doc for fitler and order (jannyHou)
+
+ * Add advisory note regarding update (ssh24)
+
+ * Add $elemMatch for array (jannyHou)
+
+ * Revert "Build selector with array type data" (jannyHou)
+
+
 2017-03-06, Version 2.0.1
 =========================
 
