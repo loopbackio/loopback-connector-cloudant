@@ -18,7 +18,7 @@
     "lint": "eslint .",
     "test": "node test.js",
     "posttest": "npm run lint",
-    "mocha": "./node_modules/.bin/_mocha --timeout 40000 --require strong-mocha-interfaces --require test/init.js --require test/*.test.js --ui strong-bdd"
+    "mocha": "./node_modules/.bin/_mocha --timeout 40000 --require strong-mocha-interfaces --require test/init.js --ui strong-bdd"
   },
   "dependencies": {
     "async": "^1.5.0",
@@ -26,7 +26,7 @@
     "debug": "^2.2.0",
     "lodash": "^4.17.4",
     "loopback-connector": "^4.0.0",
-    "loopback-connector-couchdb2": "^1.0.0",
+    "loopback-connector-couchdb2": "^1.0.2",
     "request": "^2.81.0",
     "strong-globalize": "^2.6.6"
   },

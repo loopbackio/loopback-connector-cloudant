@@ -25,6 +25,20 @@ console.log('env config ', config);
 global.config = config;
 global.IMPORTED_TEST = false;
 
+var skips = [
+  'find all limt ten',
+  'find all skip ten limit ten',
+  'find all skip two hundred',
+  'isActual',
+];
+
+if (process.env.LOOPBACK_MOCHA_SKIPS) {
+  process.env.LOOPBACK_MOCHA_SKIPS =
+    JSON.stringify(JSON.parse(process.env.LOOPBACK_MOCHA_SKIPS).concat(skips));
+} else {
+  process.env.LOOPBACK_MOCHA_SKIPS = JSON.stringify(skips);
+}
+
 global.getDataSource = global.getSchema = function(customConfig) {
   var db = new DataSource(require('../'), customConfig || config);
   db.log = function(a) {
@@ -40,6 +54,16 @@ global.getDataSource = global.getSchema = function(customConfig) {
       db.once('connected', function() {
         originalConnector.cloudant = db.connector.cloudant;
         originalConnector.automigrate(models, cb);
+      });
+    };
+  };
+
+  overrideConnector.autoupdate = function(models, cb) {
+    if (db.connected) return originalConnector.autoupdate(models, cb);
+    else {
+      db.once('connected', function() {
+        originalConnector.cloudant = db.connector.cloudant;
+        originalConnector.autoupdate(models, cb);
       });
     };
   };
@@ -81,6 +105,7 @@ global.getDataSource = global.getSchema = function(customConfig) {
   };
 
   db.connector.automigrate = overrideConnector.automigrate;
+  db.connector.autoupdate = overrideConnector.autoupdate;
   db.connector._insert = overrideConnector._insert;
   db.connector.save = overrideConnector.save;
 

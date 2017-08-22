@@ -48,6 +48,19 @@ describe('cloudant connector', function() {
           {label: String},
         ],
       },
+    }, {
+      indexes: {
+        'address_city_index': {
+          keys: {
+            'address.city': -1,
+          },
+        },
+        'missing_property_index': {
+          keys: {
+            'missingProperty': 1,
+          },
+        },
+      },
     });
 
     SimpleEmployee = db.define('SimpleEmployee', {
@@ -230,19 +243,19 @@ describe('cloudant connector', function() {
       });
       it('returns error missing data type when sorting', function(done) {
         CustomerSimple.find({where: {'address.state': 'CA'},
-        order: 'address.city DESC'},
+        order: 'address.state DESC'},
           function(err, customers) {
             should.exist(err);
-            err.message.should.match(/Unspecified or ambiguous sort type/);
+            err.message.should.match(/no_usable_index,missing_sort_index/);
             done();
           });
       });
-      it('returns result when sorting type provided - missing first level' +
+      it('returns result when sorting type provided - missing first level ' +
         'property', function(done) {
         // Similar test case exist in juggler, but since it takes time to
         // recover them, I temporarily add it here
         CustomerSimple.find({where: {'address.state': 'CA'},
-          order: 'missingProperty:string'}, function(err, customers) {
+          order: 'missingProperty'}, function(err, customers) {
           if (err) return done(err);
           customers.length.should.be.equal(2);
           var expected1 = ['San Mateo', 'San Jose'];
@@ -252,18 +265,23 @@ describe('cloudant connector', function() {
           done();
         });
       });
+      // To ensure sorting in CloudantDB, it must follow some specifics:
+      // - At least one of the sort fields is included in the selector.
+      // - There is an index already defined, with all the sort fields in the same order.
+      // - Each object in the sort array has a single key.
+      // http://docs.couchdb.org/en/2.0.0/api/database/find.html#sort-syntax
       it('returns result when sorting type provided - nested property',
-        function(done) {
-          CustomerSimple.find({where: {'address.state': 'CA'},
-            order: 'address.city:string DESC'},
-            function(err, customers) {
-              if (err) return done(err);
-              customers.length.should.be.equal(2);
-              customers[0].address.city.should.be.eql('San Mateo');
-              customers[1].address.city.should.be.eql('San Jose');
-              done();
-            });
+      function(done) {
+        CustomerSimple.find({where: {'address.city': {gt: null}},
+          order: 'address.city DESC'},
+        function(err, customers) {
+          if (err) return done(err);
+          customers.length.should.be.equal(2);
+          customers[0].address.city.should.be.eql('San Mateo');
+          customers[1].address.city.should.be.eql('San Jose');
+          done();
         });
+      });
     });
     describe('defined in modelDef', function() {
       it('returns result when complete query of' +
@@ -372,9 +390,13 @@ describe('cloudant connector', function() {
             should.not.exist(err);
             should.exist(result);
             should.equal(result.length, 3);
-            testUtil.checkData(data[0], result[0].__data);
-            testUtil.checkData(data[1], result[1].__data);
-            testUtil.checkData(data[2], result[2].__data);
+            // checkData ignoring its order
+            data.forEach(function(item, index) {
+              var r = _.find(result, function(o) {
+                return o.toObject().id === item.id;
+              });
+              testUtil.checkData(data[index], r.toObject());
+            });
             done();
           });
         });

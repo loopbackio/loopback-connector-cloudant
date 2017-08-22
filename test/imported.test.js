@@ -27,6 +27,10 @@ describe('cloudant automigrate.test - imported from couchdb2', function() {
   require('loopback-connector-couchdb2/test/automigrate.test.js');
 });
 
+describe('cloudant autoupdate.test - imported from couchdb2', function() {
+  require('loopback-connector-couchdb2/test/autoupdate.test.js');
+});
+
 describe('cloudant connection.test - imported from couchdb2', function() {
   require('loopback-connector-couchdb2/test/connection.test.js');
 });
@@ -37,6 +41,10 @@ describe('cloudant create.test - imported from couchdb2', function() {
 
 describe('cloudant find.test - imported from couchdb2', function() {
   require('loopback-connector-couchdb2/test/find.test.js');
+});
+
+describe('cloudant index.test - imported from couchdb2', function() {
+  require('loopback-connector-couchdb2/test/index.test.js');
 });
 
 describe('cloudant maxrows.test - imported from couchdb2', function() {
