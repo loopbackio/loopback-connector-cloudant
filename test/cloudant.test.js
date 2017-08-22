@@ -265,22 +265,23 @@ describe('cloudant connector', function() {
           done();
         });
       });
+      // To ensure sorting in CloudantDB, it must follow some specifics:
+      // - At least one of the sort fields is included in the selector.
+      // - There is an index already defined, with all the sort fields in the same order.
+      // - Each object in the sort array has a single key.
+      // http://docs.couchdb.org/en/2.0.0/api/database/find.html#sort-syntax
       it('returns result when sorting type provided - nested property',
-        function(done) {
-          CustomerSimple.find({where: {'address.state': 'CA'},
-            order: 'address.city DESC'},
-            function(err, customers) {
-              if (err) return done(err);
-              customers.length.should.be.equal(2);
-              var expected1 = ['San Mateo', 'San Jose'];
-              var expected2 = ['San Jose', 'San Mateo'];
-              var actual = customers.map(function(c) {
-                return c.address.city;
-              });
-              should(actual).be.oneOf(expected1, expected2);
-              done();
-            });
+      function(done) {
+        CustomerSimple.find({where: {'address.city': {gt: null}},
+          order: 'address.city DESC'},
+        function(err, customers) {
+          if (err) return done(err);
+          customers.length.should.be.equal(2);
+          customers[0].address.city.should.be.eql('San Mateo');
+          customers[1].address.city.should.be.eql('San Jose');
+          done();
         });
+      });
     });
     describe('defined in modelDef', function() {
       it('returns result when complete query of' +
@@ -392,9 +393,9 @@ describe('cloudant connector', function() {
             // checkData ignoring its order
             data.forEach(function(item, index) {
               var r = _.find(result, function(o) {
-                return o.__data.id === item.id;
+                return o.toObject().id === item.id;
               });
-              testUtil.checkData(data[index], r.__data);
+              testUtil.checkData(data[index], r.toObject());
             });
             done();
           });
