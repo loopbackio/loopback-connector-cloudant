@@ -30,6 +30,7 @@ var skips = [
   'find all skip ten limit ten',
   'find all skip two hundred',
   'isActual',
+  'with an invalid connection',
 ];
 
 if (process.env.LOOPBACK_MOCHA_SKIPS) {
