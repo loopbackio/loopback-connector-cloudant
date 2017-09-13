@@ -1,3 +1,11 @@
+2017-09-13, Version 2.0.3
+=========================
+
+ * Fix/ping (#177) (Janny)
+
+ * Add advisory docs on forceId (ssh24)
+
+
 2017-08-22, Version 2.0.2
 =========================
 

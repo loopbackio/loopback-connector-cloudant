@@ -1,6 +1,6 @@
 {
   "name": "loopback-connector-cloudant",
-  "version": "2.0.2",
+  "version": "2.0.3",
   "description": "LoopBack Connector for IBM Cloudant DB",
   "engines": {
     "node": ">=4"
