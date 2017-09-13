@@ -8,7 +8,7 @@ require('./init.js');
 var should = require('should');
 
 describe('cloudant connection', function() {
-  context('with an invalid connection', function() {
+  context('with an invalid cloudant connection', function() {
     it('returns error with fake url', function(done) {
       var fakeConfig = {
         url: 'http://fake:foo@localhost:4',
