@@ -23,7 +23,7 @@
   "dependencies": {
     "async": "^1.5.0",
     "cloudant": "^1.4.0",
-    "debug": "^2.2.0",
+    "debug": "^2.6.9",
     "lodash": "^4.17.4",
     "loopback-connector": "^4.0.0",
     "loopback-connector-couchdb2": "^1.0.2",
