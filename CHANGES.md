@@ -1,3 +1,11 @@
+2017-10-27, Version 2.0.4
+=========================
+
+ * Update package.json to remove vulnerability (Michael Hibay)
+
+ * add globalize string (Diana Lau)
+
+
 2017-09-13, Version 2.0.3
 =========================
 
