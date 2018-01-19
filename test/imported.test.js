@@ -35,6 +35,10 @@ describe('cloudant connection.test - imported from couchdb2', function() {
   require('loopback-connector-couchdb2/test/connection.test.js');
 });
 
+describe('cloudant count.test - imported from couchdb2', function() {
+  require('loopback-connector-couchdb2/test/count.test.js');
+});
+
 describe('cloudant create.test - imported from couchdb2', function() {
   require('loopback-connector-couchdb2/test/create.test.js');
 });
