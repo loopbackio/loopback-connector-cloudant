@@ -18,8 +18,7 @@ describe('using _id as id', function() {
       owner: {type: String},
       _id: {type: String, id: true},
     }, {forceId: true});
-
-    db.automigrate('Task', done);
+    done();
   });
 
   after(function(done) {
