@@ -5,6 +5,9 @@
     "tag": "lts"
   },
   "description": "LoopBack Connector for IBM Cloundant DB",
+  "engines": {
+    "node": ">= 4 <= 6"
+  },
   "keywords": [
     "IBM",
     "StrongLoop",
