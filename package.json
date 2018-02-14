@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "async": "^1.5.0",
-    "cloudant": "^1.4.0",
+    "cloudant": "^1.10.0-NOTICE",
     "debug": "^2.6.9",
     "lodash": "^4.17.4",
     "loopback-connector": "^4.0.0",
