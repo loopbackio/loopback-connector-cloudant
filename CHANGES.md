@@ -1,3 +1,15 @@
+2018-03-22, Version 2.0.5
+=========================
+
+ * fix external link to Selector syntax (Petar Koretić)
+
+ * Updated cloudant dependency (Dan Jarvis)
+
+ * Add count test (#183) (Janny)
+
+ * chore:update license (Diana Lau)
+
+
 2017-10-27, Version 2.0.4
 =========================
 
