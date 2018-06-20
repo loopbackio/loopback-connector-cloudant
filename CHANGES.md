@@ -1,3 +1,13 @@
+2018-06-20, Version 2.1.0
+=========================
+
+ * Revert "2.1.0" (Taranveer Virk)
+
+ * feat: cloudant geospatial (#191) (Danwakeem)
+
+ * update node versions in CI (Diana Lau)
+
+
 2018-03-22, Version 2.0.5
 =========================
 
