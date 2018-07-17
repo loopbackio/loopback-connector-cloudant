@@ -1,3 +1,11 @@
+2018-07-17, Version 2.2.0
+=========================
+
+ * Geospatial README (Dan Jarvis)
+
+ * [WebFM] cs/pl/ru translation (candytangnb)
+
+
 2018-06-20, Version 2.1.0
 =========================
 
