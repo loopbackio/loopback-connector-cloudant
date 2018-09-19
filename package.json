@@ -25,7 +25,7 @@
   "dependencies": {
     "async": "^1.5.0",
     "bluebird": "^3.1.1",
-    "cloudant": "^1.4.0",
+    "cloudant": "^1.10.0-NOTICE",
     "debug": "^2.2.0",
     "lodash": "^3.10.1",
     "loopback-connector": "^2.3.0",
