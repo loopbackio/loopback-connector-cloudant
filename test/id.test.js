@@ -18,7 +18,11 @@ describe('using _id as id', function() {
       owner: {type: String},
       _id: {type: String, id: true},
     }, {forceId: true});
-    done();
+
+    // A workaround for 1.x version calling the async function `define`
+    // in a synchronous way. The fix for it resulted in a major version
+    // bump.
+    setTimeout(done, 3000);
   });
 
   after(function(done) {
