@@ -1,3 +1,11 @@
+2018-09-21, Version 1.3.1
+=========================
+
+ * apply globalLimit in all (jannyHou)
+
+ * update cloudant (#195) (Janny)
+
+
 2018-05-15, Version 1.3.0
 =========================
 
