@@ -1,4 +1,6 @@
-2018-07-17, Version 2.2.0
+
+
+2018-07-16, Version 2.2.0
 =========================
 
  * Geospatial README (Dan Jarvis)
