@@ -24,19 +24,19 @@
   "dependencies": {
     "async": "^1.5.0",
     "cloudant": "^1.10.0-NOTICE",
-    "debug": "^2.6.9",
+    "debug": "^4.1.1",
     "lodash": "^4.17.4",
     "loopback-connector": "^4.0.0",
     "loopback-connector-couchdb2": "^1.2.0",
     "request": "^2.81.0",
-    "strong-globalize": "^2.6.6"
+    "strong-globalize": "^4.1.2"
   },
   "devDependencies": {
     "dockerode": "^2.4.3",
     "eslint": "^2.13.1",
     "eslint-config-loopback": "^4.0.0",
     "loopback-datasource-juggler": "^3.0.0",
-    "mocha": "^2.3.4",
+    "mocha": "^5.2.0",
     "ms": "^2.0.0",
     "rc": "^1.1.5",
     "should": "^7.1.1",
