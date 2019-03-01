@@ -25,7 +25,7 @@
     "async": "^1.5.0",
     "cloudant": "^1.10.0-NOTICE",
     "debug": "^4.1.1",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.11",
     "loopback-connector": "^4.0.0",
     "loopback-connector-couchdb2": "^1.2.0",
     "request": "^2.81.0",
