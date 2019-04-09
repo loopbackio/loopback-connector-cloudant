@@ -49,11 +49,14 @@ global.getDataSource = global.getSchema = function(customConfig) {
   var originalConnector = _.clone(db.connector);
   var overrideConnector = {};
 
+  db.once('connected', function() {
+    originalConnector.cloudant = db.connector.cloudant;
+  });
+
   overrideConnector.automigrate = function(models, cb) {
     if (db.connected) return originalConnector.automigrate(models, cb);
     else {
       db.once('connected', function() {
-        originalConnector.cloudant = db.connector.cloudant;
         originalConnector.automigrate(models, cb);
       });
     };
@@ -63,7 +66,6 @@ global.getDataSource = global.getSchema = function(customConfig) {
     if (db.connected) return originalConnector.autoupdate(models, cb);
     else {
       db.once('connected', function() {
-        originalConnector.cloudant = db.connector.cloudant;
         originalConnector.autoupdate(models, cb);
       });
     };
