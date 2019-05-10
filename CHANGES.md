@@ -1,3 +1,18 @@
+2019-05-10, Version 2.3.0
+=========================
+
+ * fix: update lodash (jannyHou)
+
+ * chore: update strong-globalize and other dep (Diana Lau)
+
+ * chore: update copyrights years (Diana Lau)
+
+ * Fix test setup of autoupgrade/autoupdate (Miroslav Bajtoš)
+
+
+2018-09-21, Version 2.2.1
+=========================
+
 
 
 2018-07-16, Version 2.2.0
