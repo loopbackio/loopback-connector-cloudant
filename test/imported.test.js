@@ -7,11 +7,11 @@
 
 describe('cloudant imported features', function() {
   before(function() {
-    IMPORTED_TEST = true;
+    global.IMPORTED_TEST = true;
   });
 
   after(function() {
-    IMPORTED_TEST = false;
+    global.IMPORTED_TEST = false;
   });
 
   require('loopback-datasource-juggler/test/include.test.js');

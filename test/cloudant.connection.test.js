@@ -5,15 +5,15 @@
 
 'use strict';
 require('./init.js');
-var should = require('should');
+const should = require('should');
 
 describe('cloudant connection', function() {
   context('with an invalid cloudant connection', function() {
     it('returns error with fake url', function(done) {
-      var fakeConfig = {
+      const fakeConfig = {
         url: 'http://fake:foo@localhost:4',
       };
-      var fakeDB = global.getDataSource(fakeConfig);
+      const fakeDB = global.getDataSource(fakeConfig);
       fakeDB.once('error', function(err) {
         should.exist(err);
         err.message.should.match(/error happened in your connection/);

@@ -5,19 +5,19 @@
 
 'use strict';
 
-var g = require('strong-globalize')();
-var DataSource = require('loopback-datasource-juggler').DataSource;
-var Cloudant = require('../'); // loopback-connector-cloudant
+const g = require('strong-globalize')();
+const DataSource = require('loopback-datasource-juggler').DataSource;
+const Cloudant = require('../'); // loopback-connector-cloudant
 
-var config = {
+const config = {
   username: process.env.CLOUDANT_USERNAME,
   password: process.env.CLOUDANT_PASSWORD,
   database: process.env.CLOUDANT_DATABASE,
 };
 
-var db = new DataSource(Cloudant, config);
+const db = new DataSource(Cloudant, config);
 
-var User = db.define('User', {
+const User = db.define('User', {
   name: {type: String},
   email: {type: String},
 });

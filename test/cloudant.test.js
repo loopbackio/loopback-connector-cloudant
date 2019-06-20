@@ -6,16 +6,16 @@
 'use strict';
 
 require('./init.js');
-var Cloudant = require('../lib/cloudant');
-var _ = require('lodash');
-var should = require('should');
-var testUtil = require('./lib/test-util');
-var url = require('url');
-var db, Product, CustomerSimple, SimpleEmployee;
+const Cloudant = require('../lib/cloudant');
+const _ = require('lodash');
+const should = require('should');
+const testUtil = require('./lib/test-util');
+const url = require('url');
+let db, Product, CustomerSimple, SimpleEmployee;
 
 describe('cloudant connector', function() {
   before(function(done) {
-    db = getDataSource();
+    db = global.getDataSource();
 
     Product = db.define('Product', {
       name: {type: String},
@@ -82,7 +82,7 @@ describe('cloudant connector', function() {
   });
 
   describe('model with array props gets updated properly', function() {
-    var prod1, prod2;
+    let prod1, prod2;
     before('create Product', function(done) {
       Product.create({
         id: 1,
@@ -143,42 +143,42 @@ describe('cloudant connector', function() {
       });
 
     it('updates all matching instances with array props',
-   function(done) {
-     var data = {
-       price: 200,
-       releases: [7],
-       type: ['everything'],
-       foo: [{id: 1, name: 'bar'}],
-     };
+      function(done) {
+        const data = {
+          price: 200,
+          releases: [7],
+          type: ['everything'],
+          foo: [{id: 1, name: 'bar'}],
+        };
 
-     Product.updateAll({price: 100}, data, function(err, res) {
-       if (err) done(err);
-       Product.find(function(err, res) {
-         if (err) done(err);
-         res.length.should.equal(2);
-         res[0].name.should.oneOf(prod1.name, prod2.name);
-         res[0].price.should.equal(data.price);
-         res[0].releases.should.deepEqual(data.releases);
-         res[0].type.should.deepEqual(data.type);
-         res[0].foo.should.deepEqual(data.foo);
-         res[1].name.should.oneOf(prod1.name, prod2.name);
-         res[1].price.should.equal(data.price);
-         res[1].releases.should.deepEqual(data.releases);
-         res[1].type.should.deepEqual(data.type);
-         res[1].foo.should.deepEqual(data.foo);
-         done();
-       });
-     });
-   });
+        Product.updateAll({price: 100}, data, function(err, res) {
+          if (err) done(err);
+          Product.find(function(err, res) {
+            if (err) done(err);
+            res.length.should.equal(2);
+            res[0].name.should.oneOf(prod1.name, prod2.name);
+            res[0].price.should.equal(data.price);
+            res[0].releases.should.deepEqual(data.releases);
+            res[0].type.should.deepEqual(data.type);
+            res[0].foo.should.deepEqual(data.foo);
+            res[1].name.should.oneOf(prod1.name, prod2.name);
+            res[1].price.should.equal(data.price);
+            res[1].releases.should.deepEqual(data.releases);
+            res[1].type.should.deepEqual(data.type);
+            res[1].foo.should.deepEqual(data.foo);
+            done();
+          });
+        });
+      });
   });
 
   // the test suite is to make sure when
   // user queries against a non existing property
   // the app won't crash
   describe('nested property', function() {
-    var seedCount = 0;
+    let seedCount = 0;
     before(function createSampleData(done) {
-      var seedItems = seed();
+      const seedItems = seed();
       seedCount = seedItems.length;
       CustomerSimple.create(seedItems, done);
     });
@@ -200,11 +200,11 @@ describe('cloudant connector', function() {
         });
       it('returns null when first level property is array', function(done) {
         CustomerSimple.find({where: {'friends.name': {regexp: /^Ringo/}}},
-        function(err, customers) {
-          if (err) return done(err);
-          customers.should.be.empty();
-          done();
-        });
+          function(err, customers) {
+            if (err) return done(err);
+            customers.should.be.empty();
+            done();
+          });
       });
       it('returns result when first level property is array type' +
       ' and $elemMatch provided', function(done) {
@@ -213,9 +213,9 @@ describe('cloudant connector', function() {
         function(err, customers) {
           if (err) return done(err);
           customers.length.should.be.equal(2);
-          var expected1 = ['John Lennon', 'Paul McCartney'];
-          var expected2 = ['Paul McCartney', 'John Lennon'];
-          var actual = customers.map(function(c) { return c.name; });
+          const expected1 = ['John Lennon', 'Paul McCartney'];
+          const expected2 = ['Paul McCartney', 'John Lennon'];
+          const actual = customers.map(function(c) { return c.name; });
           should(actual).be.oneOf(expected1, expected2);
           done();
         });
@@ -223,11 +223,11 @@ describe('cloudant connector', function() {
       it('returns null when multi-level nested property' +
       ' contains array type', function(done) {
         CustomerSimple.find({where: {'address.tags.tag': 'business'}},
-        function(err, customers) {
-          if (err) return done(err);
-          customers.should.be.empty();
-          done();
-        });
+          function(err, customers) {
+            if (err) return done(err);
+            customers.should.be.empty();
+            done();
+          });
       });
       it('returns result when multi-level nested property contains array type' +
       ' and $elemMatch provided', function(done) {
@@ -243,12 +243,12 @@ describe('cloudant connector', function() {
       });
       it('returns error missing data type when sorting', function(done) {
         CustomerSimple.find({where: {'address.state': 'CA'},
-        order: 'address.state DESC'},
-          function(err, customers) {
-            should.exist(err);
-            err.message.should.match(/no_usable_index,missing_sort_index/);
-            done();
-          });
+          order: 'address.state DESC'},
+        function(err, customers) {
+          should.exist(err);
+          err.message.should.match(/no_usable_index,missing_sort_index/);
+          done();
+        });
       });
       it('returns result when sorting type provided - missing first level ' +
         'property', function(done) {
@@ -258,9 +258,9 @@ describe('cloudant connector', function() {
           order: 'missingProperty'}, function(err, customers) {
           if (err) return done(err);
           customers.length.should.be.equal(2);
-          var expected1 = ['San Mateo', 'San Jose'];
-          var expected2 = ['San Jose', 'San Mateo'];
-          var actual = customers.map(function(c) { return c.address.city; });
+          const expected1 = ['San Mateo', 'San Jose'];
+          const expected2 = ['San Jose', 'San Mateo'];
+          const actual = customers.map(function(c) { return c.address.city; });
           should(actual).be.oneOf(expected1, expected2);
           done();
         });
@@ -271,17 +271,17 @@ describe('cloudant connector', function() {
       // - Each object in the sort array has a single key.
       // http://docs.couchdb.org/en/2.0.0/api/database/find.html#sort-syntax
       it('returns result when sorting type provided - nested property',
-      function(done) {
-        CustomerSimple.find({where: {'address.city': {gt: null}},
-          order: 'address.city DESC'},
-        function(err, customers) {
-          if (err) return done(err);
-          customers.length.should.be.equal(2);
-          customers[0].address.city.should.be.eql('San Mateo');
-          customers[1].address.city.should.be.eql('San Jose');
-          done();
+        function(done) {
+          CustomerSimple.find({where: {'address.city': {gt: null}},
+            order: 'address.city DESC'},
+          function(err, customers) {
+            if (err) return done(err);
+            customers.length.should.be.equal(2);
+            customers[0].address.city.should.be.eql('San Mateo');
+            customers[1].address.city.should.be.eql('San Jose');
+            done();
+          });
         });
-      });
     });
     describe('defined in modelDef', function() {
       it('returns result when complete query of' +
@@ -300,7 +300,7 @@ describe('cloudant connector', function() {
   });
 
   describe('allow numerical `id` value', function() {
-    var data = [{
+    const data = [{
       id: 1,
       name: 'John Chow',
       age: 45,
@@ -313,7 +313,7 @@ describe('cloudant connector', function() {
       name: 'Michael Santer',
       age: 30,
     }];
-    var rev;
+    let rev;
 
     before(function(done) {
       SimpleEmployee.create(data, function(err, result) {
@@ -369,7 +369,7 @@ describe('cloudant connector', function() {
     });
 
     it('replace instances with numerical id (replaceById)', function(done) {
-      var updatedData = {
+      const updatedData = {
         id: data[1].id,
         name: 'Christian Thompson',
         age: 32,
@@ -392,7 +392,7 @@ describe('cloudant connector', function() {
             should.equal(result.length, 3);
             // checkData ignoring its order
             data.forEach(function(item, index) {
-              var r = _.find(result, function(o) {
+              const r = _.find(result, function(o) {
                 return o.toObject().id === item.id;
               });
               testUtil.checkData(data[index], r.toObject());
@@ -449,9 +449,9 @@ describe('cloudant connector', function() {
 describe('cloudant constructor', function() {
   it('should allow passthrough of properties in the settings object',
     function() {
-      var ds = getDataSource();
+      const ds = global.getDataSource();
       ds.settings = _.clone(ds.settings) || {};
-      var result = {};
+      let result = {};
       ds.settings.Driver = function(options) {
         result = options;
       };
@@ -460,7 +460,7 @@ describe('cloudant constructor', function() {
       };
       ds.settings.plugin = 'whack-a-mole';
       ds.settings.requestDefault = {proxy: 'http://localhost:8080'};
-      var connector = Cloudant.initialize(ds, function(err) {
+      const connector = Cloudant.initialize(ds, function(err) {
         should.not.exist(err);
         should.exist(result.foobar);
         result.foobar.foo.should.be.equal('bar');
@@ -471,39 +471,39 @@ describe('cloudant constructor', function() {
     });
 
   it('should pass the url as an object property', function() {
-    var ds = getDataSource();
+    const ds = global.getDataSource();
     ds.settings = _.clone(ds.settings) || {};
-    var result = {};
+    let result = {};
     ds.settings.Driver = function(options) {
       result = options;
     };
     ds.settings.url = 'https://totallyfakeuser:fakepass@definitelynotreal.cloudant.com';
-    var connector = Cloudant.initialize(ds, function() {
+    const connector = Cloudant.initialize(ds, function() {
       // The url will definitely cause a connection error, so ignore.
       should.exist(result.url);
       result.url.should.equal(ds.settings.url);
     });
   });
   it('should convert first part of url path to database name', function(done) {
-    var myConfig = _.clone(global.config);
+    const myConfig = _.clone(global.config);
     myConfig.url = myConfig.url + '/some/random/path';
     myConfig.database = '';
-    var result = {};
+    let result = {};
     myConfig.Driver = function(options) {
       result = options;
     };
-    var ds = getDataSource(myConfig);
+    const ds = global.getDataSource(myConfig);
     result.url.should.equal(global.config.url);
     result.database.should.equal('some');
     done();
   });
 
   it('should give 401 error for wrong creds', function(done) {
-    var myConfig = _.clone(global.config);
-    var parsedUrl = url.parse(myConfig.url);
+    const myConfig = _.clone(global.config);
+    const parsedUrl = url.parse(myConfig.url);
     parsedUrl.auth = 'foo:bar';
     myConfig.url = parsedUrl.format();
-    var ds = getDataSource(myConfig);
+    const ds = global.getDataSource(myConfig);
     ds.once('error', function(err) {
       should.exist(err);
       err.statusCode.should.equal(401);
@@ -513,12 +513,12 @@ describe('cloudant constructor', function() {
     });
   });
   it('should give 404 error for nonexistant db', function(done) {
-    var myConfig = _.clone(global.config);
-    var parsedUrl = url.parse(myConfig.url);
+    const myConfig = _.clone(global.config);
+    const parsedUrl = url.parse(myConfig.url);
     parsedUrl.path = '';
     myConfig.url = parsedUrl.format();
     myConfig.database = 'idontexist';
-    var ds = getDataSource(myConfig);
+    const ds = global.getDataSource(myConfig);
     ds.once('error', function(err) {
       should.exist(err);
       err.statusCode.should.equal(404);
@@ -530,7 +530,7 @@ describe('cloudant constructor', function() {
 });
 
 function seed() {
-  var beatles = [
+  const beatles = [
     {
       seq: 0,
       name: 'John Lennon',

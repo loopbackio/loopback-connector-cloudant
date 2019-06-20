@@ -6,19 +6,19 @@
 'use strict';
 
 require('./init.js');
-var _ = require('lodash');
-var async = require('async');
-var should = require('should');
-var url = require('url');
+const _ = require('lodash');
+const async = require('async');
+const should = require('should');
+const url = require('url');
 
-var db, sampleData;
+let db, sampleData;
 
 describe('cloudant geo', function() {
   describe('viewDocs', function(done) {
     before(function(done) {
       db = global.getDataSource();
-      var connector = db.connector;
-      var driverInstance;
+      const connector = db.connector;
+      let driverInstance;
 
       db.once('connected', function(err) {
         driverInstance = connector[connector.name]
@@ -29,14 +29,14 @@ describe('cloudant geo', function() {
       function insertSampleData(cb) {
         sampleData = generateSamples();
         driverInstance.bulk({docs: sampleData}, cb);
-      };
+      }
 
       function insertViewDdoc(cb) {
-        var viewFunction = 'function(doc) { if ' +
+        const viewFunction = 'function(doc) { if ' +
           '(doc.geometry && doc.geometry.coordinates) { ' +
           'st_index(doc.geometry); } };';
 
-        var ddoc = {
+        const ddoc = {
           _id: '_design/geo',
           'st_indexes': {
             getGeo: {
@@ -46,7 +46,7 @@ describe('cloudant geo', function() {
         };
 
         driverInstance.insert(JSON.parse(JSON.stringify(ddoc)), cb);
-      };
+      }
     });
 
     it('returns result by quering a view', function(done) {
@@ -64,12 +64,12 @@ describe('cloudant geo', function() {
         radius: 250000,
         'include_docs': true,
       }, function(err, results) {
-        var expectedLocationIds = [1, 2, 3, 4];
+        const expectedLocationIds = [1, 2, 3, 4];
         results.rows.forEach(belongsToModelLocation);
         done(err);
 
         function belongsToModelLocation(elem) {
-          var doc = elem.doc;
+          const doc = elem.doc;
           doc.geoModel.should.equal('geo');
           _.indexOf(expectedLocationIds, doc.locationId).should.not.equal(-1);
         }
@@ -79,7 +79,7 @@ describe('cloudant geo', function() {
 });
 
 function generateSamples() {
-  var samples = [
+  const samples = [
     {
       geoModel: 'geo',
       locationId: 1,
