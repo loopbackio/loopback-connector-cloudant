@@ -5,7 +5,7 @@
 
 'use strict';
 
-var should = require('should');
+const should = require('should');
 
 /**
  * Helper method to validate top-level properties on a model.
@@ -22,7 +22,7 @@ exports.checkModel = function checkModel(expected, actual) {
  * @param {object} actual The actual object.
  */
 exports.checkData = function checkData(expected, actual) {
-  for (var i in expected) {
+  for (const i in expected) {
     should.exist(actual[i]);
     actual[i].should.eql(expected[i]);
   }
@@ -40,7 +40,7 @@ exports.QUERY_MAX = 1000;
  * @returns {Error} The refined Error message.
  */
 exports.refinedError = function refinedError(err, result) {
-  var newErr = null;
+  let newErr = null;
   if (!!err && result)
     newErr = new Error('both err and result were returned!');
   else if (err) newErr = err;

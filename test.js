@@ -5,16 +5,16 @@
 
 'use strict';
 
-var _ = require('lodash');
-var async = require('async');
-var spawn = require('child_process').spawn;
-var docker = new require('dockerode')();
-var fmt = require('util').format;
-var http = require('http');
-var ms = require('ms');
+const _ = require('lodash');
+const async = require('async');
+const spawn = require('child_process').spawn;
+const docker = new require('dockerode')();
+const fmt = require('util').format;
+const http = require('http');
+const ms = require('ms');
 
 // we don't pass any node flags, so we can call _mocha instead the wrapper
-var mochaBin = require.resolve('mocha/bin/_mocha');
+const mochaBin = require.resolve('mocha/bin/_mocha');
 
 process.env.CLOUDANT_DATABASE = 'test-db';
 process.env.CLOUDANT_PASSWORD = 'pass';
@@ -26,10 +26,10 @@ process.env.CLOUDANT_PORT = 'TBD';
 process.env.CLOUDANT_HOST = 'TBD';
 process.env.CLOUDANT_URL = 'TBD';
 
-var CONNECT_RETRIES = 30;
-var CONNECT_DELAY = ms('5s');
+const CONNECT_RETRIES = 30;
+const CONNECT_DELAY = ms('5s');
 
-var containerToDelete = null;
+let containerToDelete = null;
 
 async.waterfall([
   dockerStart('ibmcom/cloudant-developer:2.0.1'),
@@ -53,9 +53,9 @@ async.waterfall([
 
 function sleep(n) {
   return function delayedPassThrough() {
-    var args = [].slice.call(arguments);
+    const args = [].slice.call(arguments);
     // last argument is the callback
-    var next = args.pop();
+    const next = args.pop();
     // prepend `null` to indicate no error
     args.unshift(null);
     setTimeout(function() {
@@ -98,14 +98,14 @@ function setCloudantEnv(container, next) {
     // if swarm, Node.Ip will be set to actual node's IP
     // if not swarm, but remote docker, use docker host's IP
     // if local docker, use localhost
-    var host = _.get(c, 'Node.IP', _.get(docker, 'modem.host', '127.0.0.1'));
+    const host = _.get(c, 'Node.IP', _.get(docker, 'modem.host', '127.0.0.1'));
     // container's port 80 is dynamically mapped to an external port
-    var port = _.get(c,
+    const port = _.get(c,
       ['NetworkSettings', 'Ports', '80/tcp', '0', 'HostPort']);
     process.env.CLOUDANT_PORT = port;
     process.env.CLOUDANT_HOST = host;
-    var usr = process.env.CLOUDANT_USERNAME;
-    var pass = process.env.CLOUDANT_PASSWORD;
+    const usr = process.env.CLOUDANT_USERNAME;
+    const pass = process.env.CLOUDANT_PASSWORD;
     process.env.CLOUDANT_URL = 'http://' + usr + ':' + pass + '@' +
       host + ':' + port;
     console.log('env:', _.pick(process.env, [
@@ -122,7 +122,7 @@ function setCloudantEnv(container, next) {
 
 function waitFor(path) {
   return function waitForPath(container, next) {
-    var opts = {
+    const opts = {
       host: process.env.CLOUDANT_HOST,
       port: process.env.CLOUDANT_PORT,
       auth: process.env.CLOUDANT_USERNAME + ':' + process.env.CLOUDANT_PASSWORD,
@@ -157,7 +157,7 @@ function waitFor(path) {
 
 function createDB(db) {
   return function create(container, next) {
-    var opts = {
+    const opts = {
       method: 'PUT',
       path: '/' + db,
       host: process.env.CLOUDANT_HOST,
@@ -172,8 +172,8 @@ function createDB(db) {
         setImmediate(next, null, container);
       });
     })
-    .on('error', next)
-    .end();
+      .on('error', next)
+      .end();
   };
 }
 

@@ -17,6 +17,7 @@
   "main": "index.js",
   "scripts": {
     "lint": "eslint .",
+    "lint:fix": "npm run lint -- --fix",
     "test": "node test.js",
     "posttest": "npm run lint",
     "mocha": "./node_modules/.bin/_mocha --timeout 40000 --require strong-mocha-interfaces --require test/init.js --ui strong-bdd"
@@ -33,8 +34,8 @@
   },
   "devDependencies": {
     "dockerode": "^2.4.3",
-    "eslint": "^2.13.1",
-    "eslint-config-loopback": "^4.0.0",
+    "eslint": "^5.16.0",
+    "eslint-config-loopback": "^13.1.0",
     "loopback-datasource-juggler": "^3.0.0",
     "mocha": "^5.2.0",
     "ms": "^2.0.0",
