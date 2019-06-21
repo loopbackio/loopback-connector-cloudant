@@ -37,8 +37,10 @@ async.waterfall([
   setCloudantEnv,
   waitFor('/_all_dbs'),
   createDB('test-db'),
-  run([mochaBin, '--timeout', '40000', '--require', 'strong-mocha-interfaces',
-    '--require', 'test/init.js', '--ui', 'strong-bdd']),
+  run([mochaBin, 'test/*.test.js', 'node_modules/juggler-v3/test.js',
+    'node_modules/juggler-v4/test.js', '--timeout', '40000',
+    '--require', 'strong-mocha-interfaces', '--require', 'test/init.js',
+    '--ui', 'strong-bdd']),
 ], function(testErr) {
   dockerCleanup(function(cleanupErr) {
     if (cleanupErr) {

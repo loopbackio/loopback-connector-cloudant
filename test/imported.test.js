@@ -5,20 +5,6 @@
 
 'use strict';
 
-describe('cloudant imported features', function() {
-  before(function() {
-    global.IMPORTED_TEST = true;
-  });
-
-  after(function() {
-    global.IMPORTED_TEST = false;
-  });
-
-  require('loopback-datasource-juggler/test/include.test.js');
-  require('loopback-datasource-juggler/test/common.batch.js');
-});
-
-// Run the COUCHDB2 Test Suite.
 require('./init.js');
 
 process.env.COUCHDB2_TEST_SKIP_INIT = true;

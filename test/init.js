@@ -7,7 +7,8 @@
 
 module.exports = require('should');
 
-const DataSource = require('loopback-datasource-juggler').DataSource;
+const juggler = require('loopback-datasource-juggler');
+let DataSource = juggler.DataSource;
 const _ = require('lodash');
 
 const config = {
@@ -40,8 +41,10 @@ if (process.env.LOOPBACK_MOCHA_SKIPS) {
   process.env.LOOPBACK_MOCHA_SKIPS = JSON.stringify(skips);
 }
 
-global.getDataSource = global.getSchema = function(customConfig) {
-  const db = new DataSource(require('../'), customConfig || config);
+let db;
+global.getDataSource = global.getSchema = function(customConfig, customClass) {
+  const ctor = customClass || DataSource;
+  db = new ctor(require('../'), customConfig || config);
   db.log = function(a) {
     console.log(a);
   };
@@ -113,6 +116,13 @@ global.getDataSource = global.getSchema = function(customConfig) {
   db.connector.save = overrideConnector.save;
 
   return db;
+};
+
+global.resetDataSourceClass = function(ctor) {
+  DataSource = ctor || juggler.DataSource;
+  const promise = db ? db.disconnect() : Promise.resolve();
+  db = undefined;
+  return promise;
 };
 
 global.connectorCapabilities = {
