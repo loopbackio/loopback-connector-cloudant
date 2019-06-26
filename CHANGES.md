@@ -1,3 +1,15 @@
+2019-06-26, Version 2.3.1
+=========================
+
+ * chore: update CODEOWNERS (Diana Lau)
+
+ * feat: run shared tests from v3 n v4 of juggler (Agnes Lin)
+
+ * update eslint -v for shared juggler tests (Agnes Lin)
+
+ * update node -v to skip CI test for older version (Agnes Lin)
+
+
 2019-05-10, Version 2.3.0
 =========================
 
