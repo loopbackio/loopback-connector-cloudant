@@ -1,3 +1,11 @@
+2019-09-19, Version 2.3.2
+=========================
+
+ * chore: add node 12 to travis ci (Nora)
+
+ * update dependencies (Nora)
+
+
 2019-06-26, Version 2.3.1
 =========================
 
