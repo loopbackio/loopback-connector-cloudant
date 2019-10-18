@@ -105,7 +105,7 @@ printf "\n${CYAN}Cloudant started.${PLAIN}\n"
 
 ## create database		
 printf "\n${RED}>> Creating database in Cloudant${PLAIN}"		
-curl --request PUT --url http://$USER:$PASSWORD@$HOST:$PORT/$DATABASE > /dev/null 2>&1		
+curl -i -X PUT http://$USER:$PASSWORD@$HOST:$PORT/$DATABASE > /dev/null 2>&1		
 DB_OUTPUT=$?		
 if [ "$DB_OUTPUT" -ne 0 ]; then		
     printf "\n\n${CYAN}Status: ${PLAIN}${RED}Database could not be created. Terminating setup.${PLAIN}\n\n"		

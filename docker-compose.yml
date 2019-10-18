@@ -1,18 +1,17 @@
-version: '2'
+version: "3"
 services:
   cloudant:
     image: ibmcom/cloudant-developer:latest
     container_name: cloudant-testdb
     restart: always
     privileged: true
-    hostname: cloudant
+    hostname: testdb.local
     ports:
       - "8080:80"
     expose:
       - "80"
     volumes:
       - cloudant-testdb:/srv
-    mem_limit: 256M
     network_mode: bridge
 volumes:
-    cloudant-testdb:
+  cloudant-testdb:
