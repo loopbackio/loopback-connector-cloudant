@@ -67,6 +67,7 @@ describe('cloudant connector', function() {
       id: {
         type: Number,
         id: true,
+        index: true,
         required: true,
         generated: false,
       },
@@ -246,14 +247,13 @@ describe('cloudant connector', function() {
           order: 'address.state DESC'},
         function(err, customers) {
           should.exist(err);
-          err.message.should.match(/no_usable_index,missing_sort_index/);
+          err.message.should.match(/No index exists for this sort/);
           done();
         });
       });
-      it('returns result when sorting type provided - missing first level ' +
+      // The new search engine doesn't support sorting without an existing index
+      it.skip('returns result when sorting type provided - missing first level ' +
         'property', function(done) {
-        // Similar test case exist in juggler, but since it takes time to
-        // recover them, I temporarily add it here
         CustomerSimple.find({where: {'address.state': 'CA'},
           order: 'missingProperty'}, function(err, customers) {
           if (err) return done(err);
