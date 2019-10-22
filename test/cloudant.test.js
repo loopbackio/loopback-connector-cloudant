@@ -21,7 +21,7 @@ describe('cloudant connector', function() {
       name: {type: String},
       description: {type: String},
       price: {type: Number},
-      releases: {type: ['number']},
+      releases: {type: [Number]},
       type: {type: [String]},
       foo: {type: [Object]},
     }, {forceId: false});
@@ -67,7 +67,6 @@ describe('cloudant connector', function() {
       id: {
         type: Number,
         id: true,
-        index: true,
         required: true,
         generated: false,
       },
@@ -76,6 +75,14 @@ describe('cloudant connector', function() {
       },
       age: {
         type: Number,
+      },
+    }, {
+      indexes: {
+        'id_index': {
+          keys: {
+            _id: -1,
+          },
+        },
       },
     });
 
@@ -127,9 +134,9 @@ describe('cloudant connector', function() {
             if (err) done(err);
             res.name.should.equal(prod1.name);
             res.price.should.equal(prod1.price);
-            res.releases.should.deepEqual([4, 5, 6]);
-            res.type.should.deepEqual(['cinnamon raisin']);
-            res.foo.should.deepEqual([{id: 3, name: 'bread3'}]);
+            Array.from(res.releases).should.deepEqual([4, 5, 6]);
+            Array.from(res.type).should.deepEqual(['cinnamon raisin']);
+            Array.from(res.foo).should.deepEqual([{id: 3, name: 'bread3'}]);
             Product.findById('2', function(err, res) {
               if (err) done(err);
               res.name.should.equal(prod2.name);
@@ -159,14 +166,14 @@ describe('cloudant connector', function() {
             res.length.should.equal(2);
             res[0].name.should.oneOf(prod1.name, prod2.name);
             res[0].price.should.equal(data.price);
-            res[0].releases.should.deepEqual(data.releases);
-            res[0].type.should.deepEqual(data.type);
-            res[0].foo.should.deepEqual(data.foo);
+            Array.from(res[0].releases).should.deepEqual(data.releases);
+            Array.from(res[0].type).should.deepEqual(data.type);
+            Array.from(res[0].foo).should.deepEqual(data.foo);
             res[1].name.should.oneOf(prod1.name, prod2.name);
             res[1].price.should.equal(data.price);
-            res[1].releases.should.deepEqual(data.releases);
-            res[1].type.should.deepEqual(data.type);
-            res[1].foo.should.deepEqual(data.foo);
+            Array.from(res[1].releases).should.deepEqual(data.releases);
+            Array.from(res[1].type).should.deepEqual(data.type);
+            Array.from(res[1].foo).should.deepEqual(data.foo);
             done();
           });
         });
@@ -252,8 +259,8 @@ describe('cloudant connector', function() {
         });
       });
       // The new search engine doesn't support sorting without an existing index
-      it.skip('returns result when sorting type provided - missing first level ' +
-        'property', function(done) {
+      it.skip('returns result when sorting type provided - ' +
+        'missing first level property', function(done) {
         CustomerSimple.find({where: {'address.state': 'CA'},
           order: 'missingProperty'}, function(err, customers) {
           if (err) return done(err);
@@ -499,7 +506,7 @@ describe('cloudant constructor', function() {
   });
 
   it('should give 401 error for wrong creds', function(done) {
-    const myConfig = _.clone(global.config);
+    const myConfig = _.pick(global.config, ['url', 'database']);
     const parsedUrl = url.parse(myConfig.url);
     parsedUrl.auth = 'foo:bar';
     myConfig.url = parsedUrl.format();

@@ -32,6 +32,7 @@ const skips = [
   'find all skip two hundred',
   'isActual',
   'with an invalid connection',
+  'cloudant geo',
 ];
 
 if (process.env.LOOPBACK_MOCHA_SKIPS) {

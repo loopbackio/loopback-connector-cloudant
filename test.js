@@ -11,7 +11,6 @@ const spawn = require('child_process').spawn;
 const docker = new require('dockerode')();
 const fmt = require('util').format;
 const http = require('http');
-const request = require('request');
 const ms = require('ms');
 
 // we don't pass any node flags, so we can call _mocha instead the wrapper
@@ -103,7 +102,7 @@ function setCloudantEnv(container, next) {
     // if not swarm, but remote docker, use docker host's IP
     // if local docker, use localhost
     const host = _.get(c, 'Node.IP', _.get(docker, 'modem.host', '127.0.0.1'));
-    // couchdb uses TCP/IP port 5984 
+    // couchdb uses TCP/IP port 5984
     // container's port 5984 is dynamically mapped to an external port
     const port = _.get(c,
       ['NetworkSettings', 'Ports', '5984/tcp', '0', 'HostPort']);
@@ -162,21 +161,19 @@ function waitFor(path) {
 function createAdmin() {
   return function createAdminUser(container, next) {
     const data = '\"pass\"';
-    // console.log(`data: ${data}`);
-    const uri = '/_node/couchdb@127.0.0.1/_config/admins/' + process.env.CLOUDANT_USERNAME;
-    // console.log(uri);
+    const uri = '/_node/couchdb@127.0.0.1/_config/admins/' +
+      process.env.CLOUDANT_USERNAME;
     const opts = {
       method: 'PUT',
       path: uri,
       header: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        'Content-Type': 'application/x-www-form-urlencoded',
       },
       host: process.env.CLOUDANT_HOST,
       port: process.env.CLOUDANT_PORT,
-      body: data
-    }
-    // console.log('creating my admin user: %j', 
-    //  `${config.username}:${config.password}`);
+      body: data,
+    };
+
     const req = http.request(opts, function(res) {
       res.pipe(devNull());
       res.on('error', next);
@@ -186,7 +183,7 @@ function createAdmin() {
     });
     req.write(data);
     req.end();
-  }
+  };
 }
 
 function createDB(db) {
@@ -198,7 +195,7 @@ function createDB(db) {
       port: process.env.CLOUDANT_PORT,
       auth: process.env.CLOUDANT_USERNAME + ':' + process.env.CLOUDANT_PASSWORD,
     };
-    // console.log('creating db: %j', opts);
+    console.log('creating db: %j', db);
     http.request(opts, function(res) {
       res.pipe(devNull());
       res.on('error', next);

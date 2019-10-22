@@ -23,8 +23,8 @@
     "mocha": "./node_modules/.bin/_mocha --timeout 40000 --require strong-mocha-interfaces --require test/init.js --ui strong-bdd"
   },
   "dependencies": {
+    "@cloudant/cloudant": "^4.2.1",
     "async": "^3.1.0",
-    "cloudant": "^1.10.0-NOTICE",
     "debug": "^4.1.1",
     "lodash": "^4.17.11",
     "loopback-connector": "^4.0.0",
