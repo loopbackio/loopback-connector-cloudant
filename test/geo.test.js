@@ -32,9 +32,12 @@ describe('cloudant geo', function() {
       }
 
       function insertViewDdoc(cb) {
-        const viewFunction = 'function(doc) { if ' +
-          '(doc.geometry && doc.geometry.coordinates) { ' +
-          'st_index(doc.geometry); } };';
+        const viewFunction = function(doc) {
+          if (doc.geometry && doc.geometry.coordinates) {
+            // eslint-disable-next-line no-undef
+            st_index(doc.geometry);
+          }
+        };
 
         const ddoc = {
           _id: '_design/geo',
@@ -45,7 +48,7 @@ describe('cloudant geo', function() {
           },
         };
 
-        driverInstance.insert(JSON.parse(JSON.stringify(ddoc)), cb);
+        driverInstance.insert(ddoc, cb);
       }
     });
 
@@ -59,8 +62,8 @@ describe('cloudant geo', function() {
 
     it('queries a view with radius filter', function(done) {
       db.connector.geoDocs('geo', 'getGeo', {
-        lat: 32.646911,
-        lon: -96.866988,
+        lat: 42.447222,
+        lon: -71.225,
         radius: 250000,
         'include_docs': true,
       }, function(err, results) {
@@ -83,33 +86,37 @@ function generateSamples() {
     {
       geoModel: 'geo',
       locationId: 1,
+      type: 'Feature',
       geometry: {
         type: 'Point',
-        coordinates: [-96.691448, 33.158878],
+        coordinates: [-71.063611, 42.358056],
       },
     },
     {
       geoModel: 'geo',
       locationId: 2,
+      type: 'Feature',
       geometry: {
         type: 'Point',
-        coordinates: [-96.691448, 33.158878],
+        coordinates: [-71.063611, 42.358056],
       },
     },
     {
       geoModel: 'geo',
       locationId: 3,
+      type: 'Feature',
       geometry: {
         type: 'Point',
-        coordinates: [-96.691448, 33.158878],
+        coordinates: [-71.063611, 42.358056],
       },
     },
     {
       geoModel: 'geo',
       locationId: 4,
+      type: 'Feature',
       geometry: {
         type: 'Point',
-        coordinates: [-96.691448, 33.158878],
+        coordinates: [-71.063611, 42.358056],
       },
     },
   ];
