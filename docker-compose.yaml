@@ -1,15 +1,15 @@
 version: '2'
 services:
   cloudant:
-    image: ibmcom/cloudant-developer:latest
+    image: ibmcom/couchdb3:latest
     container_name: cloudant-testdb
     restart: always
     privileged: true
     hostname: cloudant
     ports:
-      - "8080:80"
+      - "8080:5984"
     expose:
-      - "80"
+      - "5984"
     volumes:
       - cloudant-testdb:/srv
     mem_limit: 256M

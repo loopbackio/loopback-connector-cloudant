@@ -32,10 +32,11 @@ const CONNECT_DELAY = ms('5s');
 let containerToDelete = null;
 
 async.waterfall([
-  dockerStart('ibmcom/cloudant-developer:2.0.1'),
+  dockerStart('ibmcom/couchdb3:latest'),
   sleep(ms('2s')),
   setCloudantEnv,
   waitFor('/_all_dbs'),
+  createAdmin(),
   createDB('test-db'),
   run([mochaBin, 'test/*.test.js', 'node_modules/juggler-v3/test.js',
     'node_modules/juggler-v4/test.js', '--timeout', '40000',
@@ -101,9 +102,10 @@ function setCloudantEnv(container, next) {
     // if not swarm, but remote docker, use docker host's IP
     // if local docker, use localhost
     const host = _.get(c, 'Node.IP', _.get(docker, 'modem.host', '127.0.0.1'));
-    // container's port 80 is dynamically mapped to an external port
+    // couchdb uses TCP/IP port 5984
+    // container's port 5984 is dynamically mapped to an external port
     const port = _.get(c,
-      ['NetworkSettings', 'Ports', '80/tcp', '0', 'HostPort']);
+      ['NetworkSettings', 'Ports', '5984/tcp', '0', 'HostPort']);
     process.env.CLOUDANT_PORT = port;
     process.env.CLOUDANT_HOST = host;
     const usr = process.env.CLOUDANT_USERNAME;
@@ -127,11 +129,10 @@ function waitFor(path) {
     const opts = {
       host: process.env.CLOUDANT_HOST,
       port: process.env.CLOUDANT_PORT,
-      auth: process.env.CLOUDANT_USERNAME + ':' + process.env.CLOUDANT_PASSWORD,
       path: path,
     };
 
-    console.log('waiting for instance to respond');
+    console.log(`waiting for instance to respond: ${opts}`);
     return ping(null, CONNECT_RETRIES);
 
     function ping(err, tries) {
@@ -154,6 +155,34 @@ function waitFor(path) {
         setTimeout(ping, CONNECT_DELAY, err, tries - 1);
       }
     }
+  };
+}
+
+function createAdmin() {
+  return function createAdminUser(container, next) {
+    const data = '\"pass\"';
+    const uri = '/_node/couchdb@127.0.0.1/_config/admins/' +
+      process.env.CLOUDANT_USERNAME;
+    const opts = {
+      method: 'PUT',
+      path: uri,
+      header: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      host: process.env.CLOUDANT_HOST,
+      port: process.env.CLOUDANT_PORT,
+      body: data,
+    };
+
+    const req = http.request(opts, function(res) {
+      res.pipe(devNull());
+      res.on('error', next);
+      res.on('end', function() {
+        setImmediate(next, null, container);
+      });
+    });
+    req.write(data);
+    req.end();
   };
 }
 
