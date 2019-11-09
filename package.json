@@ -28,7 +28,7 @@
     "debug": "^4.1.1",
     "lodash": "^4.17.11",
     "loopback-connector": "^4.0.0",
-    "loopback-connector-couchdb2": "^1.2.0",
+    "loopback-connector-couchdb2": "^1.5.1",
     "request": "^2.81.0",
     "strong-globalize": "^5.0.0"
   },

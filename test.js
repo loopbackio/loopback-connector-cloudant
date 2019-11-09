@@ -17,6 +17,7 @@ const ms = require('ms');
 const mochaBin = require.resolve('mocha/bin/_mocha');
 
 process.env.CLOUDANT_DATABASE = 'test-db';
+process.env.CLOUDANT_PARTITIONED_DATABASE = 'test-partitioned-db';
 process.env.CLOUDANT_PASSWORD = 'pass';
 process.env.CLOUDANT_USERNAME = 'admin';
 
@@ -37,7 +38,8 @@ async.waterfall([
   setCloudantEnv,
   waitFor('/_all_dbs'),
   createAdmin(),
-  createDB('test-db'),
+  createDB(process.env.CLOUDANT_DATABASE),
+  createPartitionedDB(process.env.CLOUDANT_PARTITIONED_DATABASE),
   run([mochaBin, 'test/*.test.js', 'node_modules/juggler-v3/test.js',
     'node_modules/juggler-v4/test.js', '--timeout', '40000',
     '--require', 'strong-mocha-interfaces', '--require', 'test/init.js',
@@ -191,6 +193,28 @@ function createDB(db) {
     const opts = {
       method: 'PUT',
       path: '/' + db,
+      host: process.env.CLOUDANT_HOST,
+      port: process.env.CLOUDANT_PORT,
+      auth: process.env.CLOUDANT_USERNAME + ':' + process.env.CLOUDANT_PASSWORD,
+    };
+    console.log('creating db: %j', db);
+    http.request(opts, function(res) {
+      res.pipe(devNull());
+      res.on('error', next);
+      res.on('end', function() {
+        setImmediate(next, null, container);
+      });
+    })
+      .on('error', next)
+      .end();
+  };
+}
+
+function createPartitionedDB(db) {
+  return function create(container, next) {
+    const opts = {
+      method: 'PUT',
+      path: '/' + db + '?partitioned=true',
       host: process.env.CLOUDANT_HOST,
       port: process.env.CLOUDANT_PORT,
       auth: process.env.CLOUDANT_USERNAME + ':' + process.env.CLOUDANT_PASSWORD,
