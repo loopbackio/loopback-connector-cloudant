@@ -26,6 +26,7 @@
     "@cloudant/cloudant": "^4.2.1",
     "async": "^3.1.0",
     "debug": "^4.1.1",
+    "fs-extra": "^8.1.0",
     "lodash": "^4.17.11",
     "loopback-connector": "^4.0.0",
     "loopback-connector-couchdb2": "^1.5.1",
