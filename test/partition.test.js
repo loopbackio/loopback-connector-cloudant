@@ -170,10 +170,11 @@ describe('cloudant - partitioned db', () => {
   });
 
   context('findAll tests', ()=> {
-    it('find all records by partition key from option', (done) => {
+    before(function createModel(done) {
       Product = db.define('Product', {
         name: {type: String},
         tag: {type: String},
+        city: {type: String, isPartitionKey: true},
       }, {
         forceId: false,
         indexes: {
@@ -185,32 +186,77 @@ describe('cloudant - partitioned db', () => {
           },
         },
       });
-      db.automigrate('Product', () => {
-        Product.create(SEED_DATA, function(err) {
-          if (err) return done(err);
-          Product.find({where: {tag: 'food'}}, {partitionKey: 'toronto'},
-            (err, results) => {
-              if (err) return done(err);
-              should.exist(results);
-              results.length.should.equal(2);
-              const resultTaggedFood = _.filter(results,
-                function(r) {
-                  return r.tag === 'food';
-                });
-              resultTaggedFood.length.should.equal(2);
-              done();
-            });
-        });
+      db.automigrate('Product', (err)=> {
+        if (err) return done(err);
+        Product.create(SEED_DATA, done);
       });
+    });
+
+    it('find all records by the partition key read from `option`', (done) => {
+      // Find the 2 records with
+      // partition `toronto`, tag `food`
+      // partition key is read from option {partitionKey: 'toronto'}
+      Product.find({where: {tag: 'food'}}, {partitionKey: 'toronto'},
+        (err, results) => {
+          if (err) return done(err);
+          should.exist(results);
+          results.length.should.equal(2);
+          const resultTaggedFood = _.filter(results,
+            function(r) {
+              return r.tag === 'food' && r.city === 'toronto';
+            });
+          resultTaggedFood.length.should.equal(2);
+          done();
+        });
+    });
+
+    it('find all records by partition key from property', (done) => {
+      // Find the 2 records with
+      // partition `toronto`, tag `food`
+      // partition key is read from field `city`
+      Product.find({where: {tag: 'food', city: 'toronto'}},
+        (err, results) => {
+          if (err) return done(err);
+          should.exist(results);
+          results.length.should.equal(2);
+          const resultTaggedFood = _.filter(results,
+            function(r) {
+              return r.tag === 'food' && r.city === 'toronto';
+            });
+          resultTaggedFood.length.should.equal(2);
+          done();
+        });
+    });
+
+    it('partition key in options overrides property for find all', (done) => {
+      // Find records with partition `london`, tag `food`, city `toronto`,
+      // we don't have such a record in db
+      // Please note the partition key read from option ('london') will override
+      // the one from query ('toronto')
+      Product.find({where: {tag: 'food', city: 'toronto'}},
+        {partitionKey: 'london'}, (err, results) => {
+          if (err) return done(err);
+          should.exist(results);
+          results.length.should.equal(0);
+          done();
+        });
     });
   });
 });
 
 const SEED_DATA = [
-  {id: `toronto: ${uuid()}`, name: 'beer', tag: 'drink'},
-  {id: `toronto: ${uuid()}`, name: 'salad', tag: 'food'},
-  {id: `toronto: ${uuid()}`, name: 'soup', tag: 'food'},
-  {id: `london: ${uuid()}`, name: 'beer', tag: 'drink'},
-  {id: `london: ${uuid()}`, name: 'salad', tag: 'food'},
-  {id: `london: ${uuid()}`, name: 'salad', tag: 'food'},
+  // partition `toronto`, tag `drink`
+  {id: `toronto: ${uuid()}`, name: 'beer', tag: 'drink', city: 'toronto'},
+  // partition `toronto`, tag `food`
+  {id: `toronto: ${uuid()}`, name: 'salad', tag: 'food', city: 'toronto'},
+  // partition `toronto`, tag `food`
+  {id: `toronto: ${uuid()}`, name: 'soup', tag: 'food', city: 'toronto'},
+  // partition `london`, tag `drink`
+  {id: `london: ${uuid()}`, name: 'beer', tag: 'drink', city: 'london'},
+  // partition `london`, tag `food`
+  {id: `london: ${uuid()}`, name: 'salad', tag: 'food', city: 'london'},
+  // partition `london`, tag `food`
+  {id: `london: ${uuid()}`, name: 'salad', tag: 'food', city: 'london'},
+  // partition `unknown`
+  {id: `unknown: ${uuid()}`, name: 'salad', tag: 'food', city: 'toronto'},
 ];
