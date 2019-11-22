@@ -29,7 +29,7 @@
     "fs-extra": "^8.1.0",
     "lodash": "^4.17.11",
     "loopback-connector": "^4.0.0",
-    "loopback-connector-couchdb2": "^1.5.2",
+    "loopback-connector-couchdb2": "github:strongloop/loopback-connector-couchdb2#partition/field",
     "request": "^2.81.0",
     "strong-globalize": "^5.0.0",
     "uuid": "^3.3.3"
