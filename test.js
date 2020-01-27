@@ -33,7 +33,10 @@ const CONNECT_DELAY = ms('5s');
 let containerToDelete = null;
 
 async.waterfall([
-  dockerStart('ibmcom/couchdb3:latest'),
+  // The tag 'latest' fails on creating the instance because the image got updated.
+  // Using the stable one here to pass tests.
+  // Reverse back to latest once it's fixed.
+  dockerStart('ibmcom/couchdb3:preview-1575988511'),
   sleep(ms('2s')),
   setCloudantEnv,
   waitFor('/_all_dbs'),
