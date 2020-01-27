@@ -1,3 +1,29 @@
+2020-01-27, Version 2.4.0
+=========================
+
+ * chore: update copyright year (Agnes Lin)
+
+ * replace couchdb3 docker img with a stable version (Agnes Lin)
+
+ * docs: add partition document (#232) (Janny)
+
+ * fixup!: fix the dependency version (#233) (Janny)
+
+ * feat: query with partition field (#230) (Janny)
+
+ * chore: improve issue and PR templates (Nora)
+
+ * feat: add partitioned find (#229) (Janny)
+
+ * add docker setup script (#227) (Janny)
+
+ * feat: partitioned index (#225) (Janny)
+
+ * fix CODEOWNERS file (Diana Lau)
+
+ * update docker image (#224) (Janny)
+
+
 2019-09-19, Version 2.3.2
 =========================
 
