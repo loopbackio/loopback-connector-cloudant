@@ -16,7 +16,7 @@
  PASSWORD='pass'		
  PORT=5984		
  DATABASE='testdb'
- SCRIPT='./docker.setup.js'
+ SCRIPT='./test.js'
  if [ "$1" ]; then		
      HOST=$1		
  fi		
@@ -32,7 +32,7 @@
  if [ "$5" ]; then		
      DATABASE=$5		
  fi			
-
+	
  ## check if docker exists		
  printf "\n${RED}>> Checking for docker${PLAIN} ${GREEN}...${PLAIN}"		
  docker -v > /dev/null 2>&1
@@ -79,5 +79,5 @@ CLOUDANT_URL="http://${CLOUDANT_USER}:${CLOUDANT_PASSWORD}@${CLOUDANT_HOST}:${CL
  printf "\n${CYAN}Env variables set.${PLAIN}\n"		
 
 
- printf "\n${RED}>> Creating database: ${CLOUDANT_DATABASE}${PLAIN} ${GREEN}...${PLAIN}\n"
+ printf "\n${RED}>>Creating databases${PLAIN} ${GREEN}...${PLAIN}\n"
  node $SCRIPT
