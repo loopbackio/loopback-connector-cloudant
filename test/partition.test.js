@@ -16,6 +16,8 @@ const config = {
   url: process.env.CLOUDANT_URL,
   username: process.env.CLOUDANT_USERNAME,
   password: process.env.CLOUDANT_PASSWORD,
+  host: process.env.CLOUDANT_HOST,
+  port: process.env.CLOUDANT_PORT,
   database: process.env.CLOUDANT_PARTITIONED_DATABASE,
   plugin: 'retry',
   retryAttempts: 10,
@@ -131,7 +133,7 @@ describe('cloudant - partitioned db', () => {
     });
 
     it('index entry - ' +
-      'create global index for when `partitioned` is configured as false',
+    'create global index for when `partitioned` is configured as false',
     (done) => {
       Product = db.define('Product', {
         prodName: {type: String},
