@@ -1,3 +1,9 @@
+2020-03-11, Version 2.4.1
+=========================
+
+ * update couchdb container instance setup script (Agnes Lin)
+
+
 2020-01-27, Version 2.4.0
 =========================
 
