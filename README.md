@@ -633,6 +633,10 @@ We are still in progress of refactoring some methods, more details to be updated
 
 Currently `update` does the same thing as `replace`, for details, refer to https://github.com/strongloop/loopback-connector-cloudant#no-partial-update
 
+## Find By Id
+
+See the advanced queries documentation [Find By Id](./doc/find-by-id.md)
+
 # Migration
 
 After attaching a model to a Cloudant datasource, either statically with `model.json` file or dynamically in boot script code, user need to run `automigrate` or `autoupdate` to migrate models to database. Cloudant connector does NOT automatically migrate them.
