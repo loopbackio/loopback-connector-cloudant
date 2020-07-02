@@ -39,7 +39,7 @@
     "loopback-connector": "^4.0.0",
     "loopback-connector-couchdb2": "^1.5.3",
     "request": "^2.81.0",
-    "strong-globalize": "^5.0.0",
+    "strong-globalize": "^6.0.3",
     "uuid": "^3.3.3"
   },
   "devDependencies": {
