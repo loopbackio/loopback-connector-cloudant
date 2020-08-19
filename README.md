@@ -1,4 +1,5 @@
 # loopback-connector-cloudant
+test
 
 IBM Cloudant® is a NoSQL database platform built for the cloud. You can
 use Cloudant as a fully-managed DBaaS running on public cloud platforms
