@@ -1,3 +1,17 @@
+2021-03-22, Version 2.5.0
+=========================
+
+ * chore: enable DCO (Diana Lau)
+
+ * update: docs (#245) (Janny)
+
+ * chore: add Node.js 14 to travis (Diana Lau)
+
+ * chore: update strong-globalize to 6.x (Diana Lau)
+
+ * docs: iam auth (#242) (Janny)
+
+
 2020-03-19, Version 2.4.2
 =========================
 
