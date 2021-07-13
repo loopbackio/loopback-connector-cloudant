@@ -101,7 +101,7 @@ const id = `toronto: ${uuid()}`;
 Product.create({id, name: 'salad', manufacturer: 'somefactory'});
 ```
 
-In the future we will support composing the `id` by joining the value of id field and partition key field from the payload, details see [issue 218](https://github.com/strongloop/loopback-connector-cloudant/issues/218).
+In the future we will support composing the `id` by joining the value of id field and partition key field from the payload, details see [issue 218](https://github.com/loopbackio/loopback-connector-cloudant/issues/218).
 
 ## Adding Partitioned Index
 

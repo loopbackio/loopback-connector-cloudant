@@ -7,8 +7,6 @@
   },
   "author": "IBM Corp.",
   "keywords": [
-    "IBM",
-    "StrongLoop",
     "LoopBack",
     "Cloudant",
     "DataSource",
@@ -58,11 +56,11 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/strongloop/loopback-connector-cloudant.git"
+    "url": "git://github.com/loopbackio/loopback-connector-cloudant.git"
   },
-  "homepage": "https://github.com/strongloop/loopback-connector-cloudant",
+  "homepage": "https://github.com/loopbackio/loopback-connector-cloudant",
   "bugs": {
-    "url": "https://github.com/strongloop/loopback-connector-cloudant/issues"
+    "url": "https://github.com/loopbackio/loopback-connector-cloudant/issues"
   },
   "license": "Artistic-2.0"
 }
