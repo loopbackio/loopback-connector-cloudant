@@ -1,8 +1,17 @@
-language: node_js
+branches:
+  only: master
+dist: focal
+arch:
+  - ppc64le
+  - s390x
 services:
   - docker
-
+language: node_js
 node_js:
   - 12
   - 14
   - 16
+  - 18
+install: |
+  npm ci --ignore-scripts
+
